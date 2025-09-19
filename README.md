@@ -1,6 +1,11 @@
 # GigBenefits Platform
 
-A portable benefits platform for gig workers built for the HackNomics hackathon.
+A portable benefits platform for gig workers built for HackNomics 2025.
+
+## 🎥 Demo Video
+[**► Watch the full demo on YouTube**](YOUTUBE_LINK_PLACEHOLDER)
+
+> 🚀 **Live Demo**: Try it at [gigbenefits-platform.vercel.app](https://gig-benefits-platform.vercel.app) or run locally below
 
 ## 🚀 Features
 
@@ -13,10 +18,12 @@ A portable benefits platform for gig workers built for the HackNomics hackathon.
 ## 🏗️ Tech Stack
 
 - **Frontend**: Next.js 15, React, TypeScript, Tailwind CSS
+- **Design**: Linear-style minimal UI with subtle depth and animations
 - **Backend**: Next.js API routes, Prisma ORM
 - **Database**: SQLite (easily deployable)
-- **Charts**: Recharts for data visualization
-- **Authentication**: JWT with bcrypt
+- **Charts**: Recharts for earnings visualization
+- **Authentication**: JWT with bcrypt password hashing
+- **Icons**: Lucide React with Shield branding
 
 ## 🎯 Demo Story
 
@@ -65,13 +72,63 @@ A portable benefits platform for gig workers built for the HackNomics hackathon.
 - ✅ **Technical Execution**: Full-stack working prototype
 - ✅ **Social Good**: Financial inclusion for underserved workers
 
-## 📱 Demo Flow
+## 📱 User Experience
 
-1. **Landing Page**: Problem explanation + value props
-2. **Registration**: Quick signup for new gig workers
-3. **Platform Connection**: Link Uber, DoorDash, Upwork accounts
-4. **Dashboard**: 6-month earnings overview with charts
-5. **Benefits Marketplace**: Enroll in health, retirement, emergency plans
-6. **Auto-Savings**: Watch contributions grow automatically
+**Modern, Linear-inspired Design:**
+- Clean minimal interface with subtle depth and animations
+- Professional landing page with dedicated auth flow
+- Interactive dashboard with hover effects and micro-interactions
+- Comprehensive benefits marketplace with category filtering
 
-Visit `http://localhost:3000` to try the demo!
+**Demo Flow:**
+1. **Landing Page**: Clean hero section with value proposition
+2. **Authentication**: Dedicated login/signup pages (traditional SaaS pattern)
+3. **Platform Connection**: Link multiple gig platforms with status tracking
+4. **Dashboard**: 6-month earnings visualization with platform breakdown
+5. **Benefits Marketplace**: Browse and enroll in health, retirement, emergency plans
+6. **Income Tracking**: Manual entry forms plus automatic platform sync
+
+## 🎯 Key Statistics
+
+- **Target Market**: 40M+ gig workers with 0% traditional benefits
+- **Average Income**: $47K annually across platforms
+- **Auto-Savings**: 4% benefits + 2% emergency = 6% total
+- **Demo Data**: 6 months of realistic earnings across Uber, DoorDash, Upwork
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/kyisaiah47/gig-benefits-platform.git
+   cd gig-benefits-platform
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Setup database**:
+   ```bash
+   npx prisma migrate dev --name init
+   npx tsx src/lib/seed.ts
+   ```
+
+4. **Start development server**:
+   ```bash
+   npm run dev
+   ```
+
+5. **Access the demo**:
+   - Visit: `http://localhost:3000`
+   - Demo login: `sarah.driver@email.com` / `demo123`
+
+## 🏆 HackNomics 2025 Submission
+
+This project addresses the critical gap in financial security for America's growing gig economy workforce through innovative technology and thoughtful UX design.
