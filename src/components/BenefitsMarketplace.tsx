@@ -126,19 +126,19 @@ export default function BenefitsMarketplace({ userId }: BenefitsMarketplaceProps
   return (
     <div className="space-y-8">
       {/* Current Benefits */}
-      <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-gray-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-green-600" />
             </div>
             <div>
               <h2 className="text-xl font-medium text-gray-900">Your Active Benefits</h2>
               <p className="text-sm text-gray-500">Currently enrolled coverage</p>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-md px-3 py-1">
-            <span className="text-sm text-gray-600">
+          <div className="bg-gray-50 rounded-full px-4 py-2 border border-gray-200">
+            <span className="text-sm font-medium text-gray-600">
               {enrolledBenefits.length} active
             </span>
           </div>
@@ -149,11 +149,11 @@ export default function BenefitsMarketplace({ userId }: BenefitsMarketplaceProps
             {enrolledBenefits.map((benefit) => {
               const CategoryIcon = getCategoryIcon(benefit.category);
               return (
-                <div key={benefit.id} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <div key={benefit.id} className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-gray-200">
-                        <CategoryIcon className="w-5 h-5 text-gray-600" />
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-gray-200 group-hover:scale-105 transition-transform">
+                        <CategoryIcon className="w-6 h-6 text-gray-600" />
                       </div>
                       <div>
                         <h3 className="font-medium text-gray-900">{benefit.name}</h3>
@@ -198,11 +198,11 @@ export default function BenefitsMarketplace({ userId }: BenefitsMarketplaceProps
       </div>
 
       {/* Marketplace */}
-      <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
-        <div className="flex items-center justify-between mb-8">
+      <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex items-center justify-between mb-10">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">
-              <Shield className="w-5 h-5 text-gray-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center">
+              <Shield className="w-6 h-6 text-blue-600" />
             </div>
             <div>
               <h2 className="text-xl font-medium text-gray-900">Benefits Marketplace</h2>
@@ -242,11 +242,11 @@ export default function BenefitsMarketplace({ userId }: BenefitsMarketplaceProps
           {filteredBenefits.map((benefit) => {
             const CategoryIcon = getCategoryIcon(benefit.category);
             return (
-              <div key={benefit.id} className="bg-white rounded-lg p-6 border border-gray-200 hover:border-gray-300 transition-colors">
-                <div className="flex items-start justify-between mb-6">
+              <div key={benefit.id} className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
+                <div className="flex items-start justify-between mb-8">
                   <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200">
-                      <CategoryIcon className="w-5 h-5 text-gray-600" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center border border-gray-200 group-hover:scale-105 transition-transform">
+                      <CategoryIcon className="w-6 h-6 text-gray-600" />
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900 mb-1">{benefit.name}</h3>

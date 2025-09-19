@@ -46,7 +46,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 bg-black rounded-sm"></div>
+              <Shield className="w-6 h-6 text-gray-900" />
               <h1 className="text-lg font-medium text-gray-900">GigBenefits</h1>
             </div>
             <div className="flex items-center space-x-6">
@@ -102,12 +102,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           <div className="space-y-8">
             {/* Clean Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+              <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                    <DollarSign className="w-5 h-5 text-green-600" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <DollarSign className="w-6 h-6 text-green-600" />
                   </div>
-                  <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">6 months</span>
+                  <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">6 months</span>
                 </div>
                 <h3 className="text-sm font-medium text-gray-600 mb-2">
                   Total Earnings
@@ -120,12 +120,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </p>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+              <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <PiggyBank className="w-5 h-5 text-blue-600" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <PiggyBank className="w-6 h-6 text-blue-600" />
                   </div>
-                  <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">4% auto</span>
+                  <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">4% auto</span>
                 </div>
                 <h3 className="text-sm font-medium text-gray-600 mb-2">
                   Benefits Fund
@@ -138,12 +138,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </p>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+              <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-purple-600" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <Shield className="w-6 h-6 text-purple-600" />
                   </div>
-                  <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">2% auto</span>
+                  <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">2% auto</span>
                 </div>
                 <h3 className="text-sm font-medium text-gray-600 mb-2">
                   Emergency Fund
@@ -158,10 +158,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </div>
 
             {/* Chart Section */}
-            <div className="bg-white border border-gray-200 rounded-lg p-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">
+                  <h3 className="text-xl font-medium text-gray-900 mb-2">
                     Earnings & Contributions
                   </h3>
                   <p className="text-sm text-gray-500">6 month overview</p>
@@ -226,46 +226,46 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </div>
 
             {/* Platform Breakdown */}
-            <div className="bg-white border border-gray-200 rounded-lg p-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">
+                  <h3 className="text-xl font-medium text-gray-900 mb-2">
                     Platform Breakdown
                   </h3>
                   <p className="text-sm text-gray-500">June 2024 earnings</p>
                 </div>
               </div>
               <div className="grid md:grid-cols-3 gap-6">
-                <div className="border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+                <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
                       🚗
                     </div>
-                    <span className="text-sm text-gray-500">44%</span>
+                    <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200">44%</span>
                   </div>
                   <h4 className="font-medium text-gray-900 mb-1">Uber</h4>
                   <p className="text-2xl font-medium text-gray-900 mb-1">$1,890</p>
                   <p className="text-sm text-gray-500">+12% from last month</p>
                 </div>
 
-                <div className="border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+                <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
                       🍔
                     </div>
-                    <span className="text-sm text-gray-500">30%</span>
+                    <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200">30%</span>
                   </div>
                   <h4 className="font-medium text-gray-900 mb-1">DoorDash</h4>
                   <p className="text-2xl font-medium text-gray-900 mb-1">$1,290</p>
                   <p className="text-sm text-gray-500">+8% from last month</p>
                 </div>
 
-                <div className="border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+                <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-200 group">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
                       💼
                     </div>
-                    <span className="text-sm text-gray-500">26%</span>
+                    <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200">26%</span>
                   </div>
                   <h4 className="font-medium text-gray-900 mb-1">Upwork</h4>
                   <p className="text-2xl font-medium text-gray-900 mb-1">$1,120</p>
