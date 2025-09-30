@@ -104,239 +104,229 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       <div className="max-w-7xl mx-auto px-6 py-8">
 
         {activeTab === 'home' && (
-          <div className="space-y-6">
-            {/* Welcome Section */}
-            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-              <h2 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Welcome back, {user.firstName}! 👋</h2>
-              <p className="text-slate-300 text-lg">Here's your financial snapshot for this month</p>
+          <div className="relative">
+            {/* Animated gradient mesh background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-0 left-20 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+              <div className="absolute top-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+              <div className="absolute top-40 left-1/2 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
             </div>
 
-            {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-blue-500/50 transition-all">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-400 text-sm">This Month</span>
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                </div>
-                <p className="text-3xl font-bold text-white mb-1">$4,300</p>
-                <p className="text-sm text-green-400">+12% vs last month</p>
+            <div className="relative z-10 space-y-12">
+              {/* Hero Welcome */}
+              <div className="text-center py-12">
+                <h1 className="text-7xl md:text-8xl font-bold mb-6 font-space-grotesk">
+                  <span className="inline-block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    Welcome back
+                  </span>
+                  <br />
+                  <span className="text-white">{user.firstName}</span>
+                </h1>
+                <p className="text-2xl text-slate-300 font-light">Here's your financial snapshot for this month</p>
               </div>
 
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-purple-500/50 transition-all">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-400 text-sm">Saved</span>
-                  <PiggyBank className="w-4 h-4 text-purple-400" />
-                </div>
-                <p className="text-3xl font-bold text-white mb-1">$876</p>
-                <p className="text-sm text-slate-400">Benefits + Emergency</p>
-              </div>
-
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-orange-500/50 transition-all">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-400 text-sm">Tax Set Aside</span>
-                  <DollarSign className="w-4 h-4 text-orange-400" />
-                </div>
-                <p className="text-3xl font-bold text-white mb-1">$1,075</p>
-                <p className="text-sm text-slate-400">25% of earnings</p>
-              </div>
-
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-pink-500/50 transition-all">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-400 text-sm">Active Platforms</span>
-                  <Zap className="w-4 h-4 text-pink-400" />
-                </div>
-                <p className="text-3xl font-bold text-white mb-1">3</p>
-                <p className="text-sm text-slate-400">Uber, DoorDash, Upwork</p>
-              </div>
-            </div>
-
-            {/* Educational Insights */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Platform Performance */}
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="text-lg font-semibold text-white font-space-grotesk">Platform Performance</h3>
-                    <p className="text-sm text-slate-400">See which gigs pay best</p>
+              {/* Floating Gradient Cards - Main Stats */}
+              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-green-600 to-green-700 rounded-3xl p-10 border border-green-400/50 transform group-hover:-translate-y-2 transition-transform">
+                    <div className="text-sm text-green-200 font-semibold mb-3 uppercase tracking-wider">This Month</div>
+                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$4,300</div>
+                    <div className="text-green-200 text-xl">+12% from last month</div>
                   </div>
-                  <BarChart3 className="w-5 h-5 text-blue-400" />
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl">🚗</span>
-                        <span className="text-white font-medium">Uber</span>
-                      </div>
-                      <span className="text-white font-bold">$1,890</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex-1 bg-slate-800 rounded-full h-2">
-                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style={{width: '44%'}}></div>
-                      </div>
-                      <span className="text-sm text-slate-400">44%</span>
-                    </div>
-                    <p className="text-xs text-slate-500 mt-1">💡 Peak hours: 5-9pm weekdays</p>
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-10 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
+                    <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">Benefits</div>
+                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$876</div>
+                    <div className="text-purple-200 text-xl">Saved automatically</div>
                   </div>
+                </div>
 
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl">🍔</span>
-                        <span className="text-white font-medium">DoorDash</span>
-                      </div>
-                      <span className="text-white font-bold">$1,290</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex-1 bg-slate-800 rounded-full h-2">
-                        <div className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full" style={{width: '30%'}}></div>
-                      </div>
-                      <span className="text-sm text-slate-400">30%</span>
-                    </div>
-                    <p className="text-xs text-slate-500 mt-1">💡 Best zones: Downtown & University</p>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl">💼</span>
-                        <span className="text-white font-medium">Upwork</span>
-                      </div>
-                      <span className="text-white font-bold">$1,120</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex-1 bg-slate-800 rounded-full h-2">
-                        <div className="bg-gradient-to-r from-pink-500 to-pink-600 h-2 rounded-full" style={{width: '26%'}}></div>
-                      </div>
-                      <span className="text-sm text-slate-400">26%</span>
-                    </div>
-                    <p className="text-xs text-slate-500 mt-1">💡 Tip: Increase your rate by 15%</p>
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-orange-600 to-orange-700 rounded-3xl p-10 border border-orange-400/50 transform group-hover:-translate-y-2 transition-transform">
+                    <div className="text-sm text-orange-200 font-semibold mb-3 uppercase tracking-wider">Taxes</div>
+                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$1,075</div>
+                    <div className="text-orange-200 text-xl">Set aside for Q1</div>
                   </div>
                 </div>
               </div>
 
-              {/* Financial Health Score */}
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="text-lg font-semibold text-white font-space-grotesk">Financial Health</h3>
-                    <p className="text-sm text-slate-400">Your money wellness score</p>
-                  </div>
-                  <Shield className="w-5 h-5 text-green-400" />
+              {/* Platform Performance - Bold Section */}
+              <div className="py-12">
+                <div className="text-center mb-12">
+                  <h2 className="text-5xl md:text-6xl font-bold text-white mb-4 font-space-grotesk">
+                    Your top gigs
+                  </h2>
+                  <p className="text-xl text-slate-400">See which platforms pay best</p>
                 </div>
 
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-4 border-green-500/30 mb-4">
+                <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-blue-500/50 transition-all group">
+                    <div className="text-4xl mb-4">🚗</div>
+                    <h3 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Uber</h3>
+                    <div className="text-5xl font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-3 font-space-grotesk">$1,890</div>
+                    <div className="h-3 bg-slate-800 rounded-full mb-3 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{width: '44%'}}></div>
+                    </div>
+                    <p className="text-slate-400 text-sm mb-2">44% of income</p>
+                    <div className="pt-3 border-t border-white/10">
+                      <p className="text-blue-400 text-sm">💡 Peak: 5-9pm weekdays</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-purple-500/50 transition-all group">
+                    <div className="text-4xl mb-4">🍔</div>
+                    <h3 className="text-3xl font-bold text-white mb-2 font-space-grotesk">DoorDash</h3>
+                    <div className="text-5xl font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent mb-3 font-space-grotesk">$1,290</div>
+                    <div className="h-3 bg-slate-800 rounded-full mb-3 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full" style={{width: '30%'}}></div>
+                    </div>
+                    <p className="text-slate-400 text-sm mb-2">30% of income</p>
+                    <div className="pt-3 border-t border-white/10">
+                      <p className="text-purple-400 text-sm">💡 Best: Downtown area</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-pink-500/50 transition-all group">
+                    <div className="text-4xl mb-4">💼</div>
+                    <h3 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Upwork</h3>
+                    <div className="text-5xl font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent mb-3 font-space-grotesk">$1,120</div>
+                    <div className="h-3 bg-slate-800 rounded-full mb-3 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full" style={{width: '26%'}}></div>
+                    </div>
+                    <p className="text-slate-400 text-sm mb-2">26% of income</p>
+                    <div className="pt-3 border-t border-white/10">
+                      <p className="text-pink-400 text-sm">💡 Raise rate by 15%</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Financial Health - Redesigned */}
+              <div className="py-12">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-12 border border-white/10 max-w-2xl mx-auto text-center">
+                  <h2 className="text-5xl font-bold text-white mb-4 font-space-grotesk">Financial Health</h2>
+                  <p className="text-xl text-slate-400 mb-8">Your money wellness score</p>
+
+                  <div className="inline-flex items-center justify-center w-48 h-48 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-8 border-green-500/30 mb-8">
                     <div className="text-center">
-                      <p className="text-4xl font-bold text-white">78</p>
-                      <p className="text-sm text-slate-400">Good</p>
+                      <p className="text-7xl font-black text-white font-space-grotesk">78</p>
+                      <p className="text-xl text-green-400 font-semibold">Good</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 max-w-md mx-auto">
+                    <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-2xl">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <span className="text-lg text-slate-300">Emergency fund</span>
+                      </div>
+                      <span className="text-lg font-semibold text-green-400">On track</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-2xl">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                        <span className="text-lg text-slate-300">Retirement</span>
+                      </div>
+                      <span className="text-lg font-semibold text-yellow-400">Needs attention</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-2xl">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <span className="text-lg text-slate-300">Health coverage</span>
+                      </div>
+                      <span className="text-lg font-semibold text-green-400">Active</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Educational Content - Redesigned */}
+              <div className="py-12">
+                <div className="text-center mb-12">
+                  <h2 className="text-5xl md:text-6xl font-bold text-white mb-4 font-space-grotesk">
+                    Learn & Grow
+                  </h2>
+                  <p className="text-xl text-slate-400">Personalized tips for your gig work</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                      <span className="text-3xl">📊</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Tax Deductions</h3>
+                    <p className="text-slate-300 text-lg mb-6">Learn what rideshare drivers can write off</p>
+                    <div className="flex items-center text-blue-400 text-lg font-semibold">
+                      <span>Read guide</span>
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
+                    <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                      <span className="text-3xl">🎯</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Peak Hours</h3>
+                    <p className="text-slate-300 text-lg mb-6">Data shows these hours pay 40% more</p>
+                    <div className="flex items-center text-purple-400 text-lg font-semibold">
+                      <span>View data</span>
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group">
+                    <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                      <span className="text-3xl">🏥</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Health Coverage</h3>
+                    <p className="text-slate-300 text-lg mb-6">Understanding your insurance options</p>
+                    <div className="flex items-center text-pink-400 text-lg font-semibold">
+                      <span>Get started</span>
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions - Floating Cards Style */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto py-8">
+                <div className="group relative cursor-pointer">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-3xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-blue-600/50 to-purple-600/50 backdrop-blur-xl rounded-3xl p-8 border border-blue-400/30 group-hover:-translate-y-2 transition-transform">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Connect</h3>
+                        <p className="text-blue-200 text-lg">Sync new platform earnings</p>
+                      </div>
+                      <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+                        <Globe className="w-8 h-8 text-white" />
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span className="text-sm text-slate-300">Emergency fund</span>
+                <div className="group relative cursor-pointer">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-purple-600/50 to-pink-600/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-400/30 group-hover:-translate-y-2 transition-transform">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Calculate</h3>
+                        <p className="text-purple-200 text-lg">Quarterly tax estimates</p>
+                      </div>
+                      <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+                        <FileText className="w-8 h-8 text-white" />
+                      </div>
                     </div>
-                    <span className="text-sm font-medium text-green-400">✓ On track</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                      <span className="text-sm text-slate-300">Retirement savings</span>
-                    </div>
-                    <span className="text-sm font-medium text-yellow-400">! Needs attention</span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span className="text-sm text-slate-300">Health coverage</span>
-                    </div>
-                    <span className="text-sm font-medium text-green-400">✓ Active</span>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Educational Content */}
-            <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-white font-space-grotesk">Recommended for You</h3>
-                  <p className="text-sm text-slate-400">Personalized tips based on your gig work</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-slate-800/50 rounded-xl p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer">
-                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <span className="text-2xl">📊</span>
-                  </div>
-                  <h4 className="text-white font-semibold mb-2">Tax Deduction Guide</h4>
-                  <p className="text-sm text-slate-400 mb-3">Learn what rideshare drivers can write off</p>
-                  <div className="flex items-center text-blue-400 text-sm font-medium">
-                    <span>Read article</span>
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-800/50 rounded-xl p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer">
-                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <span className="text-2xl">🎯</span>
-                  </div>
-                  <h4 className="text-white font-semibold mb-2">Maximize Your Earnings</h4>
-                  <p className="text-sm text-slate-400 mb-3">Data shows these hours pay 40% more</p>
-                  <div className="flex items-center text-purple-400 text-sm font-medium">
-                    <span>View insights</span>
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-800/50 rounded-xl p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer">
-                  <div className="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <span className="text-2xl">🏥</span>
-                  </div>
-                  <h4 className="text-white font-semibold mb-2">Health Insurance 101</h4>
-                  <p className="text-sm text-slate-400 mb-3">Understanding your coverage options</p>
-                  <div className="flex items-center text-pink-400 text-sm font-medium">
-                    <span>Learn more</span>
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-blue-500/50 transition-all cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-white font-semibold mb-1">Connect New Platform</h4>
-                    <p className="text-sm text-slate-400">Sync earnings automatically</p>
-                  </div>
-                  <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
-                    <Globe className="w-6 h-6 text-blue-400" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-purple-500/50 transition-all cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-white font-semibold mb-1">Calculate Quarterly Taxes</h4>
-                    <p className="text-sm text-slate-400">See what you owe for Q1</p>
-                  </div>
-                  <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-purple-400" />
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
@@ -530,40 +520,62 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         {activeTab === 'benefits' && <BenefitsMarketplace userId={user.id} />}
 
         {activeTab === 'taxes' && (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-              <h2 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Tax Center 📊</h2>
-              <p className="text-slate-300 text-lg">Manage your quarterly estimates, deductions, and 1099s</p>
+          <div className="relative">
+            {/* Animated gradient blobs */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-0 right-20 w-96 h-96 bg-orange-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+              <div className="absolute top-40 left-20 w-96 h-96 bg-yellow-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <h3 className="text-white font-semibold mb-4">Q1 2024 Estimate</h3>
-                <p className="text-4xl font-bold text-white mb-2">$1,075</p>
-                <p className="text-sm text-slate-400 mb-4">Due: April 15, 2024</p>
-                <button className="w-full bg-gradient-to-r from-orange-600 to-yellow-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:opacity-90 transition-opacity">
-                  Pay Now
-                </button>
+            <div className="relative z-10 space-y-12">
+              {/* Hero */}
+              <div className="text-center py-12">
+                <h1 className="text-7xl md:text-8xl font-bold mb-6 font-space-grotesk">
+                  <span className="inline-block bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                    Tax Center
+                  </span>
+                </h1>
+                <p className="text-2xl text-slate-300 font-light">Quarterly estimates, deductions, and 1099s</p>
               </div>
 
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <h3 className="text-white font-semibold mb-4">Tracked Deductions</h3>
-                <p className="text-4xl font-bold text-white mb-2">$2,340</p>
-                <p className="text-sm text-slate-400 mb-4">Mileage, phone, supplies</p>
-                <button className="w-full bg-slate-800 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-slate-700 transition-colors">
-                  View Details
-                </button>
-              </div>
+              {/* Main Tax Cards */}
+              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-orange-600 to-red-700 rounded-3xl p-10 border border-orange-400/50 transform group-hover:-translate-y-2 transition-transform">
+                    <div className="text-sm text-orange-200 font-semibold mb-3 uppercase tracking-wider">Q1 2024</div>
+                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$1,075</div>
+                    <div className="text-orange-200 text-xl mb-6">Due April 15</div>
+                    <button className="w-full bg-white text-orange-700 py-3 px-6 rounded-full text-lg font-bold hover:scale-105 transition-transform">
+                      Pay Now
+                    </button>
+                  </div>
+                </div>
 
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <h3 className="text-white font-semibold mb-4">1099 Forms</h3>
-                <p className="text-4xl font-bold text-white mb-2">3</p>
-                <p className="text-sm text-slate-400 mb-4">Ready to download</p>
-                <button className="w-full bg-slate-800 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-slate-700 transition-colors">
-                  Download All
-                </button>
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-10 border border-blue-400/50 transform group-hover:-translate-y-2 transition-transform">
+                    <div className="text-sm text-blue-200 font-semibold mb-3 uppercase tracking-wider">Deductions</div>
+                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$2,340</div>
+                    <div className="text-blue-200 text-xl mb-6">Tracked this year</div>
+                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-3 px-6 rounded-full text-lg font-bold hover:bg-white/30 transition-colors border border-white/30">
+                      View Details
+                    </button>
+                  </div>
+                </div>
+
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-10 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
+                    <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">1099 Forms</div>
+                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">3</div>
+                    <div className="text-purple-200 text-xl mb-6">Ready to download</div>
+                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-3 px-6 rounded-full text-lg font-bold hover:bg-white/30 transition-colors border border-white/30">
+                      Download
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
 
             <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
               <h3 className="text-lg font-semibold text-white font-space-grotesk mb-4">Common Tax Deductions for Gig Workers</h3>
