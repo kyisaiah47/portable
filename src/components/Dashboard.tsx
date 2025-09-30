@@ -106,7 +106,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         {activeTab === 'home' && (
           <div className="space-y-8">
             {/* Hero message - SHORT AND PUNCHY */}
-            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12">
+            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8 md:p-12">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-3 font-space-grotesk">
                 You're crushing it, {user.firstName}
               </h1>
@@ -124,7 +124,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Uber */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-blue-500/50 transition-all">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10 hover:border-blue-500/50 transition-all">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
                       <div className="text-3xl">🚗</div>
@@ -145,7 +145,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </div>
 
                 {/* DoorDash */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-purple-500/50 transition-all">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10 hover:border-purple-500/50 transition-all">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
                       <div className="text-3xl">🍔</div>
@@ -166,7 +166,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </div>
 
                 {/* Upwork */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-pink-500/50 transition-all">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10 hover:border-pink-500/50 transition-all">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
                       <div className="text-3xl">💼</div>
@@ -191,17 +191,17 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {/* More sections side by side */}
             <div className="grid md:grid-cols-2 gap-6">
               {/* Quick actions */}
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10">
+              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
                 <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Quick actions</h3>
                 <div className="space-y-3">
-                  <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-2xl text-left hover:opacity-90 transition-opacity flex items-center justify-between">
+                  <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-lg text-left hover:opacity-90 transition-opacity flex items-center justify-between">
                     <div>
                       <div className="font-semibold">Connect new platform</div>
                       <div className="text-sm text-blue-100">Sync earnings automatically</div>
                     </div>
                     <Globe className="w-6 h-6" />
                   </button>
-                  <button className="w-full bg-slate-800/50 text-white p-4 rounded-2xl text-left hover:bg-slate-800 transition-colors flex items-center justify-between">
+                  <button className="w-full bg-slate-800/50 text-white p-4 rounded-lg text-left hover:bg-slate-800 transition-colors flex items-center justify-between">
                     <div>
                       <div className="font-semibold">Calculate taxes</div>
                       <div className="text-sm text-slate-400">See Q1 estimate</div>
@@ -212,7 +212,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </div>
 
               {/* Financial health */}
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10">
+              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
                 <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Financial health</h3>
                 <div className="flex items-center space-x-6 mb-4">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-4 border-green-500/30 flex items-center justify-center">
