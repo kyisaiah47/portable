@@ -60,6 +60,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           if (data?.parsed?.byPlatform) {
             data.parsed.byPlatform = new Map(Object.entries(data.parsed.byPlatform));
           }
+          // Reconstruct Date objects in rawTransactions
+          if (data?.rawTransactions) {
+            data.rawTransactions = data.rawTransactions.map((item: any) => ({
+              ...item,
+              date: new Date(item.date),
+            }));
+          }
           return data;
         } catch (e) {
           console.error('Error loading parsed income from localStorage:', e);
