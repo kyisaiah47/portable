@@ -903,7 +903,8 @@ If you'd like to discuss this or have any questions, I'm happy to chat.
 
 Best,
 [Your Name]
----`
+
+---
 
 **Key elements**:
 - 60 days notice (respectful and professional)
