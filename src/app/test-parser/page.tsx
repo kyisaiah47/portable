@@ -166,12 +166,15 @@ export default function TestParserPage() {
               <h2 className="text-xl font-bold mb-6 font-space-grotesk">Income by Platform</h2>
               <div className="space-y-4">
                 {Array.from(results.parsed.byPlatform.entries())
-                  .map(([platform, payments]: [string, any[]]) => ({
-                    platform,
-                    payments,
-                    total: payments.reduce((sum: number, p: any) => sum + p.amount, 0),
-                    count: payments.length,
-                  }))
+                  .map((entry) => {
+                    const [platform, payments] = entry as [string, any[]];
+                    return {
+                      platform,
+                      payments,
+                      total: payments.reduce((sum: number, p: any) => sum + p.amount, 0),
+                      count: payments.length,
+                    };
+                  })
                   .sort((a, b) => b.total - a.total)
                   .map(({ platform, total, count }) => (
                     <div key={platform} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg border border-white/5">

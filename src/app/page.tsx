@@ -7,6 +7,7 @@ import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp, PiggyBank, File
 import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
+import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -110,7 +111,7 @@ export default function Home() {
           </div>
 
           {/* Floating cards */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
               <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-10 border border-blue-400/50 transform group-hover:-translate-y-2 transition-transform">
@@ -135,6 +136,66 @@ export default function Home() {
                 <div className="text-sm text-pink-200 font-semibold mb-3 uppercase tracking-wider">Tax Prep</div>
                 <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Simplified</div>
                 <div className="text-pink-200 text-lg">Track deductions across all platforms</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Brand marquee */}
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8">
+              <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Supports 50+ platforms including</p>
+            </div>
+            <div className="relative overflow-hidden">
+              {/* Gradient overlays */}
+              <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-950 to-transparent z-10"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-950 to-transparent z-10"></div>
+
+              {/* Scrolling marquee */}
+              <div className="flex animate-marquee">
+                {[...Array(2)].map((_, i) => (
+                  <div key={i} className="flex items-center space-x-12 px-6">
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiUber className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Uber</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiLyft className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Lyft</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiDoordash className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">DoorDash</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiInstacart className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Instacart</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiGrubhub className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Grubhub</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiUpwork className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Upwork</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiFiverr className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Fiverr</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiYoutube className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">YouTube</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiTwitch className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Twitch</span>
+                    </div>
+                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      <SiAirbnb className="w-6 h-6 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-300">Airbnb</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

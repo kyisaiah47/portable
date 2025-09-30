@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import BenefitsMarketplace from './BenefitsMarketplace';
 import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload } from 'lucide-react';
+import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 
 interface User {
@@ -498,80 +499,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {/* Divider */}
             <div className="border-t border-white/10 mt-8"></div>
 
-            {/* Platform connections */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Connected platforms</h2>
-                <p className="text-xs text-slate-400">Sync your gig accounts to auto-track income</p>
-              </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Uber */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-2xl">🚗</div>
-                      <div>
-                        <h3 className="text-base font-bold text-white font-space-grotesk">Uber</h3>
-                        <p className="text-xs text-slate-400">Rideshare</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent font-space-grotesk">$1,890</div>
-                      <div className="text-xs text-slate-400">This month</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-green-400 font-semibold">✓ Connected</div>
-                </div>
-
-                {/* DoorDash */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-2xl">🍔</div>
-                      <div>
-                        <h3 className="text-base font-bold text-white font-space-grotesk">DoorDash</h3>
-                        <p className="text-xs text-slate-400">Delivery</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$1,290</div>
-                      <div className="text-xs text-slate-400">This month</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-green-400 font-semibold">✓ Connected</div>
-                </div>
-
-                {/* Upwork */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-2xl">💼</div>
-                      <div>
-                        <h3 className="text-base font-bold text-white font-space-grotesk">Upwork</h3>
-                        <p className="text-xs text-slate-400">Freelance</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">$1,120</div>
-                      <div className="text-xs text-slate-400">This month</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-green-400 font-semibold">✓ Connected</div>
-                </div>
-
-                {/* Add new platform card */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
-                  <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                      <Globe className="w-6 h-6 text-blue-400" />
-                    </div>
-                    <h3 className="text-sm font-bold text-white font-space-grotesk">Connect new platform</h3>
-                    <p className="text-xs text-slate-400">Instacart, Lyft, Fiverr & more</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Parsed Results */}
             {parsedIncome && (
               <>
@@ -611,31 +538,71 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   </div>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {Array.from(parsedIncome.parsed.byPlatform.entries())
-                      .map(([platform, payments]) => ({
-                        platform: platform as string,
-                        payments: payments as any[],
-                        total: (payments as any[]).reduce((sum: number, p: any) => sum + p.amount, 0),
-                        count: (payments as any[]).length,
-                      }))
+                      .map((entry) => {
+                        const [platform, payments] = entry as [string, any[]];
+                        return {
+                          platform,
+                          payments,
+                          total: payments.reduce((sum: number, p: any) => sum + p.amount, 0),
+                          count: payments.length,
+                          category: payments[0]?.category || 'other',
+                        };
+                      })
                       .sort((a, b) => b.total - a.total)
-                      .map(({ platform, total, count }) => (
-                        <div key={platform} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex items-center space-x-2">
-                              <div className="text-2xl">💰</div>
-                              <div>
-                                <h3 className="text-base font-bold text-white font-space-grotesk">{platform}</h3>
-                                <p className="text-xs text-slate-400">{count} payments</p>
+                      .map(({ platform, total, count, category }) => {
+                        // Map platforms to brand icons
+                        const platformIconMap: Record<string, any> = {
+                          'Uber': SiUber,
+                          'Lyft': SiLyft,
+                          'DoorDash': SiDoordash,
+                          'Instacart': SiInstacart,
+                          'Grubhub': SiGrubhub,
+                          'Uber Eats': SiUbereats,
+                          'Upwork': SiUpwork,
+                          'Fiverr': SiFiverr,
+                          'Freelancer': SiFreelancer,
+                          'Toptal': SiToptal,
+                          'YouTube': SiYoutube,
+                          'Twitch': SiTwitch,
+                          'Patreon': SiPatreon,
+                          'OnlyFans': SiOnlyfans,
+                          'Substack': SiSubstack,
+                          'Airbnb': SiAirbnb,
+                        };
+
+                        // Fallback category icons
+                        const categoryIconMap: Record<string, any> = {
+                          'rideshare': DollarSign,
+                          'delivery': Receipt,
+                          'freelance': Briefcase,
+                          'creator': Target,
+                          'rental': Globe,
+                          'other': DollarSign,
+                        };
+
+                        const IconComponent = platformIconMap[platform] || categoryIconMap[category];
+
+                        return (
+                          <div key={platform} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center">
+                                  <IconComponent className="w-5 h-5 text-blue-400" />
+                                </div>
+                                <div>
+                                  <h3 className="text-base font-bold text-white font-space-grotesk">{platform}</h3>
+                                  <p className="text-xs text-slate-400">{count} payments</p>
+                                </div>
                               </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">
-                                ${total.toFixed(2)}
+                              <div className="text-right">
+                                <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">
+                                  ${total.toFixed(2)}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                   </div>
                 </div>
               </>
