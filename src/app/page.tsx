@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Dashboard from '@/components/Dashboard';
 import LoginForm from '@/components/LoginForm';
-import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp } from 'lucide-react';
+import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp, PiggyBank, FileText, BarChart3, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -61,7 +62,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 font-space-grotesk">
+    <div className="min-h-screen bg-slate-950 font-inter">
       {/* Navigation */}
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -111,23 +112,32 @@ export default function Home() {
           <div className="text-center max-w-5xl mx-auto mb-20">
             <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-full border border-white/10 mb-10">
               <div className="flex -space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
+                <Avatar className="w-6 h-6 border-2 border-slate-950">
+                  <AvatarImage src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=3B82F6" alt="" />
+                  <AvatarFallback>F</AvatarFallback>
+                </Avatar>
+                <Avatar className="w-6 h-6 border-2 border-slate-950">
+                  <AvatarImage src="https://api.dicebear.com/7.x/notionists/svg?seed=Aneka&backgroundColor=A855F7" alt="" />
+                  <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+                <Avatar className="w-6 h-6 border-2 border-slate-950">
+                  <AvatarImage src="https://api.dicebear.com/7.x/notionists/svg?seed=Luna&backgroundColor=EC4899" alt="" />
+                  <AvatarFallback>L</AvatarFallback>
+                </Avatar>
               </div>
               <span className="text-sm font-semibold text-white">Join 2.4M gig workers worldwide</span>
             </div>
 
-            <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold mb-10 leading-[0.95]">
+            <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold mb-10 leading-[0.95] font-space-grotesk">
               <span className="inline-block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-                One app.
+                Benefits for
               </span>
               <br />
-              <span className="text-white">All your money.</span>
+              <span className="text-white">gig workers.</span>
             </h1>
 
-            <p className="text-2xl md:text-3xl text-slate-300 mb-14 leading-relaxed max-w-4xl mx-auto font-light">
-              Track gig income, spend globally, invest smart, and build savings—all in one beautiful app.
+            <p className="text-xl md:text-2xl text-slate-300 mb-14 leading-relaxed max-w-4xl mx-auto font-light">
+              Navigate the gig economy with confidence. Access health insurance, retirement plans, and financial guidance designed for independent workers.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-20">
@@ -150,31 +160,27 @@ export default function Home() {
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
               <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-10 border border-blue-400/50 transform group-hover:-translate-y-2 transition-transform">
-                <div className="text-sm text-blue-200 font-semibold mb-3 uppercase tracking-wider">Total Balance</div>
-                <div className="text-6xl font-black text-white mb-5">$23,847</div>
-                <div className="flex items-center gap-2 text-lg">
-                  <TrendingUp className="w-6 h-6 text-green-300" />
-                  <span className="text-green-300 font-bold">+12.4%</span>
-                  <span className="text-blue-200">this month</span>
-                </div>
+                <div className="text-sm text-blue-200 font-semibold mb-3 uppercase tracking-wider">Health Insurance</div>
+                <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Covered</div>
+                <div className="text-blue-200 text-lg">Medical, dental, vision plans starting at $150/mo</div>
               </div>
             </div>
 
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
               <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-10 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
-                <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">Savings</div>
-                <div className="text-6xl font-black text-white mb-5">$8,492</div>
-                <div className="text-purple-200 text-lg">4.0% APY earning</div>
+                <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">Retirement</div>
+                <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Building</div>
+                <div className="text-purple-200 text-lg">Portable 401(k) that moves with you</div>
               </div>
             </div>
 
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-pink-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
               <div className="relative bg-gradient-to-br from-pink-600 to-pink-700 rounded-3xl p-10 border border-pink-400/50 transform group-hover:-translate-y-2 transition-transform">
-                <div className="text-sm text-pink-200 font-semibold mb-3 uppercase tracking-wider">Invested</div>
-                <div className="text-6xl font-black text-white mb-5">$4,231</div>
-                <div className="text-pink-200 text-lg">6 stocks • 3 crypto</div>
+                <div className="text-sm text-pink-200 font-semibold mb-3 uppercase tracking-wider">Tax Prep</div>
+                <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Simplified</div>
+                <div className="text-pink-200 text-lg">Track deductions across all platforms</div>
               </div>
             </div>
           </div>
@@ -185,11 +191,11 @@ export default function Home() {
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-              Everything you need
+            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white font-space-grotesk">
+              Built for the gig economy
             </h2>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-              Portable brings together all your financial tools in one place
+              Everything you need to thrive as an independent worker
             </p>
           </div>
 
@@ -197,66 +203,66 @@ export default function Home() {
             {/* Feature 1 */}
             <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
               <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                <span className="text-3xl">💰</span>
+                <Shield className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Track gig income</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Health insurance</h3>
               <p className="text-slate-400 leading-relaxed">
-                Automatically sync earnings from 100+ platforms. Uber, DoorDash, Upwork—all in real-time.
+                Access affordable health, dental, and vision plans. No employer required.
               </p>
             </div>
 
             {/* Feature 2 */}
             <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
               <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
-                <CreditCard className="w-7 h-7 text-white" />
+                <PiggyBank className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Smart card</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Retirement plans</h3>
               <p className="text-slate-400 leading-relaxed">
-                Spend anywhere with cashback rewards. Virtual cards for online shopping, Apple Pay ready.
+                Solo 401(k) and SEP IRA options that follow you from gig to gig.
               </p>
             </div>
 
             {/* Feature 3 */}
             <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
               <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6">
-                <span className="text-3xl">📈</span>
+                <BarChart3 className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Invest easily</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Income tracking</h3>
               <p className="text-slate-400 leading-relaxed">
-                Commission-free trading. Fractional shares, crypto, commodities. Start with just $1.
+                Connect all your gig platforms. See your total earnings in one place.
               </p>
             </div>
 
             {/* Feature 4 */}
             <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
               <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6">
-                <span className="text-3xl">🏦</span>
+                <FileText className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">High-yield savings</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Tax assistance</h3>
               <p className="text-slate-400 leading-relaxed">
-                Earn 4% APY on your savings. No minimum balance, FDIC insured up to $250k.
+                Quarterly tax estimates, deduction tracking, and 1099 management.
               </p>
             </div>
 
             {/* Feature 5 */}
             <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
               <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6">
-                <Globe className="w-7 h-7 text-white" />
+                <Zap className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Global accounts</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Emergency fund</h3>
               <p className="text-slate-400 leading-relaxed">
-                Hold 30+ currencies. Send money internationally with zero fees. Real exchange rates.
+                Build a safety net for slow months or unexpected expenses.
               </p>
             </div>
 
             {/* Feature 6 */}
             <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
               <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6">
-                <Shield className="w-7 h-7 text-white" />
+                <MessageCircle className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Benefits access</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Expert guidance</h3>
               <p className="text-slate-400 leading-relaxed">
-                Health insurance, dental, vision, retirement. All curated for gig workers.
+                Chat with financial advisors who understand the gig economy.
               </p>
             </div>
           </div>
@@ -269,7 +275,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20"></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-8">
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 font-space-grotesk">
             Join 2.4M gig workers
           </h2>
           <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
