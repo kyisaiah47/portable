@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload } from 'lucide-react';
+import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 
 interface User {
   id: string;
@@ -18,12 +19,46 @@ interface DashboardProps {
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState('home');
-
-
+  const [parsedIncome, setParsedIncome] = useState<any>(null);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     onLogout();
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      const lines = text.split('\n');
+      const transactions: Transaction[] = [];
+
+      // Skip header
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const [date, description, amount, type] = line.split(',');
+        if (date && description && amount && type) {
+          transactions.push({
+            id: `${i}`,
+            date: new Date(date),
+            description,
+            amount: parseFloat(amount),
+            type: type.trim() as 'credit' | 'debit',
+          });
+        }
+      }
+
+      const parsed = parseTransactions(transactions);
+      const stability = calculateStabilityScore(parsed.income);
+      setParsedIncome({ parsed, stability });
+    };
+
+    reader.readAsText(file);
   };
 
   return (
@@ -519,6 +554,99 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </div>
               </div>
             </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Upload Bank Statement */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Import bank statement</h2>
+                <p className="text-xs text-slate-400">Upload a CSV file to automatically parse your gig income</p>
+              </div>
+              <label className="block cursor-pointer">
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-8 border border-dashed border-white/20 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all text-center">
+                  <Upload className="w-8 h-8 text-slate-500 mx-auto mb-3" />
+                  <p className="text-base font-semibold text-white mb-1">Upload CSV bank statement</p>
+                  <p className="text-sm text-slate-400">We&apos;ll automatically detect Uber, DoorDash, Upwork, and 20+ more platforms</p>
+                </div>
+              </label>
+            </div>
+
+            {/* Parsed Results */}
+            {parsedIncome && (
+              <>
+                {/* Stats Cards */}
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl rounded-lg p-5 border border-green-500/20">
+                    <div className="text-xs text-green-400 mb-1 font-semibold">Total Income Detected</div>
+                    <div className="text-3xl font-black text-white font-space-grotesk">
+                      ${parsedIncome.parsed.totalIncome.toFixed(2)}
+                    </div>
+                    <div className="text-xs text-slate-400 mt-1">{parsedIncome.parsed.income.length} payments</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl rounded-lg p-5 border border-blue-500/20">
+                    <div className="text-xs text-blue-400 mb-1 font-semibold">Platforms Found</div>
+                    <div className="text-3xl font-black text-white font-space-grotesk">
+                      {parsedIncome.parsed.byPlatform.size}
+                    </div>
+                    <div className="text-xs text-slate-400 mt-1">
+                      {Array.from(parsedIncome.parsed.byPlatform.keys()).slice(0, 3).join(', ')}
+                      {parsedIncome.parsed.byPlatform.size > 3 && '...'}
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-5 border border-purple-500/20">
+                    <div className="text-xs text-purple-400 mb-1 font-semibold">Stability Score</div>
+                    <div className="text-3xl font-black text-white font-space-grotesk">
+                      {parsedIncome.stability.score}/100
+                    </div>
+                    <div className="text-xs text-slate-400 mt-1 uppercase font-semibold">{parsedIncome.stability.rating}</div>
+                  </div>
+                </div>
+
+                {/* Platform Breakdown */}
+                <div>
+                  <div className="mb-4">
+                    <h2 className="text-xl font-bold text-white font-space-grotesk">Detected platforms</h2>
+                    <p className="text-xs text-slate-400">Income breakdown by platform</p>
+                  </div>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Array.from(parsedIncome.parsed.byPlatform.entries())
+                      .map(([platform, payments]) => ({
+                        platform: platform as string,
+                        payments: payments as any[],
+                        total: (payments as any[]).reduce((sum: number, p: any) => sum + p.amount, 0),
+                        count: (payments as any[]).length,
+                      }))
+                      .sort((a, b) => b.total - a.total)
+                      .map(({ platform, total, count }) => (
+                        <div key={platform} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center space-x-2">
+                              <div className="text-2xl">💰</div>
+                              <div>
+                                <h3 className="text-base font-bold text-white font-space-grotesk">{platform}</h3>
+                                <p className="text-xs text-slate-400">{count} payments</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">
+                                ${total.toFixed(2)}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Divider */}
             <div className="border-t border-white/10"></div>
