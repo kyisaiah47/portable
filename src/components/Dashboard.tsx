@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Check, ChevronDown } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
@@ -737,19 +737,30 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     Track every dollar across platforms. See your patterns. Get personalized tips to earn more.
                   </p>
                 </div>
-                <label className="cursor-pointer flex-shrink-0">
-                  <input
-                    type="file"
-                    accept=".csv"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  <div className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-blue-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]">
-                    <Upload className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                    <p className="text-xs font-semibold text-white mb-0.5">Upload CSV</p>
-                    <p className="text-[10px] text-slate-400 leading-tight">Parse your bank statement</p>
-                  </div>
-                </label>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <a
+                    href="/sample-bank-statement.csv"
+                    download
+                    className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-purple-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]"
+                  >
+                    <Download className="w-5 h-5 text-purple-400 mx-auto mb-1" />
+                    <p className="text-xs font-semibold text-white mb-0.5">Sample CSV</p>
+                    <p className="text-[10px] text-slate-400 leading-tight">Try with mock data</p>
+                  </a>
+                  <label className="cursor-pointer flex-shrink-0">
+                    <input
+                      type="file"
+                      accept=".csv"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    <div className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-blue-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]">
+                      <Upload className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                      <p className="text-xs font-semibold text-white mb-0.5">Upload CSV</p>
+                      <p className="text-[10px] text-slate-400 leading-tight">Parse your bank statement</p>
+                    </div>
+                  </label>
+                </div>
               </div>
             </div>
 
