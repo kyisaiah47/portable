@@ -20,10 +20,38 @@ interface DashboardProps {
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState('home');
-  const [parsedIncome, setParsedIncome] = useState<any>(null);
+  const [parsedIncome, setParsedIncome] = useState<any>(() => {
+    // Load from localStorage on mount
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('parsedIncome');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          // Reconstruct Date objects
+          if (data?.parsed?.income) {
+            data.parsed.income = data.parsed.income.map((item: any) => ({
+              ...item,
+              date: new Date(item.date),
+            }));
+          }
+          if (data?.parsed?.startDate) {
+            data.parsed.startDate = new Date(data.parsed.startDate);
+          }
+          if (data?.parsed?.endDate) {
+            data.parsed.endDate = new Date(data.parsed.endDate);
+          }
+          return data;
+        } catch (e) {
+          console.error('Error loading parsed income from localStorage:', e);
+        }
+      }
+    }
+    return null;
+  });
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('parsedIncome');
     onLogout();
   };
 
@@ -56,7 +84,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
       const parsed = parseTransactions(transactions);
       const stability = calculateStabilityScore(parsed.income);
-      setParsedIncome({ parsed, stability });
+      const incomeData = { parsed, stability };
+
+      // Save to localStorage
+      setParsedIncome(incomeData);
+      localStorage.setItem('parsedIncome', JSON.stringify(incomeData));
     };
 
     reader.readAsText(file);
