@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import IncomeTracker from './IncomeTracker';
 import BenefitsMarketplace from './BenefitsMarketplace';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, TrendingUp } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, TrendingUp, FileText, MessageCircle, Zap, Globe, ArrowRight } from 'lucide-react';
 
 interface User {
   id: string;
