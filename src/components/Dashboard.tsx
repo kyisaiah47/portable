@@ -823,44 +823,71 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             <div>
               <div className="mb-4">
                 <h2 className="text-xl font-bold text-white font-space-grotesk">Quarterly estimates</h2>
-                <p className="text-xs text-slate-400">Auto-calculated based on your income. We remind you before deadlines.</p>
+                <p className="text-xs text-slate-400">
+                  {parsedIncome
+                    ? `Based on ${parsedIncome.parsed.totalIncome.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} total income. ~30% set aside recommended.`
+                    : 'Auto-calculated based on your income. We remind you before deadlines.'
+                  }
+                </p>
               </div>
               <div className="grid md:grid-cols-3 gap-4">
-                <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-orange-600 to-red-700 rounded-lg p-8 border border-orange-400/50 transform group-hover:-translate-y-1 transition-transform">
-                    <div className="text-xs text-orange-200 font-semibold mb-2 uppercase tracking-wider">Q1 2024</div>
-                    <div className="text-4xl font-black text-white mb-2 font-space-grotesk">$1,075</div>
-                    <div className="text-orange-200 text-sm mb-4">Due April 15</div>
-                    <button className="w-full bg-white text-orange-700 py-2 px-4 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">
-                      Pay Now
-                    </button>
-                  </div>
-                </div>
+                {(() => {
+                  // Calculate quarterly estimates (30% of income divided by 4)
+                  const totalIncome = parsedIncome?.parsed.totalIncome || 14200;
+                  const annualizedIncome = totalIncome * 4; // Assume current period represents 1 quarter
+                  const quarterlyTax = (annualizedIncome * 0.30) / 4;
 
-                <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-8 border border-blue-400/50 transform group-hover:-translate-y-1 transition-transform">
-                    <div className="text-xs text-blue-200 font-semibold mb-2 uppercase tracking-wider">Q2 2024</div>
-                    <div className="text-4xl font-black text-white mb-2 font-space-grotesk">$1,204</div>
-                    <div className="text-blue-200 text-sm mb-4">Due June 15</div>
-                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-2 px-4 rounded-lg text-sm font-bold hover:bg-white/30 transition-colors border border-white/30">
-                      Set Reminder
-                    </button>
-                  </div>
-                </div>
+                  const quarters = [
+                    { name: 'Q1 2024', due: 'April 15', color: 'orange', isPast: true },
+                    { name: 'Q2 2024', due: 'June 15', color: 'blue', isPast: false },
+                    { name: 'Q3 2024', due: 'Sept 15', color: 'purple', isPast: false },
+                  ];
 
-                <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg p-8 border border-purple-400/50 transform group-hover:-translate-y-1 transition-transform">
-                    <div className="text-xs text-purple-200 font-semibold mb-2 uppercase tracking-wider">Q3 2024</div>
-                    <div className="text-4xl font-black text-white mb-2 font-space-grotesk">$1,150</div>
-                    <div className="text-purple-200 text-sm mb-4">Due Sept 15</div>
-                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-2 px-4 rounded-lg text-sm font-bold hover:bg-white/30 transition-colors border border-white/30">
-                      Set Reminder
-                    </button>
-                  </div>
-                </div>
+                  return quarters.map((quarter) => {
+                    const colorClasses = {
+                      orange: {
+                        blur: 'from-orange-500 to-red-600',
+                        bg: 'from-orange-600 to-red-700',
+                        border: 'border-orange-400/50',
+                        text: 'text-orange-200',
+                      },
+                      blue: {
+                        blur: 'from-blue-500 to-blue-600',
+                        bg: 'from-blue-600 to-blue-700',
+                        border: 'border-blue-400/50',
+                        text: 'text-blue-200',
+                      },
+                      purple: {
+                        blur: 'from-purple-500 to-purple-600',
+                        bg: 'from-purple-600 to-purple-700',
+                        border: 'border-purple-400/50',
+                        text: 'text-purple-200',
+                      },
+                    }[quarter.color];
+
+                    return (
+                      <div key={quarter.name} className="group relative">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${colorClasses.blur} rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity`}></div>
+                        <div className={`relative bg-gradient-to-br ${colorClasses.bg} rounded-lg p-8 border ${colorClasses.border} transform group-hover:-translate-y-1 transition-transform`}>
+                          <div className={`text-xs ${colorClasses.text} font-semibold mb-2 uppercase tracking-wider`}>{quarter.name}</div>
+                          <div className="text-4xl font-black text-white mb-2 font-space-grotesk">
+                            ${Math.round(quarterlyTax).toLocaleString()}
+                          </div>
+                          <div className={`${colorClasses.text} text-sm mb-4`}>Due {quarter.due}</div>
+                          {quarter.isPast ? (
+                            <button className="w-full bg-white text-orange-700 py-2 px-4 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">
+                              Pay Now
+                            </button>
+                          ) : (
+                            <button className="w-full bg-white/20 backdrop-blur-sm text-white py-2 px-4 rounded-lg text-sm font-bold hover:bg-white/30 transition-colors border border-white/30">
+                              Set Reminder
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </div>
 
@@ -1320,6 +1347,30 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-indigo-400">3 min read</span>
                     <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <Shield className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Disability insurance for gig workers</h3>
+                  <p className="text-xs text-slate-400 mb-3">What happens if you can&apos;t work? Short-term disability coverage options explained.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-blue-400">4 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <PiggyBank className="w-4 h-4 text-purple-400" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">HSA vs FSA: Which saves you more money?</h3>
+                  <p className="text-xs text-slate-400 mb-3">Tax-advantaged health savings accounts compared. Understand which one fits your situation.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-purple-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-purple-400 transition-colors" />
                   </div>
                 </div>
               </div>
