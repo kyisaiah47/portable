@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, Building2, AlertTriangle, Calculator, CheckCircle, ArrowRight, Shield } from 'lucide-react';
+import { Heart, Building2, AlertTriangle, Calculator, CheckCircle, ArrowRight, Shield, ExternalLink } from 'lucide-react';
 
 interface Benefit {
   id: number;
@@ -11,7 +11,7 @@ interface Benefit {
   monthlyCost: number;
   description: string;
   features: string[];
-  enrolled: boolean;
+  link: string;
 }
 
 export default function BenefitsMarketplace() {
@@ -20,63 +20,83 @@ export default function BenefitsMarketplace() {
   const benefits: Benefit[] = [
     {
       id: 1,
-      name: 'Basic Health Plan',
-      provider: 'Stride Health',
+      name: 'ACA Health Insurance',
+      provider: 'HealthCare.gov',
       category: 'health',
-      monthlyCost: 89,
-      description: 'Essential health coverage for gig workers',
-      features: ['Doctor visits', 'Prescription coverage', 'Emergency care', 'Telehealth'],
-      enrolled: true,
+      monthlyCost: 150,
+      description: 'Federal marketplace for health insurance with subsidies available',
+      features: ['Income-based subsidies', 'All 10 essential health benefits', 'Pre-existing conditions covered', 'Preventive care at no cost'],
+      link: 'https://www.healthcare.gov',
     },
     {
       id: 2,
-      name: 'Retirement Savings Plan',
-      provider: 'Guideline',
+      name: 'Vanguard Traditional IRA',
+      provider: 'Vanguard',
       category: 'retirement',
       monthlyCost: 0,
-      description: 'IRA with automatic contributions from earnings',
-      features: ['Tax-advantaged savings', 'Investment options', 'Professional management', 'Mobile app'],
-      enrolled: false,
+      description: 'Low-cost retirement savings with tax-deferred growth',
+      features: ['$0 account fees', 'Low expense ratios (0.04%)', 'Tax deduction on contributions', 'Invest up to $7,000/year'],
+      link: 'https://investor.vanguard.com/ira/traditional-ira',
     },
     {
       id: 3,
-      name: 'Emergency Fund Builder',
-      provider: 'GigBenefits',
-      category: 'emergency',
+      name: 'Fidelity Roth IRA',
+      provider: 'Fidelity',
+      category: 'retirement',
       monthlyCost: 0,
-      description: 'Automated emergency savings with instant access',
-      features: ['2% auto-save', 'Instant access', 'FDIC insured', 'Goal tracking'],
-      enrolled: true,
+      description: 'Tax-free retirement withdrawals, ideal for gig workers',
+      features: ['$0 account fees', 'Tax-free growth', 'No required distributions', 'Mobile app trading'],
+      link: 'https://www.fidelity.com/retirement-ira/roth-ira',
     },
     {
       id: 4,
-      name: 'Tax Prep & Quarterly Estimates',
-      provider: 'FreeTaxUSA',
-      category: 'tax',
-      monthlyCost: 15,
-      description: '1099 tax preparation and quarterly payment assistance',
-      features: ['Quarterly estimates', 'Deduction tracking', 'Tax filing', 'Audit support'],
-      enrolled: false,
+      name: 'Betterment IRA',
+      provider: 'Betterment',
+      category: 'retirement',
+      monthlyCost: 0,
+      description: 'Automated retirement investing with robo-advisor',
+      features: ['0.25% annual fee', 'Auto-rebalancing', 'Tax-loss harvesting', 'Goal-based planning'],
+      link: 'https://www.betterment.com/ira',
     },
     {
       id: 5,
-      name: 'Premium Health Plan',
-      provider: 'Blue Cross',
-      category: 'health',
-      monthlyCost: 189,
-      description: 'Comprehensive health coverage with dental and vision',
-      features: ['Full medical coverage', 'Dental included', 'Vision included', 'Specialist access'],
-      enrolled: false,
+      name: 'TurboTax Self-Employed',
+      provider: 'TurboTax',
+      category: 'tax',
+      monthlyCost: 15,
+      description: 'Full-service tax prep for 1099 contractors and gig workers',
+      features: ['Quarterly tax estimates', 'Mileage deduction tracking', 'Schedule C support', 'Audit defense'],
+      link: 'https://turbotax.intuit.com/personal-taxes/self-employment-taxes',
     },
     {
       id: 6,
-      name: 'Short-term Disability',
-      provider: 'Principal',
+      name: 'H&R Block Self-Employed',
+      provider: 'H&R Block',
+      category: 'tax',
+      monthlyCost: 12,
+      description: 'Expert tax help for freelancers and independent workers',
+      features: ['Live CPA support', 'Quarterly payment reminders', 'Multi-state filing', 'Business expense tracking'],
+      link: 'https://www.hrblock.com/online-tax-filing/self-employed-tax-software',
+    },
+    {
+      id: 7,
+      name: 'IRS Tax Guide',
+      provider: 'IRS.gov',
+      category: 'tax',
+      monthlyCost: 0,
+      description: 'Official quarterly tax payment guide and forms',
+      features: ['Form 1040-ES', 'Payment vouchers', 'Tax calendar', 'Self-employment tax guidance'],
+      link: 'https://www.irs.gov/businesses/small-businesses-self-employed/self-employed-individuals-tax-center',
+    },
+    {
+      id: 8,
+      name: 'High-Yield Savings Account',
+      provider: 'Marcus by Goldman Sachs',
       category: 'emergency',
-      monthlyCost: 25,
-      description: 'Income protection for illness or injury',
-      features: ['60% income replacement', 'Up to 6 months', 'Quick approval', '24/7 support'],
-      enrolled: false,
+      monthlyCost: 0,
+      description: 'FDIC-insured emergency fund with 4.5% APY',
+      features: ['4.5% APY', 'No fees', 'FDIC insured', 'Instant transfers'],
+      link: 'https://www.marcus.com/us/en/savings/high-yield-savings',
     },
   ];
 
@@ -91,13 +111,6 @@ export default function BenefitsMarketplace() {
   const filteredBenefits = selectedCategory === 'all'
     ? benefits
     : benefits.filter(benefit => benefit.category === selectedCategory);
-
-  const enrolledBenefits = benefits.filter(b => b.enrolled);
-  const totalMonthlyCost = enrolledBenefits.reduce((sum, b) => sum + b.monthlyCost, 0);
-
-  const handleEnroll = (benefitId: number) => {
-    console.log('Enrolling in benefit:', benefitId);
-  };
 
   const getCategoryColor = (category: string) => {
     const colors = {
@@ -137,10 +150,10 @@ export default function BenefitsMarketplace() {
           Traditional benefits are tied to full-time jobs. You get health insurance, a 401(k), paid time off, and life insurance because your employer sponsors them. But when you&apos;re working for yourself, <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent font-semibold">you lose access to all of that</span>. It&apos;s not because you don&apos;t qualify—it&apos;s because the system wasn&apos;t built for independent workers.
         </p>
         <p>
-          That&apos;s where Portable comes in. We&apos;ve curated a marketplace of <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">portable benefits</span> designed specifically for gig workers. <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">Affordable health insurance</span> that doesn&apos;t require an employer. <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">Retirement accounts</span> that follow you from gig to gig. <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent font-semibold">Emergency fund builders</span> with automatic saving. <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">Tax prep services</span> that understand 1099 life.
+          That&apos;s where Portable comes in. We&apos;ve curated trusted providers for <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">health insurance</span> (HealthCare.gov), <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">retirement savings</span> (Vanguard, Fidelity, Betterment IRAs), <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent font-semibold">emergency funds</span> (high-yield savings), and <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">tax tools</span> (TurboTax, H&R Block, IRS guides).
         </p>
         <p>
-          We don&apos;t charge you to use this marketplace. We make money through partnerships with providers, which means we can offer you <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">unbiased recommendations</span> without any user fees. Your active benefits show at the top, and you can browse available options by category below. Most gig workers we work with start with health insurance, then add emergency savings and retirement as they stabilize their income.
+          <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">We&apos;re not selling you anything</span> — just pointing you to the best current tools. We don&apos;t charge fees, and we don&apos;t have referral partnerships (yet). This is just honest guidance for what works. Most gig workers start with health insurance, then add emergency savings and retirement as their income stabilizes.
         </p>
         <p>
           You shouldn&apos;t have to choose between flexibility and security. With Portable, you can have both.
@@ -150,69 +163,11 @@ export default function BenefitsMarketplace() {
       {/* Divider */}
       <div className="border-t border-white/10 mt-8"></div>
 
-      {/* Current Benefits */}
-      <div>
-        <div className="mb-4">
-          <h2 className="text-xl font-bold text-white font-space-grotesk">Your active benefits</h2>
-          <p className="text-xs text-slate-400">Currently enrolled coverage - {enrolledBenefits.length} active</p>
-        </div>
-
-        {enrolledBenefits.length > 0 ? (
-          <div className="space-y-4">
-            {enrolledBenefits.map((benefit) => {
-              const CategoryIcon = getCategoryIcon(benefit.category);
-              return (
-                <div key={benefit.id} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                        <CategoryIcon className="w-5 h-5 text-green-400" />
-                      </div>
-                      <div>
-                        <h3 className="text-base font-bold text-white font-space-grotesk">{benefit.name}</h3>
-                        <p className="text-xs text-slate-400">{benefit.provider}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-lg font-black bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent font-space-grotesk">
-                        {benefit.monthlyCost === 0 ? 'Free' : `$${benefit.monthlyCost}`}
-                      </div>
-                      <div className="text-xs text-slate-400">/month</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 backdrop-blur-sm border border-green-500/30 rounded-lg p-5">
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="text-base font-bold text-white font-space-grotesk">Total Monthly Investment</div>
-                  <div className="text-xs text-slate-400">Only {((totalMonthlyCost / 3500) * 100).toFixed(1)}% of your monthly income</div>
-                </div>
-                <div className="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent font-space-grotesk">
-                  ${totalMonthlyCost}/mo
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-8 border border-white/10 text-center">
-            <AlertTriangle className="w-8 h-8 text-slate-500 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-white mb-2 font-space-grotesk">No benefits yet</h3>
-            <p className="text-sm text-slate-400">Start building your safety net by exploring our marketplace below</p>
-          </div>
-        )}
-      </div>
-
-      {/* Divider */}
-      <div className="border-t border-white/10"></div>
-
       {/* Marketplace */}
       <div>
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-white font-space-grotesk">Benefits marketplace</h2>
-          <p className="text-xs text-slate-400">Find the perfect coverage for your needs - {filteredBenefits.filter(b => !b.enrolled).length} available</p>
+          <h2 className="text-xl font-bold text-white font-space-grotesk">Trusted providers</h2>
+          <p className="text-xs text-slate-400">Curated tools to build your safety net - {filteredBenefits.length} resources</p>
         </div>
 
         {/* Category Filters */}
@@ -276,20 +231,15 @@ export default function BenefitsMarketplace() {
                   ))}
                 </div>
 
-                {benefit.enrolled ? (
-                  <div className="bg-slate-800/50 border border-white/10 rounded-lg p-3 text-center">
-                    <CheckCircle className="w-4 h-4 text-green-400 mx-auto mb-1" />
-                    <span className="text-xs font-semibold text-slate-300">Currently Enrolled</span>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => handleEnroll(benefit.id)}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
-                  >
-                    <span>Enroll Now</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                )}
+                <a
+                  href={benefit.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
+                >
+                  <span>Visit {benefit.provider}</span>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
               </div>
             );
           })}
