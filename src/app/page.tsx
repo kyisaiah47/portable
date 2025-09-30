@@ -1,64 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Dashboard from '@/components/Dashboard';
-import LoginForm from '@/components/LoginForm';
 import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp, PiggyBank, FileText, BarChart3, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
 
 export default function Home() {
   const [user, setUser] = useState(null);
-  const [isLogin, setIsLogin] = useState(null);
 
   if (user) {
     return <Dashboard user={user} onLogout={() => setUser(null)} />;
-  }
-
-  if (isLogin !== null) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
-        <div className="max-w-md w-full">
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/10">
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center mb-6">
-                <div className="flex -space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
-                </div>
-              </div>
-              <h2 className="text-2xl font-semibold text-white mb-2">
-                {isLogin ? 'Welcome back' : 'Create your account'}
-              </h2>
-              <p className="text-slate-400">
-                {isLogin ? 'Sign in to continue' : 'Start building your safety net'}
-              </p>
-            </div>
-
-            <LoginForm isLogin={isLogin} onSuccess={setUser} />
-
-            {isLogin && (
-              <div className="mt-6 p-4 bg-indigo-500/10 rounded-lg border border-indigo-500/30">
-                <p className="text-indigo-400 text-xs font-semibold mb-1">Demo Account</p>
-                <p className="text-xs text-indigo-300 font-mono">
-                  sarah.driver@email.com / demo123
-                </p>
-              </div>
-            )}
-
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => setIsLogin(null)}
-                className="text-slate-400 hover:text-white text-sm font-medium"
-              >
-                ← Back to home
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -82,18 +36,18 @@ export default function Home() {
               <a href="#" className="text-sm font-medium text-slate-400 hover:text-white">About</a>
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setIsLogin(true)}
+              <Link
+                href="/login"
                 className="text-sm font-semibold text-slate-400 hover:text-white"
               >
                 Log in
-              </button>
-              <button
-                onClick={() => setIsLogin(false)}
+              </Link>
+              <Link
+                href="/signup"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity"
               >
                 Get started
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -141,13 +95,13 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-20">
-              <button
-                onClick={() => setIsLogin(false)}
+              <Link
+                href="/signup"
                 className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-14 py-6 rounded-full text-lg font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-3"
               >
                 <span>Get Portable</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
               <button className="text-white px-14 py-6 rounded-full text-lg font-semibold hover:bg-white/5 transition-colors border-2 border-white/20 inline-flex items-center gap-3">
                 <span>Watch demo</span>
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
@@ -322,13 +276,13 @@ export default function Home() {
           <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
             Get started in minutes. No credit check, no monthly fees, no minimum balance.
           </p>
-          <button
-            onClick={() => setIsLogin(false)}
+          <Link
+            href="/signup"
             className="bg-white text-gray-900 px-14 py-5 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors shadow-2xl inline-flex items-center gap-3"
           >
             Download Portable
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </Link>
         </div>
       </section>
 

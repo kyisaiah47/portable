@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 interface LoginFormProps {
   isLogin: boolean;
@@ -42,6 +45,7 @@ export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
       }
 
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
       onSuccess(data.user);
     } catch (err: any) {
       setError(err.message);
@@ -67,87 +71,77 @@ export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
 
       {!isLogin && (
         <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-sm text-gray-700 mb-1">
-              First Name
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
               required={!isLogin}
-              className="w-full px-3 py-2 border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
               placeholder="First name"
             />
           </div>
-          <div>
-            <label className="block text-sm text-gray-700 mb-1">
-              Last Name
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
               required={!isLogin}
-              className="w-full px-3 py-2 border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
               placeholder="Last name"
             />
           </div>
         </div>
       )}
 
-      <div>
-        <label className="block text-sm text-gray-700 mb-1">
-          Email
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
           placeholder="your@email.com"
         />
       </div>
 
-      <div>
-        <label className="block text-sm text-gray-700 mb-1">
-          Password
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
           type="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
           placeholder="Password"
         />
       </div>
 
       {!isLogin && (
-        <div>
-          <label className="block text-sm text-gray-700 mb-1">
-            Phone (Optional)
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone (Optional)</Label>
+          <Input
+            id="phone"
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
             placeholder="Phone number"
           />
         </div>
       )}
 
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-gray-900 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full"
       >
         {loading ? (
           <div className="flex items-center justify-center space-x-2">
@@ -157,7 +151,7 @@ export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
         ) : (
           isLogin ? 'Login' : 'Create Account'
         )}
-      </button>
+      </Button>
     </form>
   );
 }
