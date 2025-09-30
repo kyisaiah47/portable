@@ -1224,15 +1224,157 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <span>Go to Income Tab</span>
                 </button>
               </div>
-            ) : (
-              <div className="space-y-4 text-center py-12">
-                <Receipt className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-white">Expense detection coming soon</h3>
-                <p className="text-sm text-slate-400 max-w-md mx-auto">
-                  We're building the expense parser to automatically detect deductible expenses from your uploaded CSV. Check back soon!
-                </p>
-              </div>
-            )}
+            ) : (() => {
+              // Parse expenses from uploaded transactions
+              const expenseResults = parseExpenses(parsedIncome.parsed.income);
+              const { expenses, byCategory, totalExpenses, totalDeductions, potentialTaxSavings } = expenseResults;
+
+              const categoryIcons: Record<string, any> = {
+                vehicle: '🚗',
+                equipment: '📦',
+                supplies: '✏️',
+                software: '💻',
+                phone: '📱',
+                'home-office': '🏠',
+                other: '💼',
+              };
+
+              const categoryColors: Record<string, string> = {
+                vehicle: 'blue',
+                equipment: 'purple',
+                supplies: 'green',
+                software: 'pink',
+                phone: 'orange',
+                'home-office': 'indigo',
+                other: 'slate',
+              };
+
+              if (expenses.length === 0) {
+                return (
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
+                    <Receipt className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                    <h3 className="text-lg font-bold text-white mb-2">No deductible expenses detected</h3>
+                    <p className="text-sm text-slate-400 max-w-md mx-auto">
+                      We didn't find any recognizable business expenses in your uploaded transactions. Try uploading a statement that includes gas, maintenance, equipment, or software purchases.
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="space-y-8">
+                  {/* Summary Cards */}
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 backdrop-blur-sm border border-blue-500/20 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-blue-400 font-semibold">TOTAL EXPENSES</span>
+                        <Receipt className="w-5 h-5 text-blue-400" />
+                      </div>
+                      <div className="text-3xl font-black text-white font-space-grotesk">
+                        ${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1">{expenses.length} deductible transactions</p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 backdrop-blur-sm border border-green-500/20 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-green-400 font-semibold">TAX DEDUCTIONS</span>
+                        <Target className="w-5 h-5 text-green-400" />
+                      </div>
+                      <div className="text-3xl font-black text-white font-space-grotesk">
+                        ${totalDeductions.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1">Qualified business deductions</p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 backdrop-blur-sm border border-purple-500/20 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-purple-400 font-semibold">TAX SAVINGS</span>
+                        <Zap className="w-5 h-5 text-purple-400" />
+                      </div>
+                      <div className="text-3xl font-black text-white font-space-grotesk">
+                        ${potentialTaxSavings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1">Estimated at 30% tax rate</p>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-white/10"></div>
+
+                  {/* Expenses by Category */}
+                  <div>
+                    <div className="mb-4">
+                      <h2 className="text-xl font-bold text-white font-space-grotesk">Expenses by category</h2>
+                      <p className="text-xs text-slate-400">Detected deductible business expenses</p>
+                    </div>
+
+                    <div className="space-y-6">
+                      {Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
+                        const categoryTotal = categoryExpenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
+                        const color = categoryColors[category] || 'slate';
+
+                        return (
+                          <div key={category} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center space-x-3">
+                                <div className="text-3xl">{categoryIcons[category]}</div>
+                                <div>
+                                  <h3 className="text-lg font-bold text-white font-space-grotesk capitalize">{category.replace('-', ' ')}</h3>
+                                  <p className="text-xs text-slate-400">{categoryExpenses.length} transactions</p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className={`text-2xl font-black bg-gradient-to-r from-${color}-400 to-${color}-600 bg-clip-text text-transparent font-space-grotesk`}>
+                                  ${categoryTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                                <p className="text-xs text-slate-400">deductible</p>
+                              </div>
+                            </div>
+
+                            {/* Expense Items */}
+                            <div className="space-y-2">
+                              {categoryExpenses.slice(0, 5).map((expense, idx) => (
+                                <div key={idx} className="flex items-center justify-between py-2 px-3 bg-slate-800/50 rounded">
+                                  <div className="flex-1">
+                                    <p className="text-sm text-white font-medium">{expense.description}</p>
+                                    <p className="text-xs text-slate-400">{expense.date.toLocaleDateString()} • {expense.subcategory}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="text-sm font-bold text-white">${expense.deductibleAmount.toFixed(2)}</p>
+                                    {expense.deductionRate < 100 && (
+                                      <p className="text-xs text-slate-400">{expense.deductionRate}% deductible</p>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                              {categoryExpenses.length > 5 && (
+                                <p className="text-xs text-slate-400 text-center py-2">
+                                  + {categoryExpenses.length - 5} more expenses
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Tips */}
+                  <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-lg p-6">
+                    <div className="flex items-start space-x-3">
+                      <div className="text-2xl">💡</div>
+                      <div>
+                        <h3 className="text-base font-bold text-white mb-2 font-space-grotesk">Pro tip</h3>
+                        <p className="text-sm text-slate-300 leading-relaxed">
+                          Keep all receipts for expenses over $75. The IRS may require documentation during an audit. Take photos and store them digitally for easy access.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 
