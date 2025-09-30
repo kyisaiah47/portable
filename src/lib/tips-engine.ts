@@ -169,10 +169,12 @@ export function generateTips(stats: UserStats): Tip[] {
     });
   }
 
+  // Lowercase platforms for matching
+  const userPlatforms = stats.platforms.map(p => p.toLowerCase());
+
   // City-Specific Tips
   if (stats.city && CITY_DATA[stats.city]) {
     const cityData = CITY_DATA[stats.city];
-    const userPlatforms = stats.platforms.map(p => p.toLowerCase());
 
     // Add city-specific hourly benchmark
     if (userPlatforms.includes('uber') || userPlatforms.includes('lyft')) {

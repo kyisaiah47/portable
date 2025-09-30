@@ -42,6 +42,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           if (data?.parsed?.endDate) {
             data.parsed.endDate = new Date(data.parsed.endDate);
           }
+          // Reconstruct Map object
+          if (data?.parsed?.byPlatform) {
+            data.parsed.byPlatform = new Map(Object.entries(data.parsed.byPlatform));
+          }
           return data;
         } catch (e) {
           console.error('Error loading parsed income from localStorage:', e);
