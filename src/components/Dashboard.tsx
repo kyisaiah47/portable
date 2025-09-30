@@ -1231,13 +1231,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <p className="text-sm text-slate-400 mb-6 max-w-md mx-auto">
                   Upload your bank statement in the Income tab to automatically detect deductible business expenses.
                 </p>
-                <button
-                  onClick={() => setActiveTab('income')}
+                <Link
+                  href="/dashboard/income"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity inline-flex items-center space-x-2"
                 >
                   <Upload className="w-4 h-4" />
                   <span>Go to Income Tab</span>
-                </button>
+                </Link>
               </div>
             ) : (() => {
               // Parse expenses from uploaded transactions

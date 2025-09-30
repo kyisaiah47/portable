@@ -328,7 +328,14 @@ export const EXPENSE_PATTERNS: ExpensePattern[] = [
  */
 export function parseExpense(transaction: Transaction): ParsedExpense | null {
   // Only parse debit transactions (expenses)
-  if (transaction.type !== 'debit' || transaction.amount <= 0) {
+  if (transaction.type !== 'debit') {
+    return null;
+  }
+
+  // Convert negative amounts to positive for calculations
+  const amount = Math.abs(transaction.amount);
+
+  if (amount === 0) {
     return null;
   }
 
@@ -338,11 +345,11 @@ export function parseExpense(transaction: Transaction): ParsedExpense | null {
   for (const pattern of EXPENSE_PATTERNS) {
     for (const regex of pattern.patterns) {
       if (regex.test(transaction.description)) {
-        const deductibleAmount = transaction.amount * (pattern.deductionRate / 100);
+        const deductibleAmount = amount * (pattern.deductionRate / 100);
         return {
           category: pattern.category,
           subcategory: pattern.name,
-          amount: transaction.amount,
+          amount: amount,
           date: transaction.date,
           description: transaction.description,
           deductionRate: pattern.deductionRate,
