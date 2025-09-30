@@ -61,7 +61,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-slate-950 font-space-grotesk">
       {/* Navigation */}
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -72,7 +72,7 @@ export default function Home() {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
               </div>
-              <span className="text-2xl font-bold text-white">Portable</span>
+              <span className="text-2xl font-bold text-white font-space-grotesk">Portable</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#" className="text-sm font-medium text-slate-400 hover:text-white">Personal</a>
@@ -295,7 +295,7 @@ export default function Home() {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
               </div>
-              <span className="text-xl font-bold text-white">Portable</span>
+              <span className="text-xl font-bold text-white font-space-grotesk">Portable</span>
             </div>
             <div className="text-sm text-slate-500">© 2025 Portable Financial Ltd. All rights reserved.</div>
           </div>
