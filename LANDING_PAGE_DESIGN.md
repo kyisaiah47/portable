@@ -141,7 +141,7 @@ The marketing site - bold, declarative, and scroll-focused.
 ```jsx
 <section className="py-32 px-6 relative overflow-hidden">
   <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
-  <div className="absolute inset-0 bg-[url('...')] opacity-20"></div>
+  <div className="absolute inset-0 opacity-20" style={{backgroundImage: "url('...')}}></div>
 
   <div className="max-w-4xl mx-auto text-center relative z-10">
     <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 font-space-grotesk">
