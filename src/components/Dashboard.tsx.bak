@@ -1723,6 +1723,290 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         )}
 
         {activeTab === 'benefits' && <BenefitsMarketplace />}
+              <p>
+                We automatically calculate your <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">quarterly estimates</span> based on your actual income across all platforms. We scan your expenses to find <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">every deduction you&apos;re eligible for</span>—and we do it by gig type, because rideshare drivers have different write-offs than freelancers. Mileage for Uber drivers. Software subscriptions for Upwork designers. Hot bags for DoorDash couriers. Equipment for creators. We track it all.
+              </p>
+              <p>
+                Our <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">missed deduction detector</span> scans your transactions and flags expenses you might not have realized were deductible. The average Portable user saves <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-semibold">$2,800 per year</span> by maximizing deductions and avoiding penalties. We send you reminders before deadlines, auto-calculate what you owe, and even show you smart nudges based on your specific situation.
+              </p>
+              <p>
+                Tax season doesn&apos;t have to be scary. With the right tools, it&apos;s just another Tuesday.
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10 mt-8"></div>
+
+            {/* Quarterly estimates - Keep floating gradient cards */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Quarterly estimates</h2>
+                <p className="text-xs text-slate-400">
+                  {parsedIncome
+                    ? `Based on ${parsedIncome.parsed.totalIncome.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} total income. ~30% set aside recommended.`
+                    : 'Auto-calculated based on your income. We remind you before deadlines.'
+                  }
+                </p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                {(() => {
+                  // Calculate quarterly estimates (30% of income divided by 4)
+                  const totalIncome = parsedIncome?.parsed.totalIncome || 14200;
+                  const annualizedIncome = totalIncome * 4; // Assume current period represents 1 quarter
+                  const quarterlyTax = (annualizedIncome * 0.30) / 4;
+
+                  const quarters = [
+                    { name: 'Q1 2024', due: 'April 15', color: 'orange', isPast: true },
+                    { name: 'Q2 2024', due: 'June 15', color: 'blue', isPast: false },
+                    { name: 'Q3 2024', due: 'Sept 15', color: 'purple', isPast: false },
+                  ];
+
+                  return quarters.map((quarter) => {
+                    const colorClasses = {
+                      orange: {
+                        blur: 'from-orange-500 to-red-600',
+                        bg: 'from-orange-600 to-red-700',
+                        border: 'border-orange-400/50',
+                        text: 'text-orange-200',
+                      },
+                      blue: {
+                        blur: 'from-blue-500 to-blue-600',
+                        bg: 'from-blue-600 to-blue-700',
+                        border: 'border-blue-400/50',
+                        text: 'text-blue-200',
+                      },
+                      purple: {
+                        blur: 'from-purple-500 to-purple-600',
+                        bg: 'from-purple-600 to-purple-700',
+                        border: 'border-purple-400/50',
+                        text: 'text-purple-200',
+                      },
+                    }[quarter.color];
+
+                    return (
+                      <div key={quarter.name} className="group relative">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${colorClasses.blur} rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity`}></div>
+                        <div className={`relative bg-gradient-to-br ${colorClasses.bg} rounded-lg p-8 border ${colorClasses.border} transform group-hover:-translate-y-1 transition-transform`}>
+                          <div className={`text-xs ${colorClasses.text} font-semibold mb-2 uppercase tracking-wider`}>{quarter.name}</div>
+                          <div className="text-4xl font-black text-white mb-2 font-space-grotesk">
+                            ${Math.round(quarterlyTax).toLocaleString()}
+                          </div>
+                          <div className={`${colorClasses.text} text-sm mb-4`}>Due {quarter.due}</div>
+                          {quarter.isPast ? (
+                            <button className="w-full bg-white text-orange-700 py-2 px-4 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">
+                              Pay Now
+                            </button>
+                          ) : (
+                            <button className="w-full bg-white/20 backdrop-blur-sm text-white py-2 px-4 rounded-lg text-sm font-bold hover:bg-white/30 transition-colors border border-white/30">
+                              Set Reminder
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Missed Deductions Detector */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Missed deductions detector</h2>
+                <p className="text-xs text-slate-400">We found $2,340 in potential write-offs based on your work type</p>
+              </div>
+
+              {/* Rideshare deductions */}
+              <div className="mb-6">
+                <h3 className="text-base font-bold text-white mb-3 font-space-grotesk flex items-center space-x-2">
+                  <span>🚗</span>
+                  <span>Rideshare (Uber)</span>
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Mileage</h4>
+                    <p className="text-xs text-slate-400 mb-2">$0.67/mile deduction</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent font-space-grotesk">$1,240</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-purple-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Gas & Tolls</h4>
+                    <p className="text-xs text-slate-400 mb-2">Fuel & bridge tolls</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$420</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-pink-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Car Maintenance</h4>
+                    <p className="text-xs text-slate-400 mb-2">Oil, repairs, washes</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">$380</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-green-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Phone Bill</h4>
+                    <p className="text-xs text-slate-400 mb-2">Business use portion</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent font-space-grotesk">$180</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Delivery deductions */}
+              <div className="mb-6">
+                <h3 className="text-base font-bold text-white mb-3 font-space-grotesk flex items-center space-x-2">
+                  <span>🍔</span>
+                  <span>Delivery (DoorDash)</span>
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-orange-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Mileage</h4>
+                    <p className="text-xs text-slate-400 mb-2">$0.67/mile deduction</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent font-space-grotesk">$680</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-red-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Hot Bags</h4>
+                    <p className="text-xs text-slate-400 mb-2">Insulated gear</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent font-space-grotesk">$45</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-yellow-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Parking</h4>
+                    <p className="text-xs text-slate-400 mb-2">Meters & lots</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent font-space-grotesk">$120</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Freelance deductions */}
+              <div>
+                <h3 className="text-base font-bold text-white mb-3 font-space-grotesk flex items-center space-x-2">
+                  <span>💼</span>
+                  <span>Freelance (Upwork)</span>
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-indigo-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Software</h4>
+                    <p className="text-xs text-slate-400 mb-2">Adobe, Canva, tools</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent font-space-grotesk">$340</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-violet-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-violet-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Equipment</h4>
+                    <p className="text-xs text-slate-400 mb-2">Laptop, monitor, etc</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-violet-400 to-violet-600 bg-clip-text text-transparent font-space-grotesk">$850</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-fuchsia-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-fuchsia-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Home Office</h4>
+                    <p className="text-xs text-slate-400 mb-2">Dedicated workspace</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-fuchsia-400 to-fuchsia-600 bg-clip-text text-transparent font-space-grotesk">$240</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Internet</h4>
+                    <p className="text-xs text-slate-400 mb-2">Business use portion</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent font-space-grotesk">$180</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Smart Tax Nudges */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Smart tax nudges</h2>
+                <p className="text-xs text-slate-400">Personalized tips based on your income & expenses</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Track your mileage better</h3>
+                      <p className="text-sm text-slate-300">You&apos;re leaving $400/mo on the table. Enable auto-tracking and capture every deductible mile.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-orange-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Set up quarterly auto-pay</h3>
+                      <p className="text-sm text-slate-300">Never miss a deadline. We&apos;ll auto-transfer the right amount from your savings to the IRS.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-green-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Deduct that new laptop</h3>
+                      <p className="text-sm text-slate-300">Saw your $1,200 purchase. If it&apos;s for work, you can write off 100% this year under Section 179.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">You&apos;re ready for tax season</h3>
+                      <p className="text-sm text-slate-300">All your 1099s are here, deductions tracked, quarterly payments on schedule. You&apos;re ahead of 95% of gig workers.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {activeTab === 'learn' && (
           <div className="space-y-8">
