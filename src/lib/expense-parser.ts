@@ -373,14 +373,18 @@ export function parseExpenses(transactions: Transaction[]): {
   totalDeductions: number;
   potentialTaxSavings: number; // Assuming 30% tax rate
 } {
+  console.log('🔍 PARSING EXPENSES - Total transactions:', transactions.length);
+
   const expenses: ParsedExpense[] = [];
   const byCategory = new Map<string, ParsedExpense[]>();
   let totalExpenses = 0;
   let totalDeductions = 0;
 
   for (const transaction of transactions) {
+    console.log('📝 Transaction:', transaction.description, transaction.type, transaction.amount);
     const parsed = parseExpense(transaction);
     if (parsed) {
+      console.log('✅ MATCHED EXPENSE:', parsed.subcategory, parsed.amount);
       expenses.push(parsed);
       totalExpenses += parsed.amount;
       totalDeductions += parsed.deductibleAmount;
@@ -390,8 +394,12 @@ export function parseExpenses(transactions: Transaction[]): {
         byCategory.set(parsed.category, []);
       }
       byCategory.get(parsed.category)!.push(parsed);
+    } else {
+      console.log('❌ No match for:', transaction.description);
     }
   }
+
+  console.log('💰 FINAL RESULTS - Expenses:', expenses.length, 'Total:', totalExpenses);
 
   const potentialTaxSavings = totalDeductions * 0.30; // 30% tax rate
 

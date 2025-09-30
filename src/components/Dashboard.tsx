@@ -104,7 +104,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
       const parsed = parseTransactions(transactions);
       const stability = calculateStabilityScore(parsed.income);
-      const incomeData = { parsed, stability };
+      const incomeData = { parsed, stability, rawTransactions: transactions };
 
       // Save to localStorage
       setParsedIncome(incomeData);
@@ -1241,7 +1241,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </div>
             ) : (() => {
               // Parse expenses from uploaded transactions
-              const expenseResults = parseExpenses(parsedIncome.parsed.income);
+              const expenseResults = parseExpenses(parsedIncome.rawTransactions || []);
               const { expenses, byCategory, totalExpenses, totalDeductions, potentialTaxSavings } = expenseResults;
 
               const categoryIcons: Record<string, any> = {
