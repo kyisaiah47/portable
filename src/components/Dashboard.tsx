@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import IncomeTracker from './IncomeTracker';
+import { useState } from 'react';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, TrendingUp, FileText, MessageCircle, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, TrendingUp as TrendingUpIcon, BookOpen, Users, Target } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target } from 'lucide-react';
 
 interface User {
   id: string;
@@ -21,18 +19,7 @@ interface DashboardProps {
 export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState('home');
 
-  const monthlyData = [
-    { month: 'Jan', earnings: 3200, contributions: 128, emergency: 64 },
-    { month: 'Feb', earnings: 2800, contributions: 112, emergency: 56 },
-    { month: 'Mar', earnings: 3600, contributions: 144, emergency: 72 },
-    { month: 'Apr', earnings: 4100, contributions: 164, emergency: 82 },
-    { month: 'May', earnings: 3900, contributions: 156, emergency: 78 },
-    { month: 'Jun', earnings: 4300, contributions: 172, emergency: 86 },
-  ];
 
-  const totalEarnings = monthlyData.reduce((sum, month) => sum + month.earnings, 0);
-  const totalContributions = monthlyData.reduce((sum, month) => sum + month.contributions, 0);
-  const emergencyFund = monthlyData.reduce((sum, month) => sum + month.emergency, 0);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -60,7 +47,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   { id: 'income', label: 'Income', icon: DollarSign },
                   { id: 'benefits', label: 'Benefits', icon: Shield },
                   { id: 'taxes', label: 'Taxes', icon: FileText },
-                  { id: 'learn', label: 'Learn', icon: MessageCircle }
+                  { id: 'learn', label: 'Learn', icon: BookOpen }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -108,10 +95,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {/* Hero message - SHORT AND PUNCHY */}
             <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
               <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                You're crushing it, {user.firstName}
+                You&apos;re crushing it, {user.firstName}
               </h1>
               <p className="text-base md:text-lg text-slate-300">
-                $4,300 earned this month. Auto-saved $876 for benefits and $1,075 for taxes. Most people don't have their shit this together.
+                $4,300 earned this month. Auto-saved $876 for benefits and $1,075 for taxes. Most people don&apos;t have their shit this together.
               </p>
             </div>
 
@@ -149,7 +136,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     </div>
                     <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-purple-400 transition-colors" />
                   </div>
-                  <p className="text-xs text-slate-400 mb-2">Solo 401(k) designed for gig workers. Tax advantages + we'll auto-contribute based on your earnings.</p>
+                  <p className="text-xs text-slate-400 mb-2">Solo 401(k) designed for gig workers. Tax advantages + we&apos;ll auto-contribute based on your earnings.</p>
                   <div className="text-xs text-purple-400 font-semibold">Learn more →</div>
                 </div>
 
@@ -189,8 +176,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {/* Platform breakdown - DENSE GRID */}
             <div>
               <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Where your money's coming from</h2>
-                <p className="text-sm text-slate-400">You're crushing it on Uber. DoorDash is solid. Upwork? You're leaving money on the table.</p>
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Where your money&apos;s coming from</h2>
+                <p className="text-sm text-slate-400">You&apos;re crushing it on Uber. DoorDash is solid. Upwork? You&apos;re leaving money on the table.</p>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -254,7 +241,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full" style={{width: '26%'}}></div>
                   </div>
-                  <p className="text-xs text-pink-400"><strong>Real talk:</strong> Bump your rate 15%. You're undercharging.</p>
+                  <p className="text-xs text-pink-400"><strong>Real talk:</strong> Bump your rate 15%. You&apos;re undercharging.</p>
                 </div>
               </div>
             </div>
@@ -340,7 +327,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
                     <Heart className="w-4 h-4 text-purple-400" />
                   </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">The gig worker's guide to health insurance</h3>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">The gig worker&apos;s guide to health insurance</h3>
                   <p className="text-xs text-slate-400 mb-3">Everything you need to know about getting affordable coverage without an employer.</p>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-purple-400">8 min read</span>
@@ -431,427 +418,775 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </div>
         )}
 
-        {activeTab === 'overview' && (
+        {activeTab === 'income' && (
           <div className="space-y-8">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-200 group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform border border-green-500/20">
-                    <DollarSign className="w-6 h-6 text-green-400" />
-                  </div>
-                  <span className="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-white/10">6 months</span>
-                </div>
-                <h3 className="text-sm font-medium text-slate-400 mb-2">
-                  Total Earnings
-                </h3>
-                <p className="text-3xl font-bold text-white mb-1">
-                  ${totalEarnings.toLocaleString()}
-                </p>
-                <p className="text-sm text-slate-500">
-                  ${Math.round(totalEarnings / 6).toLocaleString()}/month average
-                </p>
-              </div>
+            {/* Hero greeting */}
+            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                Where your money&apos;s coming from
+              </h1>
+              <p className="text-base md:text-lg text-slate-300">
+                Track every dollar across platforms. See your patterns. Get personalized tips to earn more.
+              </p>
+            </div>
 
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200 group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform border border-blue-500/20">
-                    <PiggyBank className="w-6 h-6 text-blue-400" />
-                  </div>
-                  <span className="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-white/10">4% auto</span>
-                </div>
-                <h3 className="text-sm font-medium text-slate-400 mb-2">
-                  Benefits Fund
-                </h3>
-                <p className="text-3xl font-bold text-white mb-1">
-                  ${totalContributions.toLocaleString()}
-                </p>
-                <p className="text-sm text-slate-500">
-                  Ready for health insurance
-                </p>
-              </div>
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
 
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-200 group">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform border border-purple-500/20">
-                    <Shield className="w-6 h-6 text-purple-400" />
+            {/* Platform connections */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Connected platforms</h2>
+                <p className="text-xs text-slate-400">Sync your gig accounts to auto-track income</p>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Uber */}
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="text-2xl">🚗</div>
+                      <div>
+                        <h3 className="text-base font-bold text-white font-space-grotesk">Uber</h3>
+                        <p className="text-xs text-slate-400">Rideshare</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent font-space-grotesk">$1,890</div>
+                      <div className="text-xs text-slate-400">This month</div>
+                    </div>
                   </div>
-                  <span className="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-white/10">2% auto</span>
+                  <div className="text-xs text-green-400 font-semibold">✓ Connected</div>
                 </div>
-                <h3 className="text-sm font-medium text-slate-400 mb-2">
-                  Emergency Fund
-                </h3>
-                <p className="text-3xl font-bold text-white mb-1">
-                  ${emergencyFund.toLocaleString()}
-                </p>
-                <p className="text-sm text-slate-500">
-                  60% to $2.4K goal
-                </p>
+
+                {/* DoorDash */}
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="text-2xl">🍔</div>
+                      <div>
+                        <h3 className="text-base font-bold text-white font-space-grotesk">DoorDash</h3>
+                        <p className="text-xs text-slate-400">Delivery</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xl font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$1,290</div>
+                      <div className="text-xs text-slate-400">This month</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-green-400 font-semibold">✓ Connected</div>
+                </div>
+
+                {/* Upwork */}
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="text-2xl">💼</div>
+                      <div>
+                        <h3 className="text-base font-bold text-white font-space-grotesk">Upwork</h3>
+                        <p className="text-xs text-slate-400">Freelance</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xl font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">$1,120</div>
+                      <div className="text-xs text-slate-400">This month</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-green-400 font-semibold">✓ Connected</div>
+                </div>
+
+                {/* Add new platform card */}
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
+                  <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
+                    <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                      <Globe className="w-6 h-6 text-blue-400" />
+                    </div>
+                    <h3 className="text-sm font-bold text-white font-space-grotesk">Connect new platform</h3>
+                    <p className="text-xs text-slate-400">Instacart, Lyft, Fiverr & more</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Chart Section */}
-            <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all">
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2 font-space-grotesk">
-                    Earnings & Contributions
-                  </h3>
-                  <p className="text-sm text-slate-400">6 month overview</p>
-                </div>
-                <div className="flex items-center space-x-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full"></div>
-                    <span className="text-slate-400">Earnings</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-slate-500 rounded-full"></div>
-                    <span className="text-slate-400">Contributions</span>
-                  </div>
-                </div>
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Unified Income Timeline */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Unified income timeline</h2>
+                <p className="text-xs text-slate-400">See all your earnings in one place, month by month</p>
               </div>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={monthlyData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                    <XAxis
-                      dataKey="month"
-                      stroke="#94a3b8"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      stroke="#94a3b8"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#1e293b',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.5)',
-                        color: '#fff'
-                      }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="earnings"
-                      stroke="url(#gradient)"
-                      strokeWidth={3}
-                      name="Earnings"
-                      dot={{ fill: '#8b5cf6', strokeWidth: 0, r: 4 }}
-                      activeDot={{ r: 6, stroke: '#8b5cf6', strokeWidth: 2, fill: '#fff' }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="contributions"
-                      stroke="#64748b"
-                      strokeWidth={2}
-                      name="Contributions"
-                      dot={{ fill: '#64748b', strokeWidth: 0, r: 4 }}
-                      activeDot={{ r: 6, stroke: '#64748b', strokeWidth: 2, fill: '#fff' }}
-                    />
-                    <defs>
-                      <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#3b82f6" />
-                        <stop offset="50%" stopColor="#8b5cf6" />
-                        <stop offset="100%" stopColor="#ec4899" />
-                      </linearGradient>
-                    </defs>
-                  </LineChart>
-                </ResponsiveContainer>
+              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                <div className="space-y-4">
+                  {/* June */}
+                  <div className="border-b border-white/10 pb-4 last:border-0 last:pb-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-base font-bold text-white font-space-grotesk">June 2024</h3>
+                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$4,300</div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="text-xs">
+                        <div className="text-slate-400">Uber</div>
+                        <div className="text-white font-semibold">$1,890</div>
+                      </div>
+                      <div className="text-xs">
+                        <div className="text-slate-400">DoorDash</div>
+                        <div className="text-white font-semibold">$1,290</div>
+                      </div>
+                      <div className="text-xs">
+                        <div className="text-slate-400">Upwork</div>
+                        <div className="text-white font-semibold">$1,120</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* May */}
+                  <div className="border-b border-white/10 pb-4 last:border-0 last:pb-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-base font-bold text-white font-space-grotesk">May 2024</h3>
+                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$3,900</div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="text-xs">
+                        <div className="text-slate-400">Uber</div>
+                        <div className="text-white font-semibold">$1,750</div>
+                      </div>
+                      <div className="text-xs">
+                        <div className="text-slate-400">DoorDash</div>
+                        <div className="text-white font-semibold">$1,200</div>
+                      </div>
+                      <div className="text-xs">
+                        <div className="text-slate-400">Upwork</div>
+                        <div className="text-white font-semibold">$950</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* April */}
+                  <div className="border-b border-white/10 pb-4 last:border-0 last:pb-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-base font-bold text-white font-space-grotesk">April 2024</h3>
+                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$4,100</div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="text-xs">
+                        <div className="text-slate-400">Uber</div>
+                        <div className="text-white font-semibold">$1,920</div>
+                      </div>
+                      <div className="text-xs">
+                        <div className="text-slate-400">DoorDash</div>
+                        <div className="text-white font-semibold">$1,350</div>
+                      </div>
+                      <div className="text-xs">
+                        <div className="text-slate-400">Upwork</div>
+                        <div className="text-white font-semibold">$830</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Platform Breakdown */}
-            <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all">
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2 font-space-grotesk">
-                    Platform Breakdown
-                  </h3>
-                  <p className="text-sm text-slate-400">June 2024 earnings</p>
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Safe-to-Spend Calculator */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Safe-to-spend calculator</h2>
+                <p className="text-xs text-slate-400">Real talk: Here&apos;s what you actually have to spend this month</p>
+              </div>
+              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                <div className="space-y-4">
+                  {/* Gross */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk">Gross Income</h3>
+                      <p className="text-xs text-slate-400">All platforms combined</p>
+                    </div>
+                    <div className="text-xl font-black text-white font-space-grotesk">$4,300</div>
+                  </div>
+
+                  <div className="border-t border-white/10"></div>
+
+                  {/* Tax set-aside */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk">Tax Set-Aside (28%)</h3>
+                      <p className="text-xs text-slate-400">Auto-saved for quarterly payments</p>
+                    </div>
+                    <div className="text-xl font-black text-orange-400 font-space-grotesk">-$1,204</div>
+                  </div>
+
+                  <div className="border-t border-white/10"></div>
+
+                  {/* Business expenses */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk">Business Expenses</h3>
+                      <p className="text-xs text-slate-400">Gas, phone, car maintenance</p>
+                    </div>
+                    <div className="text-xl font-black text-red-400 font-space-grotesk">-$540</div>
+                  </div>
+
+                  <div className="border-t border-white/10"></div>
+
+                  {/* Net income */}
+                  <div className="flex items-center justify-between bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 rounded-lg p-4 border border-green-500/30">
+                    <div>
+                      <h3 className="text-lg font-black text-white font-space-grotesk">Safe to Spend</h3>
+                      <p className="text-xs text-green-400">Your actual take-home</p>
+                    </div>
+                    <div className="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent font-space-grotesk">$2,556</div>
+                  </div>
                 </div>
               </div>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-slate-800/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-200 group">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform border border-blue-500/20">
-                      🚗
-                    </div>
-                    <span className="text-sm text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full border border-white/10">44%</span>
-                  </div>
-                  <h4 className="font-medium text-white mb-1">Uber</h4>
-                  <p className="text-2xl font-bold text-white mb-1">$1,890</p>
-                  <p className="text-sm text-slate-500">+12% from last month</p>
-                </div>
+            </div>
 
-                <div className="bg-slate-800/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-orange-500/50 hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-200 group">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform border border-orange-500/20">
-                      🍔
-                    </div>
-                    <span className="text-sm text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full border border-white/10">30%</span>
-                  </div>
-                  <h4 className="font-medium text-white mb-1">DoorDash</h4>
-                  <p className="text-2xl font-bold text-white mb-1">$1,290</p>
-                  <p className="text-sm text-slate-500">+8% from last month</p>
-                </div>
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
 
-                <div className="bg-slate-800/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200 group">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform border border-purple-500/20">
-                      💼
-                    </div>
-                    <span className="text-sm text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full border border-white/10">26%</span>
-                  </div>
-                  <h4 className="font-medium text-white mb-1">Upwork</h4>
-                  <p className="text-2xl font-bold text-white mb-1">$1,120</p>
-                  <p className="text-sm text-slate-500">+15% from last month</p>
+            {/* Income stability score */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                <div className="mb-4">
+                  <h2 className="text-lg font-bold text-white font-space-grotesk">Income stability score</h2>
+                  <p className="text-xs text-slate-400">Based on consistency & diversification</p>
                 </div>
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-4 border-blue-500/30 flex items-center justify-center">
+                    <div className="text-2xl font-black text-white font-space-grotesk">78</div>
+                  </div>
+                  <div>
+                    <div className="text-base font-bold text-white mb-1">Strong & steady</div>
+                    <div className="text-xs text-slate-400">Better than 65% of users</div>
+                  </div>
+                </div>
+                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style={{width: '78%'}}></div>
+                </div>
+              </div>
+
+              {/* Quick tip */}
+              <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                <div className="flex items-start space-x-3 mb-3">
+                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Boost your score</h3>
+                    <p className="text-sm text-slate-300">Adding Instacart could add $800/mo and bump your stability score to 85+. Multi-platform workers earn 40% more on average.</p>
+                  </div>
+                </div>
+                <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+                  Connect Instacart
+                </button>
               </div>
             </div>
           </div>
         )}
-
-        {activeTab === 'income' && <IncomeTracker userId={user.id} />}
-        {activeTab === 'benefits' && <BenefitsMarketplace userId={user.id} />}
+        {activeTab === 'benefits' && <BenefitsMarketplace />}
 
         {activeTab === 'taxes' && (
-          <div className="relative">
-            {/* Animated gradient blobs */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute top-0 right-20 w-96 h-96 bg-orange-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-              <div className="absolute top-40 left-20 w-96 h-96 bg-yellow-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="space-y-8">
+            {/* Hero message */}
+            <div className="bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                Stay ahead of tax season
+              </h1>
+              <p className="text-base md:text-lg text-slate-300">
+                Set aside the right amount each month. Track every deduction. Never get caught off guard.
+              </p>
             </div>
 
-            <div className="relative z-10 space-y-12">
-              {/* Hero */}
-              <div className="text-center py-12">
-                <h1 className="text-7xl md:text-8xl font-bold mb-6 font-space-grotesk">
-                  <span className="inline-block bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                    Tax Center
-                  </span>
-                </h1>
-                <p className="text-2xl text-slate-300 font-light">Quarterly estimates, deductions, and 1099s</p>
-              </div>
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
 
-              {/* Main Tax Cards */}
-              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Quarterly estimates - Keep floating gradient cards */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Quarterly estimates</h2>
+                <p className="text-xs text-slate-400">Auto-calculated based on your income. We remind you before deadlines.</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
                 <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-orange-600 to-red-700 rounded-3xl p-10 border border-orange-400/50 transform group-hover:-translate-y-2 transition-transform">
-                    <div className="text-sm text-orange-200 font-semibold mb-3 uppercase tracking-wider">Q1 2024</div>
-                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$1,075</div>
-                    <div className="text-orange-200 text-xl mb-6">Due April 15</div>
-                    <button className="w-full bg-white text-orange-700 py-3 px-6 rounded-full text-lg font-bold hover:scale-105 transition-transform">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-orange-600 to-red-700 rounded-lg p-8 border border-orange-400/50 transform group-hover:-translate-y-1 transition-transform">
+                    <div className="text-xs text-orange-200 font-semibold mb-2 uppercase tracking-wider">Q1 2024</div>
+                    <div className="text-4xl font-black text-white mb-2 font-space-grotesk">$1,075</div>
+                    <div className="text-orange-200 text-sm mb-4">Due April 15</div>
+                    <button className="w-full bg-white text-orange-700 py-2 px-4 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">
                       Pay Now
                     </button>
                   </div>
                 </div>
 
                 <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-10 border border-blue-400/50 transform group-hover:-translate-y-2 transition-transform">
-                    <div className="text-sm text-blue-200 font-semibold mb-3 uppercase tracking-wider">Deductions</div>
-                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$2,340</div>
-                    <div className="text-blue-200 text-xl mb-6">Tracked this year</div>
-                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-3 px-6 rounded-full text-lg font-bold hover:bg-white/30 transition-colors border border-white/30">
-                      View Details
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-8 border border-blue-400/50 transform group-hover:-translate-y-1 transition-transform">
+                    <div className="text-xs text-blue-200 font-semibold mb-2 uppercase tracking-wider">Q2 2024</div>
+                    <div className="text-4xl font-black text-white mb-2 font-space-grotesk">$1,204</div>
+                    <div className="text-blue-200 text-sm mb-4">Due June 15</div>
+                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-2 px-4 rounded-lg text-sm font-bold hover:bg-white/30 transition-colors border border-white/30">
+                      Set Reminder
                     </button>
                   </div>
                 </div>
 
                 <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-10 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
-                    <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">1099 Forms</div>
-                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">3</div>
-                    <div className="text-purple-200 text-xl mb-6">Ready to download</div>
-                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-3 px-6 rounded-full text-lg font-bold hover:bg-white/30 transition-colors border border-white/30">
-                      Download
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg p-8 border border-purple-400/50 transform group-hover:-translate-y-1 transition-transform">
+                    <div className="text-xs text-purple-200 font-semibold mb-2 uppercase tracking-wider">Q3 2024</div>
+                    <div className="text-4xl font-black text-white mb-2 font-space-grotesk">$1,150</div>
+                    <div className="text-purple-200 text-sm mb-4">Due Sept 15</div>
+                    <button className="w-full bg-white/20 backdrop-blur-sm text-white py-2 px-4 rounded-lg text-sm font-bold hover:bg-white/30 transition-colors border border-white/30">
+                      Set Reminder
                     </button>
                   </div>
                 </div>
               </div>
+            </div>
 
-            <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white font-space-grotesk mb-4">Common Tax Deductions for Gig Workers</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-slate-800/50 rounded-lg p-4 border border-white/10">
-                  <div className="flex items-start space-x-3">
-                    <span className="text-2xl">🚗</span>
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Mileage</h4>
-                      <p className="text-sm text-slate-400">$0.67 per mile for business use (2024 rate)</p>
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Missed Deductions Detector */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Missed deductions detector</h2>
+                <p className="text-xs text-slate-400">We found $2,340 in potential write-offs based on your work type</p>
+              </div>
+
+              {/* Rideshare deductions */}
+              <div className="mb-6">
+                <h3 className="text-base font-bold text-white mb-3 font-space-grotesk flex items-center space-x-2">
+                  <span>🚗</span>
+                  <span>Rideshare (Uber)</span>
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-blue-400" />
                     </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Mileage</h4>
+                    <p className="text-xs text-slate-400 mb-2">$0.67/mile deduction</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent font-space-grotesk">$1,240</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-purple-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Gas & Tolls</h4>
+                    <p className="text-xs text-slate-400 mb-2">Fuel & bridge tolls</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$420</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-pink-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Car Maintenance</h4>
+                    <p className="text-xs text-slate-400 mb-2">Oil, repairs, washes</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">$380</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-green-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Phone Bill</h4>
+                    <p className="text-xs text-slate-400 mb-2">Business use portion</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent font-space-grotesk">$180</div>
                   </div>
                 </div>
+              </div>
 
-                <div className="bg-slate-800/50 rounded-lg p-4 border border-white/10">
-                  <div className="flex items-start space-x-3">
-                    <span className="text-2xl">📱</span>
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Phone & Internet</h4>
-                      <p className="text-sm text-slate-400">Business portion of monthly bills</p>
+              {/* Delivery deductions */}
+              <div className="mb-6">
+                <h3 className="text-base font-bold text-white mb-3 font-space-grotesk flex items-center space-x-2">
+                  <span>🍔</span>
+                  <span>Delivery (DoorDash)</span>
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-orange-400" />
                     </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Mileage</h4>
+                    <p className="text-xs text-slate-400 mb-2">$0.67/mile deduction</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent font-space-grotesk">$680</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-red-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Hot Bags</h4>
+                    <p className="text-xs text-slate-400 mb-2">Insulated gear</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent font-space-grotesk">$45</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-yellow-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Parking</h4>
+                    <p className="text-xs text-slate-400 mb-2">Meters & lots</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent font-space-grotesk">$120</div>
                   </div>
                 </div>
+              </div>
 
-                <div className="bg-slate-800/50 rounded-lg p-4 border border-white/10">
-                  <div className="flex items-start space-x-3">
-                    <span className="text-2xl">🏠</span>
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Home Office</h4>
-                      <p className="text-sm text-slate-400">Dedicated workspace expenses</p>
+              {/* Freelance deductions */}
+              <div>
+                <h3 className="text-base font-bold text-white mb-3 font-space-grotesk flex items-center space-x-2">
+                  <span>💼</span>
+                  <span>Freelance (Upwork)</span>
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-indigo-400" />
                     </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Software</h4>
+                    <p className="text-xs text-slate-400 mb-2">Adobe, Canva, tools</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent font-space-grotesk">$340</div>
                   </div>
-                </div>
 
-                <div className="bg-slate-800/50 rounded-lg p-4 border border-white/10">
-                  <div className="flex items-start space-x-3">
-                    <span className="text-2xl">🛠️</span>
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Supplies & Equipment</h4>
-                      <p className="text-sm text-slate-400">Tools, software, bags, etc.</p>
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-violet-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-violet-400" />
                     </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Equipment</h4>
+                    <p className="text-xs text-slate-400 mb-2">Laptop, monitor, etc</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-violet-400 to-violet-600 bg-clip-text text-transparent font-space-grotesk">$850</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-fuchsia-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-fuchsia-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Home Office</h4>
+                    <p className="text-xs text-slate-400 mb-2">Dedicated workspace</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-fuchsia-400 to-fuchsia-600 bg-clip-text text-transparent font-space-grotesk">$240</div>
+                  </div>
+
+                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
+                    <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-3">
+                      <Receipt className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1 font-space-grotesk">Internet</h4>
+                    <p className="text-xs text-slate-400 mb-2">Business use portion</p>
+                    <div className="text-lg font-black bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent font-space-grotesk">$180</div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Smart Tax Nudges */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Smart tax nudges</h2>
+                <p className="text-xs text-slate-400">Personalized tips based on your income & expenses</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Track your mileage better</h3>
+                      <p className="text-sm text-slate-300">You&apos;re leaving $400/mo on the table. Enable auto-tracking and capture every deductible mile.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-orange-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Set up quarterly auto-pay</h3>
+                      <p className="text-sm text-slate-300">Never miss a deadline. We&apos;ll auto-transfer the right amount from your savings to the IRS.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-green-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Deduct that new laptop</h3>
+                      <p className="text-sm text-slate-300">Saw your $1,200 purchase. If it&apos;s for work, you can write off 100% this year under Section 179.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-4 h-4 text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white font-space-grotesk mb-2">You&apos;re ready for tax season</h3>
+                      <p className="text-sm text-slate-300">All your 1099s are here, deductions tracked, quarterly payments on schedule. You&apos;re ahead of 95% of gig workers.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === 'learn' && (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-              <h2 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Learning Center 📚</h2>
-              <p className="text-slate-300 text-lg">Master the gig economy with guides, tips, and community wisdom</p>
+          <div className="space-y-8">
+            {/* Hero message */}
+            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                Learn & grow your gig business
+              </h1>
+              <p className="text-base md:text-lg text-slate-300">
+                City-specific guides, tax tips, and strategies from top earners. Everything you need to level up.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-blue-500/50 transition-all cursor-pointer">
-                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-3xl">🚗</span>
-                </div>
-                <h3 className="text-white font-semibold mb-2">Rideshare Guide</h3>
-                <p className="text-sm text-slate-400 mb-4">Uber, Lyft optimization strategies</p>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li>• Peak hour strategies</li>
-                  <li>• Zone optimization</li>
-                  <li>• Tax deductions</li>
-                  <li>• Vehicle maintenance</li>
-                </ul>
-              </div>
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
 
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-purple-500/50 transition-all cursor-pointer">
-                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-3xl">🍔</span>
-                </div>
-                <h3 className="text-white font-semibold mb-2">Delivery Guide</h3>
-                <p className="text-sm text-slate-400 mb-4">DoorDash, Uber Eats, Instacart tips</p>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li>• Multi-apping strategies</li>
-                  <li>• Hot zones & timing</li>
-                  <li>• Gas expense tracking</li>
-                  <li>• Customer ratings</li>
-                </ul>
+            {/* Filter tabs */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Browse by gig type</h2>
+                <p className="text-xs text-slate-400">Personalized articles based on how you work</p>
               </div>
-
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-pink-500/50 transition-all cursor-pointer">
-                <div className="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-3xl">💼</span>
-                </div>
-                <h3 className="text-white font-semibold mb-2">Freelance Guide</h3>
-                <p className="text-sm text-slate-400 mb-4">Upwork, Fiverr, Freelancer.com</p>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li>• Profile optimization</li>
-                  <li>• Pricing strategies</li>
-                  <li>• Client communication</li>
-                  <li>• Contract templates</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-red-500/50 transition-all cursor-pointer">
-                <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-3xl">📹</span>
-                </div>
-                <h3 className="text-white font-semibold mb-2">Creator Guide</h3>
-                <p className="text-sm text-slate-400 mb-4">YouTube, TikTok, Twitch</p>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li>• Monetization setup</li>
-                  <li>• Sponsorship deals</li>
-                  <li>• Tax considerations</li>
-                  <li>• Content strategy</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-green-500/50 transition-all cursor-pointer">
-                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-3xl">🏠</span>
-                </div>
-                <h3 className="text-white font-semibold mb-2">Hosting Guide</h3>
-                <p className="text-sm text-slate-400 mb-4">Airbnb, Vrbo optimization</p>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li>• Listing optimization</li>
-                  <li>• Pricing strategies</li>
-                  <li>• Cleaning & maintenance</li>
-                  <li>• Tax deductions</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-yellow-500/50 transition-all cursor-pointer">
-                <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-3xl">🛠️</span>
-                </div>
-                <h3 className="text-white font-semibold mb-2">Task Guide</h3>
-                <p className="text-sm text-slate-400 mb-4">TaskRabbit, Handy, Thumbtack</p>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li>• Service offerings</li>
-                  <li>• Tool investments</li>
-                  <li>• Safety considerations</li>
-                  <li>• Insurance needs</li>
-                </ul>
+              <div className="flex flex-wrap gap-2 mb-6">
+                <button className="px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm font-semibold text-blue-400 hover:bg-blue-500/30 transition-colors">
+                  All
+                </button>
+                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
+                  🚗 Rideshare
+                </button>
+                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
+                  🍔 Delivery
+                </button>
+                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
+                  💼 Freelance
+                </button>
+                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
+                  📹 Creator
+                </button>
               </div>
             </div>
 
-            <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white font-space-grotesk mb-4">Featured Articles</h3>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4 p-4 bg-slate-800/50 rounded-lg border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">💰</span>
+            {/* Income Optimization category */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-lg font-bold text-white font-space-grotesk">Income Optimization</h2>
+                <p className="text-xs text-slate-400">Strategies to earn more per hour</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <BookOpen className="w-4 h-4 text-blue-400" />
                   </div>
-                  <div>
-                    <h4 className="text-white font-semibold mb-1">How to Earn $100K as a Gig Worker</h4>
-                    <p className="text-sm text-slate-400 mb-2">Multi-platform strategies from top earners</p>
-                    <span className="text-xs text-blue-400">8 min read</span>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded font-semibold">NYC</span>
+                    <span className="text-xs text-slate-400">🚗 Rideshare</span>
                   </div>
-                </div>
-
-                <div className="flex items-start space-x-4 p-4 bg-slate-800/50 rounded-lg border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">🏥</span>
-                  </div>
-                  <div>
-                    <h4 className="text-white font-semibold mb-1">Health Insurance Options for Gig Workers</h4>
-                    <p className="text-sm text-slate-400 mb-2">Complete guide to coverage without an employer</p>
-                    <span className="text-xs text-purple-400">12 min read</span>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Uber surge hacks in New York City</h3>
+                  <p className="text-xs text-slate-400 mb-3">Learn the exact zones and times when surge hits highest in Manhattan, Brooklyn, and Queens.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-blue-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-400 transition-colors" />
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 p-4 bg-slate-800/50 rounded-lg border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer">
-                  <div className="w-16 h-16 bg-gradient-to-br from-pink-500/20 to-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">📊</span>
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <BookOpen className="w-4 h-4 text-purple-400" />
                   </div>
-                  <div>
-                    <h4 className="text-white font-semibold mb-1">Self-Employment Tax Breakdown</h4>
-                    <p className="text-sm text-slate-400 mb-2">Everything you need to know about quarterly payments</p>
-                    <span className="text-xs text-pink-400">10 min read</span>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs text-slate-400">🍔 Delivery</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">Multi-apping: How to stack orders efficiently</h3>
+                  <p className="text-xs text-slate-400 mb-3">Run DoorDash, Uber Eats, and Instacart simultaneously without getting deactivated.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-purple-400">4 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-purple-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <BookOpen className="w-4 h-4 text-pink-400" />
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs text-slate-400">💼 Freelance</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-pink-400 transition-colors">Real talk: Bump your rate 15%</h3>
+                  <p className="text-xs text-slate-400 mb-3">How to confidently raise your prices on Upwork and Fiverr without losing clients.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-pink-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-pink-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <BookOpen className="w-4 h-4 text-green-400" />
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-semibold">SF</span>
+                    <span className="text-xs text-slate-400">🍔 Delivery</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-green-400 transition-colors">Best DoorDash zones in San Francisco</h3>
+                  <p className="text-xs text-slate-400 mb-3">Mission District, Marina, and Downtown hotspots where you&apos;ll get the highest-paying orders.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-green-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-green-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-orange-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <BookOpen className="w-4 h-4 text-orange-400" />
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs text-slate-400">📹 Creator</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-orange-400 transition-colors">How Fiverr reviews affect your rates</h3>
+                  <p className="text-xs text-slate-400 mb-3">The exact rating threshold where you can charge 2x more and still get orders.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-orange-400">4 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-orange-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <BookOpen className="w-4 h-4 text-indigo-400" />
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs text-slate-400">🚗 Rideshare</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-indigo-400 transition-colors">Peak hour strategies for Lyft drivers</h3>
+                  <p className="text-xs text-slate-400 mb-3">When to go online, where to wait, and how to maximize bonuses during rush hour.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-indigo-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Tax Guides category */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-lg font-bold text-white font-space-grotesk">Tax Guides</h2>
+                <p className="text-xs text-slate-400">Everything you need to file confidently</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <Receipt className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs text-slate-400">🚗 Rideshare</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Mileage deductions explained for Uber drivers</h3>
+                  <p className="text-xs text-slate-400 mb-3">The standard mileage method vs. actual expenses. Which saves you more money?</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-blue-400">4 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <FileText className="w-4 h-4 text-purple-400" />
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs text-slate-400">🍔 Delivery</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">How to file quarterly taxes as a DoorDash driver</h3>
+                  <p className="text-xs text-slate-400 mb-3">Step-by-step guide to calculating and paying estimated taxes every quarter.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-purple-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-purple-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <Receipt className="w-4 h-4 text-pink-400" />
+                  </div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-xs text-slate-400">💼 Freelance</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-pink-400 transition-colors">Home office deductions for freelancers</h3>
+                  <p className="text-xs text-slate-400 mb-3">Exactly what you can write off if you work from home, from rent to utilities.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-pink-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-pink-400 transition-colors" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
+            {/* Benefits Explained category */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-lg font-bold text-white font-space-grotesk">Benefits Explained</h2>
+                <p className="text-xs text-slate-400">Coverage, savings, and protection for gig workers</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <Heart className="w-4 h-4 text-green-400" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-green-400 transition-colors">The gig worker&apos;s guide to health insurance</h3>
+                  <p className="text-xs text-slate-400 mb-3">Everything you need to know about getting affordable coverage without an employer.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-green-400">4 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-green-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-orange-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <Target className="w-4 h-4 text-orange-400" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-orange-400 transition-colors">Retirement planning for freelancers</h3>
+                  <p className="text-xs text-slate-400 mb-3">Solo 401(k)s, SEP IRAs, and other retirement accounts designed for independent workers.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-orange-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-orange-400 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
+                  <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
+                    <Wallet className="w-4 h-4 text-indigo-400" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-indigo-400 transition-colors">Building an emergency fund on variable income</h3>
+                  <p className="text-xs text-slate-400 mb-3">Proven strategies to save consistently even when your earnings fluctuate month to month.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-indigo-400">3 min read</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-400 transition-colors" />
                   </div>
                 </div>
               </div>
