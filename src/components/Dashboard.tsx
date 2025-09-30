@@ -104,64 +104,100 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       <div className="max-w-7xl mx-auto px-6 py-8">
 
         {activeTab === 'home' && (
-          <div className="relative">
-            {/* Animated gradient mesh background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute top-0 left-20 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-              <div className="absolute top-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-              <div className="absolute top-40 left-1/2 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+          <div className="space-y-8">
+            {/* Hero message - SHORT AND PUNCHY */}
+            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-3 font-space-grotesk">
+                You're crushing it, {user.firstName}
+              </h1>
+              <p className="text-xl md:text-2xl text-slate-300">
+                $4,300 earned this month. Auto-saved $876 for benefits and $1,075 for taxes. Most people don't have their shit this together.
+              </p>
             </div>
 
-            <div className="relative z-10 space-y-12">
-              {/* Hero Welcome */}
-              <div className="text-center py-12">
-                <h1 className="text-7xl md:text-8xl font-bold mb-6 font-space-grotesk">
-                  <span className="inline-block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    Welcome back
-                  </span>
-                  <br />
-                  <span className="text-white">{user.firstName}</span>
-                </h1>
-                <p className="text-2xl text-slate-300 font-light">Here's your financial snapshot for this month</p>
+            {/* Platform breakdown - DENSE GRID */}
+            <div>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold text-white font-space-grotesk">Where your money's coming from</h2>
+                <p className="text-lg text-slate-400">You're crushing it on Uber. DoorDash is solid. Upwork? You're leaving money on the table.</p>
               </div>
 
-              {/* Floating Gradient Cards - Main Stats */}
-              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-green-600 to-green-700 rounded-3xl p-10 border border-green-400/50 transform group-hover:-translate-y-2 transition-transform">
-                    <div className="text-sm text-green-200 font-semibold mb-3 uppercase tracking-wider">This Month</div>
-                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$4,300</div>
-                    <div className="text-green-200 text-xl">+12% from last month</div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Uber */}
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-blue-500/50 transition-all">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-3xl">🚗</div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white font-space-grotesk">Uber</h3>
+                        <p className="text-sm text-slate-400">Rideshare</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent font-space-grotesk">$1,890</div>
+                      <div className="text-sm text-slate-400">44% of income</div>
+                    </div>
                   </div>
+                  <div className="h-2 bg-slate-800 rounded-full mb-3 overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{width: '44%'}}></div>
+                  </div>
+                  <p className="text-sm text-blue-400"><strong>Your best hours:</strong> 5-9pm weekdays when surge hits</p>
                 </div>
 
-                <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-10 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
-                    <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">Benefits</div>
-                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$876</div>
-                    <div className="text-purple-200 text-xl">Saved automatically</div>
+                {/* DoorDash */}
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-purple-500/50 transition-all">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-3xl">🍔</div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white font-space-grotesk">DoorDash</h3>
+                        <p className="text-sm text-slate-400">Delivery</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$1,290</div>
+                      <div className="text-sm text-slate-400">30% of income</div>
+                    </div>
                   </div>
+                  <div className="h-2 bg-slate-800 rounded-full mb-3 overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full" style={{width: '30%'}}></div>
+                  </div>
+                  <p className="text-sm text-purple-400"><strong>Pro tip:</strong> Downtown & university = stacked orders</p>
                 </div>
 
-                <div className="group relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative bg-gradient-to-br from-orange-600 to-orange-700 rounded-3xl p-10 border border-orange-400/50 transform group-hover:-translate-y-2 transition-transform">
-                    <div className="text-sm text-orange-200 font-semibold mb-3 uppercase tracking-wider">Taxes</div>
-                    <div className="text-7xl font-black text-white mb-4 font-space-grotesk">$1,075</div>
-                    <div className="text-orange-200 text-xl">Set aside for Q1</div>
+                {/* Upwork */}
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-pink-500/50 transition-all">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-3xl">💼</div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white font-space-grotesk">Upwork</h3>
+                        <p className="text-sm text-slate-400">Freelance</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">$1,120</div>
+                      <div className="text-sm text-slate-400">26% of income</div>
+                    </div>
                   </div>
+                  <div className="h-2 bg-slate-800 rounded-full mb-3 overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full" style={{width: '26%'}}></div>
+                  </div>
+                  <p className="text-sm text-pink-400"><strong>Real talk:</strong> Bump your rate 15%. You're undercharging.</p>
                 </div>
               </div>
+            </div>
 
-              {/* Platform Performance - Bold Section */}
-              <div className="py-12">
-                <div className="text-center mb-12">
-                  <h2 className="text-5xl md:text-6xl font-bold text-white mb-4 font-space-grotesk">
-                    Your top gigs
+              {/* Platform Performance - WITH VOICE */}
+              <div className="py-20">
+                <div className="text-center mb-12 max-w-4xl mx-auto">
+                  <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 font-space-grotesk">
+                    Where your money's coming from
                   </h2>
-                  <p className="text-xl text-slate-400">See which platforms pay best</p>
+                  <p className="text-2xl text-slate-300 leading-relaxed">
+                    You're crushing it on Uber. DoorDash is solid. And Upwork? That's where you're leaving money on the table.
+                    <span className="text-white font-semibold"> Let's fix that.</span>
+                  </p>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -173,8 +209,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{width: '44%'}}></div>
                     </div>
                     <p className="text-slate-400 text-sm mb-2">44% of income</p>
-                    <div className="pt-3 border-t border-white/10">
-                      <p className="text-blue-400 text-sm">💡 Peak: 5-9pm weekdays</p>
+                    <div className="pt-4 border-t border-white/10 mt-4">
+                      <p className="text-lg text-blue-300"><strong className="text-white">Your best hours?</strong> 5-9pm on weekdays. That's when surge pricing hits.</p>
                     </div>
                   </div>
 
@@ -186,8 +222,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full" style={{width: '30%'}}></div>
                     </div>
                     <p className="text-slate-400 text-sm mb-2">30% of income</p>
-                    <div className="pt-3 border-t border-white/10">
-                      <p className="text-purple-400 text-sm">💡 Best: Downtown area</p>
+                    <div className="pt-4 border-t border-white/10 mt-4">
+                      <p className="text-lg text-purple-300"><strong className="text-white">Pro tip:</strong> Downtown and university areas are where the orders stack up.</p>
                     </div>
                   </div>
 
@@ -199,8 +235,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       <div className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full" style={{width: '26%'}}></div>
                     </div>
                     <p className="text-slate-400 text-sm mb-2">26% of income</p>
-                    <div className="pt-3 border-t border-white/10">
-                      <p className="text-pink-400 text-sm">💡 Raise rate by 15%</p>
+                    <div className="pt-4 border-t border-white/10 mt-4">
+                      <p className="text-lg text-pink-300"><strong className="text-white">Real talk:</strong> You're undercharging. Bump your rate 15% and watch what happens.</p>
                     </div>
                   </div>
                 </div>
@@ -327,6 +363,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   </div>
                 </div>
               </div>
+            </div>
           </div>
         )}
 
