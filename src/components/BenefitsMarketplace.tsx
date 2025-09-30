@@ -131,8 +131,24 @@ export default function BenefitsMarketplace() {
         </p>
       </div>
 
+      {/* Explainer text */}
+      <div className="space-y-4 text-base text-slate-300 leading-relaxed">
+        <p>
+          Traditional benefits are tied to full-time jobs. You get health insurance, a 401(k), paid time off, and life insurance because your employer sponsors them. But when you&apos;re working for yourself, <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent font-semibold">you lose access to all of that</span>. It&apos;s not because you don&apos;t qualify—it&apos;s because the system wasn&apos;t built for independent workers.
+        </p>
+        <p>
+          That&apos;s where Portable comes in. We&apos;ve curated a marketplace of <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">portable benefits</span> designed specifically for gig workers. <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">Affordable health insurance</span> that doesn&apos;t require an employer. <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">Retirement accounts</span> that follow you from gig to gig. <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent font-semibold">Emergency fund builders</span> with automatic saving. <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">Tax prep services</span> that understand 1099 life.
+        </p>
+        <p>
+          We don&apos;t charge you to use this marketplace. We make money through partnerships with providers, which means we can offer you <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">unbiased recommendations</span> without any user fees. Your active benefits show at the top, and you can browse available options by category below. Most gig workers we work with start with health insurance, then add emergency savings and retirement as they stabilize their income.
+        </p>
+        <p>
+          You shouldn&apos;t have to choose between flexibility and security. With Portable, you can have both.
+        </p>
+      </div>
+
       {/* Divider */}
-      <div className="border-t border-white/10"></div>
+      <div className="border-t border-white/10 mt-8"></div>
 
       {/* Current Benefits */}
       <div>

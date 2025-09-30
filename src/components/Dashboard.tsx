@@ -430,8 +430,21 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </p>
             </div>
 
+            {/* Explainer text */}
+            <div className="space-y-4 text-base text-slate-300 leading-relaxed">
+              <p>
+                Connect your gig platforms and we&apos;ll automatically track <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">all your income in one place</span>. No more logging into five different apps to see what you made this month. We pull everything together—Uber, DoorDash, Upwork, Fiverr, Instacart, and 50+ other platforms—into a single unified timeline.
+              </p>
+              <p>
+                We analyze your earning patterns across every platform you work on, calculate your <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">safe-to-spend amount</span> after taxes and expenses, and give you a <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">stability score</span> based on consistency and diversification. Think of it as a financial health check designed specifically for gig workers.
+              </p>
+              <p>
+                Here&apos;s the data: <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">top earners work 3+ platforms simultaneously</span> to maximize income and improve their stability scores. Multi-platform workers earn 40% more on average and have significantly better income stability during slow periods. We&apos;ll show you personalized tips to boost your earnings based on your city, work schedule, and income mix.
+              </p>
+            </div>
+
             {/* Divider */}
-            <div className="border-t border-white/10"></div>
+            <div className="border-t border-white/10 mt-8"></div>
 
             {/* Platform connections */}
             <div>
@@ -699,8 +712,24 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </p>
             </div>
 
+            {/* Explainer text */}
+            <div className="space-y-4 text-base text-slate-300 leading-relaxed">
+              <p>
+                When you work for yourself, <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent font-semibold">you&apos;re responsible for quarterly estimated taxes</span>. Miss a payment and you&apos;ll owe penalties. Underpay and you&apos;ll get hit with a surprise bill in April. But here&apos;s the problem: most gig workers have no idea how much to set aside, when to pay, or what they can deduct.
+              </p>
+              <p>
+                We automatically calculate your <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">quarterly estimates</span> based on your actual income across all platforms. We scan your expenses to find <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">every deduction you&apos;re eligible for</span>—and we do it by gig type, because rideshare drivers have different write-offs than freelancers. Mileage for Uber drivers. Software subscriptions for Upwork designers. Hot bags for DoorDash couriers. Equipment for creators. We track it all.
+              </p>
+              <p>
+                Our <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">missed deduction detector</span> scans your transactions and flags expenses you might not have realized were deductible. The average Portable user saves <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-semibold">$2,800 per year</span> by maximizing deductions and avoiding penalties. We send you reminders before deadlines, auto-calculate what you owe, and even show you smart nudges based on your specific situation.
+              </p>
+              <p>
+                Tax season doesn&apos;t have to be scary. With the right tools, it&apos;s just another Tuesday.
+              </p>
+            </div>
+
             {/* Divider */}
-            <div className="border-t border-white/10"></div>
+            <div className="border-t border-white/10 mt-8"></div>
 
             {/* Quarterly estimates - Keep floating gradient cards */}
             <div>
@@ -958,8 +987,24 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </p>
             </div>
 
+            {/* Explainer text */}
+            <div className="space-y-4 text-base text-slate-300 leading-relaxed">
+              <p>
+                Every gig platform has its own tricks, strategies, and hidden features. <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">Uber surge patterns in New York City</span> are completely different from Chicago. The best zones for DoorDash in San Francisco won&apos;t work in Austin. How you price yourself on Upwork depends on your reviews, your competition, and your positioning.
+              </p>
+              <p>
+                We&apos;ve built a <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">knowledge base designed specifically for gig workers</span>. Every article is 3-4 minutes long, focused on actionable strategies, and personalized to your gig type and city. Filter by rideshare, delivery, freelance, or creator work. Get <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">city-specific tips</span> that actually matter in your market.
+              </p>
+              <p>
+                Learn how to maximize surge pricing. How to stack orders across multiple apps without getting deactivated. How to raise your rates on Upwork without losing clients. How to track mileage for maximum tax deductions. These aren&apos;t generic blog posts—they&apos;re <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">practical playbooks</span> from top earners in your exact situation.
+              </p>
+              <p>
+                The difference between struggling and thriving in the gig economy often comes down to knowing what the top 10% know. Now you do too.
+              </p>
+            </div>
+
             {/* Divider */}
-            <div className="border-t border-white/10"></div>
+            <div className="border-t border-white/10 mt-8"></div>
 
             {/* Filter tabs */}
             <div>
