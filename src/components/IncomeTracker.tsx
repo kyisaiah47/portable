@@ -54,19 +54,19 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
   return (
     <div className="space-y-8">
       {/* Connected Platforms */}
-      <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
+      <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">
-              <Wifi className="w-5 h-5 text-gray-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center border border-blue-500/20">
+              <Wifi className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <h2 className="text-xl font-medium text-gray-900">Platform Connections</h2>
-              <p className="text-sm text-gray-500">Manage your gig platform integrations</p>
+              <h2 className="text-xl font-semibold text-white font-space-grotesk">Platform Connections</h2>
+              <p className="text-sm text-slate-400">Manage your gig platform integrations</p>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-md px-3 py-1">
-            <span className="text-sm text-gray-600">
+          <div className="bg-slate-800/50 rounded-md px-3 py-1 border border-white/10">
+            <span className="text-sm text-slate-300">
               {connectedPlatforms.filter(p => p.connected).length} connected
             </span>
           </div>
@@ -76,23 +76,23 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
           {connectedPlatforms.map((platform) => (
             <div
               key={platform.id}
-              className="bg-white rounded-lg p-6 border border-gray-200 hover:border-gray-300 transition-colors"
+              className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/20 transition-all"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="text-2xl">{platform.logo}</div>
                   <div>
-                    <h3 className="font-medium text-gray-900">{platform.name}</h3>
+                    <h3 className="font-medium text-white">{platform.name}</h3>
                     <div className="flex items-center space-x-2 mt-1">
                       {platform.connected ? (
                         <>
-                          <Wifi className="w-4 h-4 text-gray-600" />
-                          <span className="text-sm text-gray-600">Connected</span>
+                          <Wifi className="w-4 h-4 text-green-400" />
+                          <span className="text-sm text-green-400">Connected</span>
                         </>
                       ) : (
                         <>
-                          <WifiOff className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-500">Disconnected</span>
+                          <WifiOff className="w-4 h-4 text-slate-500" />
+                          <span className="text-sm text-slate-500">Disconnected</span>
                         </>
                       )}
                     </div>
@@ -102,12 +102,12 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
 
               {platform.connected ? (
                 <div className="space-y-3">
-                  <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-                    <p className="text-sm text-gray-600">
+                  <div className="bg-slate-700/50 rounded-md p-3 border border-white/10">
+                    <p className="text-sm text-slate-300">
                       Last sync: {platform.lastSync}
                     </p>
                   </div>
-                  <button className="w-full bg-gray-900 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2">
+                  <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
                     <Zap className="w-4 h-4" />
                     <span>Sync Now</span>
                   </button>
@@ -115,7 +115,7 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
               ) : (
                 <button
                   onClick={() => handleConnect(platform.id)}
-                  className="w-full bg-gray-900 text-white py-2 px-4 rounded-md font-medium hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-md font-medium hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Connect</span>
@@ -127,27 +127,27 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
       </div>
 
       {/* Manual Entry */}
-      <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
+      <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">
-            <Plus className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center border border-purple-500/20">
+            <Plus className="w-5 h-5 text-purple-400" />
           </div>
           <div>
-            <h2 className="text-xl font-medium text-gray-900">Add Manual Entry</h2>
-            <p className="text-sm text-gray-500">Record earnings from other platforms</p>
+            <h2 className="text-xl font-semibold text-white font-space-grotesk">Add Manual Entry</h2>
+            <p className="text-sm text-slate-400">Record earnings from other platforms</p>
           </div>
         </div>
 
         <form onSubmit={handleManualSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Platform
             </label>
             <select
               value={manualEntry.platform}
               onChange={(e) => setManualEntry(prev => ({ ...prev, platform: e.target.value }))}
               required
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+              className="w-full px-3 py-2 bg-slate-800/50 border border-white/10 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-white"
             >
               <option value="">Select platform</option>
               <option value="Other">Other</option>
@@ -158,7 +158,7 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Amount ($)
             </label>
             <input
@@ -167,13 +167,13 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
               value={manualEntry.amount}
               onChange={(e) => setManualEntry(prev => ({ ...prev, amount: e.target.value }))}
               required
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+              className="w-full px-3 py-2 bg-slate-800/50 border border-white/10 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-slate-500"
               placeholder="0.00"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Description
             </label>
             <input
@@ -181,12 +181,12 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
               value={manualEntry.description}
               onChange={(e) => setManualEntry(prev => ({ ...prev, description: e.target.value }))}
               placeholder="e.g., 3 rides"
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+              className="w-full px-3 py-2 bg-slate-800/50 border border-white/10 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-slate-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Date
             </label>
             <input
@@ -194,14 +194,14 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
               value={manualEntry.date}
               onChange={(e) => setManualEntry(prev => ({ ...prev, date: e.target.value }))}
               required
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+              className="w-full px-3 py-2 bg-slate-800/50 border border-white/10 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-white"
             />
           </div>
 
           <div className="md:col-span-2 lg:col-span-4">
             <button
               type="submit"
-              className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors flex items-center space-x-2"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 transition-opacity flex items-center space-x-2"
             >
               <Plus className="w-4 h-4" />
               <span>Add Earning</span>
@@ -211,15 +211,15 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
       </div>
 
       {/* Recent Earnings */}
-      <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
+      <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-gray-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg flex items-center justify-center border border-green-500/20">
+              <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
             <div>
-              <h2 className="text-xl font-medium text-gray-900">Recent Earnings</h2>
-              <p className="text-sm text-gray-500">Your latest income activity</p>
+              <h2 className="text-xl font-semibold text-white font-space-grotesk">Recent Earnings</h2>
+              <p className="text-sm text-slate-400">Your latest income activity</p>
             </div>
           </div>
         </div>
@@ -227,26 +227,26 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200/50">
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Platform</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Amount</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Description</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Date</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Time</th>
+              <tr className="border-b border-white/10">
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">Platform</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">Amount</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">Description</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">Date</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">Time</th>
               </tr>
             </thead>
             <tbody>
               {recentEarnings.map((earning) => (
-                <tr key={earning.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-4 font-medium text-gray-900 text-sm">{earning.platform}</td>
+                <tr key={earning.id} className="border-b border-white/5 hover:bg-slate-800/50 transition-colors">
+                  <td className="py-3 px-4 font-medium text-white text-sm">{earning.platform}</td>
                   <td className="py-3 px-4">
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-green-400">
                       ${earning.amount.toFixed(2)}
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{earning.description}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{earning.date}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{earning.time}</td>
+                  <td className="py-3 px-4 text-sm text-slate-400">{earning.description}</td>
+                  <td className="py-3 px-4 text-sm text-slate-400">{earning.date}</td>
+                  <td className="py-3 px-4 text-sm text-slate-400">{earning.time}</td>
                 </tr>
               ))}
             </tbody>
