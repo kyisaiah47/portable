@@ -2,11 +2,19 @@
 
 import { useState } from 'react';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Check, ChevronDown } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
 import { generateTips, type UserStats } from '@/lib/tips-engine';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface User {
   id: string;
@@ -22,6 +30,8 @@ interface DashboardProps {
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState('home');
+  const [selectedCities, setSelectedCities] = useState<string[]>([]);
+  const [selectedGigTypes, setSelectedGigTypes] = useState<string[]>([]);
   const [parsedIncome, setParsedIncome] = useState<any>(() => {
     // Load from localStorage on mount
     if (typeof window !== 'undefined') {
@@ -343,27 +353,61 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
             {/* Personalized Tips */}
             {parsedIncome && (() => {
-              const userStats: UserStats = {
-                totalIncome: parsedIncome.parsed.totalIncome,
-                platforms: Array.from(parsedIncome.parsed.byPlatform.keys()),
-                platformCount: parsedIncome.parsed.byPlatform.size,
-                stabilityScore: parsedIncome.stability.score,
-                stabilityRating: parsedIncome.stability.rating,
-                hasTaxData: true,
-                hasBenefits: false,
-                city: 'New York', // TODO: Get from user profile
-              };
+              // Generate tips for all selected cities (or default to first city if none selected)
+              const citiesToShow = selectedCities.length > 0 ? selectedCities : ['New York'];
+              const allTips: any[] = [];
 
-              const tips = generateTips(userStats);
-              const topTips = tips.slice(0, 4); // Show top 4 tips
+              citiesToShow.forEach(city => {
+                const userStats: UserStats = {
+                  totalIncome: parsedIncome.parsed.totalIncome,
+                  platforms: Array.from(parsedIncome.parsed.byPlatform.keys()),
+                  platformCount: parsedIncome.parsed.byPlatform.size,
+                  stabilityScore: parsedIncome.stability.score,
+                  stabilityRating: parsedIncome.stability.rating,
+                  hasTaxData: true,
+                  hasBenefits: false,
+                  city: city,
+                };
+
+                const cityTips = generateTips(userStats);
+
+                // Filter by selected gig types if any
+                const filteredTips = selectedGigTypes.length > 0
+                  ? cityTips.filter(tip => {
+                      // City tips are always shown
+                      if (tip.category === 'city') return true;
+                      // Platform tips filtered by gig type
+                      if (tip.category === 'platform' || tip.category === 'income') {
+                        return selectedGigTypes.some(type =>
+                          tip.description.toLowerCase().includes(type.toLowerCase())
+                        );
+                      }
+                      // Tax and benefit tips always shown
+                      return true;
+                    })
+                  : cityTips;
+
+                allTips.push(...filteredTips);
+              });
+
+              // Deduplicate and sort by priority
+              const uniqueTips = allTips.filter((tip, index, self) =>
+                index === self.findIndex((t) => t.id === tip.id)
+              );
+
+              const topTips = uniqueTips.slice(0, 6); // Show top 6 tips
 
               return (
                 <div>
                   <div className="mb-4">
                     <h2 className="text-xl font-bold text-white font-space-grotesk">Personalized tips</h2>
-                    <p className="text-xs text-slate-400">Based on your income, platforms, and location</p>
+                    <p className="text-xs text-slate-400">
+                      {selectedCities.length > 0 || selectedGigTypes.length > 0
+                        ? `Filtered by ${selectedCities.length > 0 ? selectedCities.join(', ') : 'all cities'}${selectedGigTypes.length > 0 ? ` · ${selectedGigTypes.join(', ')}` : ''}`
+                        : 'Based on your income, platforms, and location'}
+                    </p>
                   </div>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {topTips.map((tip) => {
                       const colorClasses = {
                         blue: 'border-blue-500/50 hover:border-blue-500',
@@ -1536,12 +1580,107 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           <div className="space-y-8">
             {/* Hero message */}
             <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                Learn & grow your gig business
-              </h1>
-              <p className="text-base md:text-lg text-slate-300">
-                City-specific guides, tax tips, and strategies from top earners. Everything you need to level up.
-              </p>
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1">
+                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                    Learn & grow your gig business
+                  </h1>
+                  <p className="text-base md:text-lg text-slate-300">
+                    City-specific guides, tax tips, and strategies from top earners. Everything you need to level up.
+                  </p>
+                </div>
+
+                {/* Filters */}
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  {/* City Selector */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-white/10 hover:border-purple-500/50 transition-all text-sm">
+                        <Globe className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-300">
+                          {selectedCities.length === 0 ? 'All Cities' : selectedCities.length === 1 ? selectedCities[0] : `${selectedCities.length} cities`}
+                        </span>
+                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-slate-900 border-white/10">
+                      <DropdownMenuLabel className="text-slate-400">Select Cities</DropdownMenuLabel>
+                      <DropdownMenuSeparator className="bg-white/10" />
+                      {['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Austin'].map((city) => (
+                        <DropdownMenuCheckboxItem
+                          key={city}
+                          checked={selectedCities.includes(city)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedCities([...selectedCities, city]);
+                            } else {
+                              setSelectedCities(selectedCities.filter(c => c !== city));
+                            }
+                          }}
+                          className="text-slate-300 focus:bg-slate-800 focus:text-white"
+                        >
+                          {city}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                      {selectedCities.length > 0 && (
+                        <>
+                          <DropdownMenuSeparator className="bg-white/10" />
+                          <button
+                            onClick={() => setSelectedCities([])}
+                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
+                          >
+                            Clear all
+                          </button>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Gig Type Selector */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-white/10 hover:border-purple-500/50 transition-all text-sm">
+                        <Briefcase className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-300">
+                          {selectedGigTypes.length === 0 ? 'All Gigs' : selectedGigTypes.length === 1 ? selectedGigTypes[0] : `${selectedGigTypes.length} types`}
+                        </span>
+                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-slate-900 border-white/10">
+                      <DropdownMenuLabel className="text-slate-400">Select Gig Types</DropdownMenuLabel>
+                      <DropdownMenuSeparator className="bg-white/10" />
+                      {['Rideshare', 'Delivery', 'Freelance', 'Creator', 'Rental'].map((gigType) => (
+                        <DropdownMenuCheckboxItem
+                          key={gigType}
+                          checked={selectedGigTypes.includes(gigType)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedGigTypes([...selectedGigTypes, gigType]);
+                            } else {
+                              setSelectedGigTypes(selectedGigTypes.filter(t => t !== gigType));
+                            }
+                          }}
+                          className="text-slate-300 focus:bg-slate-800 focus:text-white"
+                        >
+                          {gigType}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                      {selectedGigTypes.length > 0 && (
+                        <>
+                          <DropdownMenuSeparator className="bg-white/10" />
+                          <button
+                            onClick={() => setSelectedGigTypes([])}
+                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
+                          >
+                            Clear all
+                          </button>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
             </div>
 
             {/* Explainer text */}
