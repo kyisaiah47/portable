@@ -1722,8 +1722,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </div>
         )}
 
-        {activeTab === 'benefits' && <BenefitsMarketplace />}
-
         {activeTab === 'learn' && (
           <div className="space-y-8">
             {/* Hero message */}
