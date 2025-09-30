@@ -242,30 +242,101 @@ Uber, DoorDash, Instacart, etc. all have regional quirks:
 
 ## 🚀 MVP → Full Product Roadmap
 
-### Phase 1: MVP (3 months)
-- Income parsing (manual CSV upload)
-- Basic dashboard with platform breakdown
-- Tax calculator (simple % of income)
-- Static guides (top 20 articles)
-- Benefits links (no referrals)
+### Phase 1: Core - Income Parsing → Unified Earnings Dashboard ✅
+**Goal:** Mint for gig workers
 
-### Phase 2: Intelligence (6 months)
-- Bank aggregation (Plaid integration)
-- Expense detection
-- AI nudges and optimization tips
-- City-specific advice
-- Financial health score
+**Completed:**
+- ✅ Income parsing (manual CSV upload)
+- ✅ Basic dashboard with platform breakdown
+- ✅ Tax calculator (simple % of income)
+- ✅ Static guides (top 20 articles)
+- ✅ Benefits links (no referrals)
 
-### Phase 3: Marketplace (9-12 months)
-- Benefits referral partnerships
-- In-app health insurance quotes
-- Retirement account setup
-- Tax filing integration
-- Monetization begins
+**Features Delivered:**
+- Show totals by platform (Uber, DoorDash, YouTube, Upwork, etc.)
+- Platform breakdown with payment counts
+- Income stability score
+- Date range tracking
+- CSV persistence in localStorage
 
-### Phase 4: Scale (12+ months)
-- Mobile app
-- Receipt scanning for deductions
-- Multi-language support
-- Contractor management tools
-- Business banking integration
+### Phase 2: Advisor Nudges & Tax Guidance
+**Goal:** Automated tax planning and smart spending guidance
+
+**Features:**
+- ✅ Auto-calc tax set-aside (25-30% of income)
+- ✅ Quarterly tax deadline tracking with due dates
+- ⏳ "Safe-to-spend" calculator (after tax + benefits)
+- ⏳ Smart nudges: "You made $3,200 this month. Save $960 for taxes."
+- ⏳ Weekly/monthly income trends visualization
+- ⏳ Countdown timers for tax deadlines
+- ⏳ Alert system for upcoming payments
+
+### Phase 3: Expense Classification
+**Goal:** Track business expenses and maximize deductions
+
+**Features:**
+- ⏳ Detect car/gas/phone/gear expenses → suggest deductions
+- ⏳ Show profit (net income), not just gross income
+- ⏳ Expense categorization by gig type
+- ⏳ Deduction calculator by category
+- ⏳ Smart nudges: "You spent $320 on gas. Deductible at tax time → save $80."
+- ⏳ Receipt upload and categorization
+- ⏳ Monthly expense summaries
+
+### Phase 4: Earnings Optimization
+**Goal:** Help workers earn more per hour across platforms
+
+**Features:**
+- ⏳ Compare earnings across platforms
+- ⏳ Show hourly averages by platform
+- ⏳ City-specific benchmarks
+- ⏳ AI-generated personalized insights:
+  - "Your Uber hourly is $18. In your city, average is $22 — try working Friday nights."
+  - "Adding DoorDash could add +$600/mo based on your current hours."
+- ⏳ Peak hour recommendations
+- ⏳ Multi-platform stacking suggestions
+- ⏳ Surge/bonus timing alerts
+
+### Phase 5: Benefits Layer - Portable Safety Net
+**Goal:** Complete financial protection and security
+
+**Features:**
+- ✅ Benefits marketplace (health, retirement, emergency, tax)
+- ⏳ Personalized benefit recommendations based on income
+- ⏳ In-app health insurance quotes
+- ⏳ Retirement account setup (Portable IRA/401k)
+- ⏳ Emergency savings goal tracking
+- ⏳ AI-surfaced guides + actions: "Ready to cover yourself? Plans start at $150/mo."
+- ⏳ Benefits referral partnerships (monetization)
+
+### Phase 6: Financial Health Score
+**Goal:** Gamified long-term engagement
+
+**Features:**
+- ⏳ Composite metric: income stability + tax readiness + benefits coverage
+- ⏳ Score visualization (0-100)
+- ⏳ Improvement recommendations
+- ⏳ Milestone celebrations
+- ⏳ Gamify improvement: "You're 60/100, add health coverage to hit 75."
+- ⏳ Monthly progress tracking
+- ⏳ Peer comparisons (optional)
+
+### Phase 7: Advanced Features
+**Features:**
+- ⏳ Bank aggregation (Plaid integration)
+- ⏳ Real-time income sync
+- ⏳ Automated expense detection
+- ⏳ Mobile app (iOS/Android)
+- ⏳ Receipt scanning for deductions
+- ⏳ Multi-language support
+- ⏳ Contractor management tools
+- ⏳ Business banking integration
+- ⏳ Tax filing integration (TurboTax/H&R Block)
+
+---
+
+## 📊 Current Status
+
+**Phase 1: Complete ✅**
+**Phase 2: In Progress (0/7 features)**
+**Next Up:** Safe-to-spend calculator and smart nudges
