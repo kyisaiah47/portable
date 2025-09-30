@@ -6,7 +6,7 @@ import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, 
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
-import { generateTips, type UserStats } from '@/lib/tips-engine';
+import { getTips, getGuides, type City, type GigType } from '@/lib/content-registry';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -30,8 +30,8 @@ interface DashboardProps {
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState('home');
-  const [selectedCities, setSelectedCities] = useState<string[]>([]);
-  const [selectedGigTypes, setSelectedGigTypes] = useState<string[]>([]);
+  const [selectedCities, setSelectedCities] = useState<City[]>([]);
+  const [selectedGigTypes, setSelectedGigTypes] = useState<GigType[]>([]);
   const [parsedIncome, setParsedIncome] = useState<any>(() => {
     // Load from localStorage on mount
     if (typeof window !== 'undefined') {
@@ -353,49 +353,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
             {/* Personalized Tips */}
             {parsedIncome && (() => {
-              // Generate tips for all selected cities (or default to first city if none selected)
-              const citiesToShow = selectedCities.length > 0 ? selectedCities : ['New York'];
-              const allTips: any[] = [];
-
-              citiesToShow.forEach(city => {
-                const userStats: UserStats = {
-                  totalIncome: parsedIncome.parsed.totalIncome,
-                  platforms: Array.from(parsedIncome.parsed.byPlatform.keys()),
-                  platformCount: parsedIncome.parsed.byPlatform.size,
-                  stabilityScore: parsedIncome.stability.score,
-                  stabilityRating: parsedIncome.stability.rating,
-                  hasTaxData: true,
-                  hasBenefits: false,
-                  city: city,
-                };
-
-                const cityTips = generateTips(userStats);
-
-                // Filter by selected gig types if any
-                const filteredTips = selectedGigTypes.length > 0
-                  ? cityTips.filter(tip => {
-                      // City tips are always shown
-                      if (tip.category === 'city') return true;
-                      // Platform tips filtered by gig type
-                      if (tip.category === 'platform' || tip.category === 'income') {
-                        return selectedGigTypes.some(type =>
-                          tip.description.toLowerCase().includes(type.toLowerCase())
-                        );
-                      }
-                      // Tax and benefit tips always shown
-                      return true;
-                    })
-                  : cityTips;
-
-                allTips.push(...filteredTips);
-              });
-
-              // Deduplicate and sort by priority
-              const uniqueTips = allTips.filter((tip, index, self) =>
-                index === self.findIndex((t) => t.id === tip.id)
+              // Get filtered tips from centralized registry
+              const tips = getTips(
+                selectedCities.length > 0 ? selectedCities : [],
+                selectedGigTypes
               );
 
-              const topTips = uniqueTips.slice(0, 6); // Show top 6 tips
+              const topTips = tips.slice(0, 6); // Show top 6 tips
 
               return (
                 <div>
@@ -1702,264 +1666,61 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {/* Divider */}
             <div className="border-t border-white/10 mt-8"></div>
 
-            {/* Filter tabs */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Browse by gig type</h2>
-                <p className="text-xs text-slate-400">Personalized articles based on how you work</p>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-6">
-                <button className="px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm font-semibold text-blue-400 hover:bg-blue-500/30 transition-colors">
-                  All
-                </button>
-                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
-                  🚗 Rideshare
-                </button>
-                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
-                  🍔 Delivery
-                </button>
-                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
-                  💼 Freelance
-                </button>
-                <button className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-800 transition-colors">
-                  📹 Creator
-                </button>
-              </div>
-            </div>
+            {/* Filtered Guides */}
+            {(() => {
+              const guides = getGuides(selectedCities, selectedGigTypes);
 
-            {/* Income Optimization category */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-lg font-bold text-white font-space-grotesk">Income Optimization</h2>
-                <p className="text-xs text-slate-400">Strategies to earn more per hour</p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <BookOpen className="w-4 h-4 text-blue-400" />
+              const colorClasses = {
+                blue: { border: 'hover:border-blue-500/50', bg: 'bg-blue-500/20', text: 'text-blue-400', hover: 'group-hover:text-blue-400' },
+                green: { border: 'hover:border-green-500/50', bg: 'bg-green-500/20', text: 'text-green-400', hover: 'group-hover:text-green-400' },
+                purple: { border: 'hover:border-purple-500/50', bg: 'bg-purple-500/20', text: 'text-purple-400', hover: 'group-hover:text-purple-400' },
+                orange: { border: 'hover:border-orange-500/50', bg: 'bg-orange-500/20', text: 'text-orange-400', hover: 'group-hover:text-orange-400' },
+                red: { border: 'hover:border-red-500/50', bg: 'bg-red-500/20', text: 'text-red-400', hover: 'group-hover:text-red-400' },
+                yellow: { border: 'hover:border-yellow-500/50', bg: 'bg-yellow-500/20', text: 'text-yellow-400', hover: 'group-hover:text-yellow-400' },
+              };
+
+              return (
+                <div>
+                  <div className="mb-4">
+                    <h2 className="text-lg font-bold text-white font-space-grotesk">
+                      {selectedCities.length > 0 || selectedGigTypes.length > 0 ? 'Filtered Guides' : 'All Guides'}
+                    </h2>
+                    <p className="text-xs text-slate-400">
+                      {guides.length} guide{guides.length !== 1 ? 's' : ''} found
+                      {selectedCities.length > 0 && ` in ${selectedCities.join(', ')}`}
+                      {selectedGigTypes.length > 0 && ` for ${selectedGigTypes.join(', ')}`}
+                    </p>
                   </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded font-semibold">NYC</span>
-                    <span className="text-xs text-slate-400">🚗 Rideshare</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Uber surge hacks in New York City</h3>
-                  <p className="text-xs text-slate-400 mb-3">Learn the exact zones and times when surge hits highest in Manhattan, Brooklyn, and Queens.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-blue-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {guides.map((guide) => {
+                      const colors = colorClasses[guide.color as keyof typeof colorClasses];
+                      return (
+                        <div key={guide.id} className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colors.border} transition-all cursor-pointer group`}>
+                          <div className={`w-8 h-8 ${colors.bg} rounded-lg flex items-center justify-center mb-3`}>
+                            <BookOpen className={`w-4 h-4 ${colors.text}`} />
+                          </div>
+                          {guide.cities.length > 0 && !guide.cities.includes('all') && (
+                            <div className="flex items-center space-x-2 mb-2">
+                              <span className={`text-xs ${colors.bg} ${colors.text} px-2 py-0.5 rounded font-semibold`}>
+                                {guide.cities.join(', ')}
+                              </span>
+                            </div>
+                          )}
+                          <h3 className={`text-sm font-bold text-white mb-2 font-space-grotesk ${colors.hover} transition-colors`}>{guide.title}</h3>
+                          <p className="text-xs text-slate-400 mb-3">{guide.description}</p>
+                          <div className="flex items-center justify-between">
+                            <span className={`text-xs ${colors.text}`}>{guide.readTime}</span>
+                            <ArrowRight className={`w-3 h-3 text-slate-400 ${colors.hover} transition-colors`} />
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <BookOpen className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-400">🍔 Delivery</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">Multi-apping: How to stack orders efficiently</h3>
-                  <p className="text-xs text-slate-400 mb-3">Run DoorDash, Uber Eats, and Instacart simultaneously without getting deactivated.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-purple-400">4 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-purple-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <BookOpen className="w-4 h-4 text-pink-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-400">💼 Freelance</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-pink-400 transition-colors">Real talk: Bump your rate 15%</h3>
-                  <p className="text-xs text-slate-400 mb-3">How to confidently raise your prices on Upwork and Fiverr without losing clients.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-pink-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-pink-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <BookOpen className="w-4 h-4 text-green-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-semibold">SF</span>
-                    <span className="text-xs text-slate-400">🍔 Delivery</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-green-400 transition-colors">Best DoorDash zones in San Francisco</h3>
-                  <p className="text-xs text-slate-400 mb-3">Mission District, Marina, and Downtown hotspots where you&apos;ll get the highest-paying orders.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-green-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-green-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-orange-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <BookOpen className="w-4 h-4 text-orange-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-400">📹 Creator</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-orange-400 transition-colors">How Fiverr reviews affect your rates</h3>
-                  <p className="text-xs text-slate-400 mb-3">The exact rating threshold where you can charge 2x more and still get orders.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-orange-400">4 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-orange-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <BookOpen className="w-4 h-4 text-indigo-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-400">🚗 Rideshare</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-indigo-400 transition-colors">Peak hour strategies for Lyft drivers</h3>
-                  <p className="text-xs text-slate-400 mb-3">When to go online, where to wait, and how to maximize bonuses during rush hour.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-indigo-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-400 transition-colors" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Tax Guides category */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-lg font-bold text-white font-space-grotesk">Tax Guides</h2>
-                <p className="text-xs text-slate-400">Everything you need to file confidently</p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Receipt className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-400">🚗 Rideshare</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Mileage deductions explained for Uber drivers</h3>
-                  <p className="text-xs text-slate-400 mb-3">The standard mileage method vs. actual expenses. Which saves you more money?</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-blue-400">4 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <FileText className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-400">🍔 Delivery</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">How to file quarterly taxes as a DoorDash driver</h3>
-                  <p className="text-xs text-slate-400 mb-3">Step-by-step guide to calculating and paying estimated taxes every quarter.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-purple-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-purple-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Receipt className="w-4 h-4 text-pink-400" />
-                  </div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-400">💼 Freelance</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-pink-400 transition-colors">Home office deductions for freelancers</h3>
-                  <p className="text-xs text-slate-400 mb-3">Exactly what you can write off if you work from home, from rent to utilities.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-pink-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-pink-400 transition-colors" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Benefits Explained category */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-lg font-bold text-white font-space-grotesk">Benefits Explained</h2>
-                <p className="text-xs text-slate-400">Coverage, savings, and protection for gig workers</p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Heart className="w-4 h-4 text-green-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-green-400 transition-colors">The gig worker&apos;s guide to health insurance</h3>
-                  <p className="text-xs text-slate-400 mb-3">Everything you need to know about getting affordable coverage without an employer.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-green-400">4 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-green-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-orange-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Target className="w-4 h-4 text-orange-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-orange-400 transition-colors">Retirement planning for freelancers</h3>
-                  <p className="text-xs text-slate-400 mb-3">Solo 401(k)s, SEP IRAs, and other retirement accounts designed for independent workers.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-orange-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-orange-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Wallet className="w-4 h-4 text-indigo-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-indigo-400 transition-colors">Building an emergency fund on variable income</h3>
-                  <p className="text-xs text-slate-400 mb-3">Proven strategies to save consistently even when your earnings fluctuate month to month.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-indigo-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Shield className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Disability insurance for gig workers</h3>
-                  <p className="text-xs text-slate-400 mb-3">What happens if you can&apos;t work? Short-term disability coverage options explained.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-blue-400">4 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-400 transition-colors" />
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <PiggyBank className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">HSA vs FSA: Which saves you more money?</h3>
-                  <p className="text-xs text-slate-400 mb-3">Tax-advantaged health savings accounts compared. Understand which one fits your situation.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-purple-400">3 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-purple-400 transition-colors" />
-                  </div>
-                </div>
-              </div>
-            </div>
+              );
+            })()}
           </div>
         )}
-      </div>
-
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 px-6 bg-slate-900/50 backdrop-blur-xl mt-16">
         <div className="max-w-7xl mx-auto">
