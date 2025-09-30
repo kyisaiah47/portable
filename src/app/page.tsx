@@ -125,7 +125,7 @@ export default function Home() {
                   <AvatarFallback>L</AvatarFallback>
                 </Avatar>
               </div>
-              <span className="text-sm font-semibold text-white">Join 2.4M gig workers worldwide</span>
+              <span className="text-sm font-semibold text-white">Join 60M+ independent workers</span>
             </div>
 
             <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold mb-10 leading-[0.95] font-space-grotesk">
@@ -182,6 +182,47 @@ export default function Home() {
                 <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Simplified</div>
                 <div className="text-pink-200 text-lg">Track deductions across all platforms</div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Story/About Section */}
+      <section className="py-40 px-6 bg-slate-900/30">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 font-space-grotesk">
+              The safety net you deserve
+            </h2>
+            <p className="text-xl text-slate-400">
+              Traditional employment comes with benefits. Gig work shouldn't be any different.
+            </p>
+          </div>
+
+          <div className="space-y-8 text-lg text-slate-300 leading-relaxed">
+            <p>
+              Over <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">60 million independent workers</span> across the US are building careers on their own terms—driving for Uber, delivering with DoorDash, creating on YouTube and TikTok, streaming on Twitch, designing on Upwork, renting on Airbnb. The freedom is incredible. But there's a catch: no employer means no benefits.
+            </p>
+
+            <p>
+              When you're juggling multiple platforms and income streams, basic questions become impossible to answer. <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">How much did I actually earn last month?</span> Which expenses can I deduct? Can I afford health insurance? What about retirement?
+            </p>
+
+            <p>
+              Portable was built to answer these questions. We bring together everything gig workers need to thrive: <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">affordable health insurance</span> that doesn't require an employer, <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">portable retirement accounts</span> that follow you from gig to gig, <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">income tracking</span> across all your platforms, and <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">tax tools</span> that actually understand 1099 life.
+            </p>
+
+            <p>
+              We believe independent work is the future. But that future only works if gig workers have access to the same financial security and benefits that traditional employees take for granted. That's why we're here—to build the infrastructure that makes gig work sustainable for the long term.
+            </p>
+
+            <div className="pt-8 border-t border-white/10 mt-12">
+              <p className="text-2xl font-semibold font-space-grotesk mb-4">
+                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Your work is already portable. Your benefits should be too.</span>
+              </p>
+              <p className="text-slate-400">
+                Join thousands of gig workers who are building financial security on their own terms.
+              </p>
             </div>
           </div>
         </div>
@@ -276,7 +317,7 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 font-space-grotesk">
-            Join 2.4M gig workers
+            Join 60M+ independent workers
           </h2>
           <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
             Get started in minutes. No credit check, no monthly fees, no minimum balance.
