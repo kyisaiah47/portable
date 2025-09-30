@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import BenefitsMarketplace from './BenefitsMarketplace';
 import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
@@ -29,7 +31,9 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
-  const [activeTab, setActiveTab] = useState('home');
+  const router = useRouter();
+  const pathname = usePathname();
+  const activeTab = pathname === '/dashboard' ? 'home' : pathname.split('/').pop() || 'home';
   const [selectedCities, setSelectedCities] = useState<City[]>([]);
   const [selectedGigTypes, setSelectedGigTypes] = useState<GigType[]>([]);
   const [parsedIncome, setParsedIncome] = useState<any>(() => {
@@ -127,16 +131,16 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </div>
               <div className="hidden md:flex items-center space-x-1">
                 {[
-                  { id: 'home', label: 'Home', icon: BarChart3 },
-                  { id: 'income', label: 'Income', icon: DollarSign },
-                  { id: 'expenses', label: 'Expenses', icon: Receipt },
-                  { id: 'benefits', label: 'Benefits', icon: Shield },
-                  { id: 'taxes', label: 'Taxes', icon: FileText },
-                  { id: 'learn', label: 'Learn', icon: BookOpen }
+                  { id: 'home', label: 'Home', icon: BarChart3, path: '/dashboard' },
+                  { id: 'income', label: 'Income', icon: DollarSign, path: '/dashboard/income' },
+                  { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
+                  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' },
+                  { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
+                  { id: 'learn', label: 'Learn', icon: BookOpen, path: '/dashboard/learn' }
                 ].map((tab) => (
-                  <button
+                  <Link
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+                    href={tab.path}
                     className={`flex items-center space-x-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${
                       activeTab === tab.id
                         ? 'text-white'
@@ -145,7 +149,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   >
                     <tab.icon className="w-4 h-4" />
                     <span>{tab.label}</span>
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
