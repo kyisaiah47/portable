@@ -211,7 +211,7 @@ export function getQuarterlyDeadlines(year: number, estimatedQuarterlyPayment: n
     {
       quarter: 'Q4',
       period: 'Sep 1 - Dec 31',
-      dueDate: new Date(year, 0, 15, 0, 0, 0, 0).setFullYear(year + 1) as any, // Jan 15 next year
+      dueDate: new Date(year + 1, 0, 15), // Jan 15 next year
       amount: estimatedQuarterlyPayment,
       isPast: now > new Date(year + 1, 0, 15),
       isPaid: false,

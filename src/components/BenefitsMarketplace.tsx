@@ -16,6 +16,10 @@ interface Benefit {
 
 export default function BenefitsMarketplace() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [annualIncome, setAnnualIncome] = useState<number>(50000);
+  const [monthlyContribution, setMonthlyContribution] = useState<number>(500);
+  const [currentAge, setCurrentAge] = useState<number>(30);
+  const [retirementAge, setRetirementAge] = useState<number>(65);
 
   const benefits: Benefit[] = [
     {
@@ -162,6 +166,385 @@ export default function BenefitsMarketplace() {
 
       {/* Divider */}
       <div className="border-t border-white/10 mt-8"></div>
+
+      {/* Calculators */}
+      <div>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-white font-space-grotesk">Financial calculators</h2>
+          <p className="text-xs text-slate-400">Plan your benefits budget</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Health Insurance Premium Calculator */}
+          <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-6 border border-red-500/20">
+            <div className="flex items-center space-x-2 mb-4">
+              <Heart className="w-5 h-5 text-red-400" />
+              <h3 className="text-lg font-bold text-white font-space-grotesk">Health Insurance Calculator</h3>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-slate-300 mb-2 block">Annual Income</label>
+                <input
+                  type="number"
+                  value={annualIncome}
+                  onChange={(e) => setAnnualIncome(Number(e.target.value))}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                />
+              </div>
+
+              {(() => {
+                // ACA subsidy calculation (simplified)
+                const fpl = 14580; // 2024 Federal Poverty Level for 1 person
+                const incomeAsPercentOfFPL = annualIncome / fpl;
+                const isEligibleForSubsidy = incomeAsPercentOfFPL >= 1.0 && incomeAsPercentOfFPL <= 4.0;
+
+                let maxPremiumPercent = 0;
+                if (incomeAsPercentOfFPL <= 1.5) maxPremiumPercent = 0.02;
+                else if (incomeAsPercentOfFPL <= 2.0) maxPremiumPercent = 0.04;
+                else if (incomeAsPercentOfFPL <= 2.5) maxPremiumPercent = 0.06;
+                else if (incomeAsPercentOfFPL <= 3.0) maxPremiumPercent = 0.08;
+                else if (incomeAsPercentOfFPL <= 4.0) maxPremiumPercent = 0.085;
+
+                const maxMonthlyPremium = (annualIncome * maxPremiumPercent) / 12;
+                const avgMarketplacePremium = 450; // Average premium
+                const monthlySubsidy = isEligibleForSubsidy ? Math.max(0, avgMarketplacePremium - maxMonthlyPremium) : 0;
+                const finalMonthlyPremium = avgMarketplacePremium - monthlySubsidy;
+
+                return (
+                  <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-slate-400">Marketplace Premium</span>
+                        <span className="text-sm font-bold text-white">${avgMarketplacePremium}/mo</span>
+                      </div>
+                      {isEligibleForSubsidy ? (
+                        <>
+                          <div className="flex items-center justify-between text-green-400">
+                            <span className="text-sm">ACA Subsidy</span>
+                            <span className="text-sm font-bold">-${Math.round(monthlySubsidy)}/mo</span>
+                          </div>
+                          <div className="border-t border-white/10 pt-2 mt-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-bold text-white">Your Cost</span>
+                              <span className="text-lg font-black text-green-400 font-space-grotesk">
+                                ${Math.round(finalMonthlyPremium)}/mo
+                              </span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-slate-400 mt-2">
+                            ✅ You qualify for subsidies! Your max premium is {(maxPremiumPercent * 100).toFixed(1)}% of income.
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <div className="border-t border-white/10 pt-2 mt-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-bold text-white">Your Cost</span>
+                              <span className="text-lg font-black text-white font-space-grotesk">${avgMarketplacePremium}/mo</span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-slate-400 mt-2">
+                            {incomeAsPercentOfFPL < 1.0
+                              ? '⚠️ Income too low for ACA subsidies. Check Medicaid eligibility in your state.'
+                              : '⚠️ Income above 400% FPL. No subsidies available, but you can still enroll.'}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+
+          {/* Retirement Calculator */}
+          <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl rounded-lg p-6 border border-blue-500/20">
+            <div className="flex items-center space-x-2 mb-4">
+              <Building2 className="w-5 h-5 text-blue-400" />
+              <h3 className="text-lg font-bold text-white font-space-grotesk">Retirement Calculator</h3>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm text-slate-300 mb-2 block">Current Age</label>
+                  <input
+                    type="number"
+                    value={currentAge}
+                    onChange={(e) => setCurrentAge(Number(e.target.value))}
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-slate-300 mb-2 block">Retirement Age</label>
+                  <input
+                    type="number"
+                    value={retirementAge}
+                    onChange={(e) => setRetirementAge(Number(e.target.value))}
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-slate-300 mb-2 block">Monthly Contribution</label>
+                <input
+                  type="number"
+                  value={monthlyContribution}
+                  onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                />
+              </div>
+
+              {(() => {
+                const yearsToRetirement = Math.max(1, retirementAge - currentAge);
+                const monthsToRetirement = yearsToRetirement * 12;
+                const annualReturn = 0.07; // 7% average annual return
+                const monthlyReturn = Math.pow(1 + annualReturn, 1 / 12) - 1;
+
+                // Future value of annuity formula
+                const futureValue =
+                  monthlyContribution * ((Math.pow(1 + monthlyReturn, monthsToRetirement) - 1) / monthlyReturn);
+
+                const totalContributions = monthlyContribution * monthsToRetirement;
+                const investmentGains = futureValue - totalContributions;
+
+                return (
+                  <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-slate-400">Years to Retirement</span>
+                        <span className="text-sm font-bold text-white">{yearsToRetirement} years</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-slate-400">Total Contributions</span>
+                        <span className="text-sm font-bold text-white">${totalContributions.toLocaleString()}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-green-400">
+                        <span className="text-sm">Investment Gains (7%)</span>
+                        <span className="text-sm font-bold">+${Math.round(investmentGains).toLocaleString()}</span>
+                      </div>
+                      <div className="border-t border-white/10 pt-2 mt-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-white">Projected Balance</span>
+                          <span className="text-lg font-black text-green-400 font-space-grotesk">
+                            ${Math.round(futureValue).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-2">
+                        💡 At ${monthlyContribution}/mo, you'll have ${Math.round(futureValue / 12 / 30).toLocaleString()}/mo in retirement
+                        (assuming 30-year withdrawal).
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-white/10"></div>
+
+      {/* Retirement Account Comparison */}
+      <div>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-white font-space-grotesk">Retirement account comparison</h2>
+          <p className="text-xs text-slate-400">Choose the right account for your situation</p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          {/* Traditional IRA */}
+          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
+            <h3 className="text-lg font-bold text-white mb-2 font-space-grotesk">Traditional IRA</h3>
+            <p className="text-sm text-slate-400 mb-4">Tax deduction now, pay taxes in retirement</p>
+
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Tax deduction today</p>
+                  <p className="text-xs text-slate-400">Lower your taxable income now</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Tax-deferred growth</p>
+                  <p className="text-xs text-slate-400">No taxes on gains until withdrawal</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <AlertTriangle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Taxes in retirement</p>
+                  <p className="text-xs text-slate-400">Withdrawals taxed as income</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-slate-400">2024 Contribution Limit</span>
+                <span className="text-sm font-bold text-white">$7,000</span>
+              </div>
+              <p className="text-xs text-slate-400">Best for: High earners who want tax deductions now</p>
+            </div>
+          </div>
+
+          {/* Roth IRA */}
+          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-6 border border-purple-500/20">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-lg font-bold text-white font-space-grotesk">Roth IRA</h3>
+              <div className="text-xs font-bold text-purple-400 bg-purple-500/20 px-2 py-1 rounded">RECOMMENDED</div>
+            </div>
+            <p className="text-sm text-slate-400 mb-4">Pay taxes now, tax-free withdrawals forever</p>
+
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Tax-free growth</p>
+                  <p className="text-xs text-slate-400">Never pay taxes on gains</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Tax-free withdrawals</p>
+                  <p className="text-xs text-slate-400">All money yours in retirement</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Withdraw contributions anytime</p>
+                  <p className="text-xs text-slate-400">Emergency access if needed</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-purple-500/20">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-slate-400">2024 Contribution Limit</span>
+                <span className="text-sm font-bold text-white">$7,000</span>
+              </div>
+              <p className="text-xs text-slate-400">Best for: Gig workers expecting higher income later</p>
+            </div>
+          </div>
+
+          {/* SEP IRA */}
+          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
+            <h3 className="text-lg font-bold text-white mb-2 font-space-grotesk">SEP IRA</h3>
+            <p className="text-sm text-slate-400 mb-4">Self-employed, higher contribution limits</p>
+
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Much higher limits</p>
+                  <p className="text-xs text-slate-400">Up to 25% of net income</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Tax deductible</p>
+                  <p className="text-xs text-slate-400">Lower taxable income</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-white font-semibold">Easy setup</p>
+                  <p className="text-xs text-slate-400">Less paperwork than 401(k)</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-slate-400">2024 Contribution Limit</span>
+                <span className="text-sm font-bold text-white">$69,000</span>
+              </div>
+              <p className="text-xs text-slate-400">Best for: High-earning freelancers</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-white/10"></div>
+
+      {/* Emergency Fund Tracker */}
+      <div>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-white font-space-grotesk">Emergency fund goal</h2>
+          <p className="text-xs text-slate-400">Aim for 3-6 months of expenses</p>
+        </div>
+
+        {(() => {
+          const monthlyExpenses = annualIncome / 12 * 0.6; // Assume 60% of income for expenses
+          const goalAmount = monthlyExpenses * 6; // 6 months
+          const currentSavings = 5000; // Mock data - could be user input
+          const progress = (currentSavings / goalAmount) * 100;
+
+          return (
+            <div className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 backdrop-blur-xl rounded-lg p-6 border border-orange-500/20">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-sm text-slate-400">Target: 6 months expenses</p>
+                  <p className="text-3xl font-black text-white font-space-grotesk">${Math.round(goalAmount).toLocaleString()}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-slate-400">Current Savings</p>
+                  <p className="text-2xl font-bold text-orange-400 font-space-grotesk">${currentSavings.toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-slate-300">Progress</span>
+                  <span className="text-sm font-bold text-white">{progress.toFixed(1)}%</span>
+                </div>
+                <div className="h-4 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-orange-500 to-yellow-600 rounded-full transition-all"
+                    style={{ width: `${Math.min(progress, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div>
+                  <p className="text-xs text-slate-400 mb-1">Monthly Goal</p>
+                  <p className="text-lg font-bold text-white font-space-grotesk">${Math.round(monthlyExpenses).toLocaleString()}</p>
+                </div>
+                <div>
+                  <div>
+                  <p className="text-xs text-slate-400 mb-1">Remaining</p>
+                  <p className="text-lg font-bold text-white font-space-grotesk">${Math.round(goalAmount - currentSavings).toLocaleString()}</p>
+                </div>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 mb-1">Months Covered</p>
+                  <p className="text-lg font-bold text-green-400 font-space-grotesk">{(currentSavings / monthlyExpenses).toFixed(1)}</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-400 mt-4">
+                💡 Save ${Math.round((goalAmount - currentSavings) / 12).toLocaleString()}/mo for 12 months to reach your goal
+              </p>
+            </div>
+          );
+        })()}
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-white/10"></div>
 
       {/* Marketplace */}
       <div>
