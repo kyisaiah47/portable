@@ -6,6 +6,7 @@ import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, 
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
+import { generateTips, type UserStats } from '@/lib/tips-engine';
 
 interface User {
   id: string;
@@ -336,11 +337,73 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {/* Divider */}
             <div className="border-t border-white/10"></div>
 
+            {/* Personalized Tips */}
+            {parsedIncome && (() => {
+              const userStats: UserStats = {
+                totalIncome: parsedIncome.parsed.totalIncome,
+                platforms: Array.from(parsedIncome.parsed.byPlatform.keys()),
+                platformCount: parsedIncome.parsed.byPlatform.size,
+                stabilityScore: parsedIncome.stability.score,
+                stabilityRating: parsedIncome.stability.rating,
+                hasTaxData: true,
+                hasBenefits: false,
+                city: 'New York', // TODO: Get from user profile
+              };
+
+              const tips = generateTips(userStats);
+              const topTips = tips.slice(0, 4); // Show top 4 tips
+
+              return (
+                <div>
+                  <div className="mb-4">
+                    <h2 className="text-xl font-bold text-white font-space-grotesk">Personalized tips</h2>
+                    <p className="text-xs text-slate-400">Based on your income, platforms, and location</p>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {topTips.map((tip) => {
+                      const colorClasses = {
+                        blue: 'border-blue-500/50 hover:border-blue-500',
+                        green: 'border-green-500/50 hover:border-green-500',
+                        purple: 'border-purple-500/50 hover:border-purple-500',
+                        orange: 'border-orange-500/50 hover:border-orange-500',
+                        red: 'border-red-500/50 hover:border-red-500',
+                        yellow: 'border-yellow-500/50 hover:border-yellow-500',
+                      };
+
+                      return (
+                        <div
+                          key={tip.id}
+                          className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colorClasses[tip.color as keyof typeof colorClasses]} transition-all cursor-pointer group`}
+                        >
+                          <div className="flex items-start space-x-3 mb-3">
+                            <div className="text-2xl flex-shrink-0">{tip.icon}</div>
+                            <div className="flex-1">
+                              <h3 className="text-sm font-bold text-white mb-1 font-space-grotesk">{tip.title}</h3>
+                              <p className="text-xs text-slate-400 leading-relaxed">{tip.description}</p>
+                            </div>
+                          </div>
+                          {tip.action && (
+                            <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                              <span className={`text-xs font-semibold text-${tip.color}-400`}>{tip.action}</span>
+                              <ArrowRight className={`w-3 h-3 text-${tip.color}-400 group-hover:translate-x-1 transition-transform`} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Divider */}
+            <div className="border-t border-white/10"></div>
+
             {/* Recommended for you - TOP OF FEED */}
             <div>
               <div className="mb-4">
                 <h2 className="text-lg font-bold text-white font-space-grotesk">Recommended for you</h2>
-                <p className="text-xs text-slate-400">Personalized based on your activity</p>
+                <p className="text-xs text-slate-400">Quick actions to improve your financial health</p>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
@@ -724,6 +787,130 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     <div className="text-xs text-slate-400 mt-1 uppercase font-semibold">{parsedIncome.stability.rating}</div>
                   </div>
                 </div>
+
+                {/* Safe-to-Spend Calculator */}
+                <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-white font-space-grotesk">Safe to spend</h2>
+                    <p className="text-xs text-slate-400">What you can safely spend after setting aside for taxes and savings</p>
+                  </div>
+
+                  {(() => {
+                    const totalIncome = parsedIncome.parsed.totalIncome;
+                    const taxSetAside = totalIncome * 0.30; // 30% for taxes
+                    const emergencyFund = totalIncome * 0.10; // 10% for emergency fund
+                    const safeToSpend = totalIncome - taxSetAside - emergencyFund;
+
+                    return (
+                      <div className="grid md:grid-cols-2 gap-8">
+                        {/* Left: Visual breakdown */}
+                        <div>
+                          <div className="space-y-4">
+                            {/* Total Income */}
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-semibold text-white">Total Income</span>
+                                <span className="text-lg font-black text-white font-space-grotesk">
+                                  ${totalIncome.toLocaleString()}
+                                </span>
+                              </div>
+                              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style={{ width: '100%' }}></div>
+                              </div>
+                            </div>
+
+                            {/* Tax Set-Aside */}
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center space-x-2">
+                                  <Receipt className="w-4 h-4 text-orange-400" />
+                                  <span className="text-sm font-semibold text-slate-300">Tax Set-Aside (30%)</span>
+                                </div>
+                                <span className="text-base font-bold text-orange-400 font-space-grotesk">
+                                  -${taxSetAside.toLocaleString()}
+                                </span>
+                              </div>
+                              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full" style={{ width: '30%' }}></div>
+                              </div>
+                            </div>
+
+                            {/* Emergency Savings */}
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center space-x-2">
+                                  <PiggyBank className="w-4 h-4 text-blue-400" />
+                                  <span className="text-sm font-semibold text-slate-300">Emergency Fund (10%)</span>
+                                </div>
+                                <span className="text-base font-bold text-blue-400 font-space-grotesk">
+                                  -${emergencyFund.toLocaleString()}
+                                </span>
+                              </div>
+                              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{ width: '10%' }}></div>
+                              </div>
+                            </div>
+
+                            {/* Divider */}
+                            <div className="border-t border-white/10 my-4"></div>
+
+                            {/* Safe to Spend */}
+                            <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg p-4">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="text-xs text-green-400 font-semibold mb-1">SAFE TO SPEND</div>
+                                  <div className="text-4xl font-black text-white font-space-grotesk">
+                                    ${Math.round(safeToSpend).toLocaleString()}
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-2xl font-black text-green-400 font-space-grotesk">60%</div>
+                                  <div className="text-xs text-slate-400">of income</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right: Explanation and tips */}
+                        <div className="flex flex-col justify-center space-y-4">
+                          <div className="bg-slate-800/50 rounded-lg p-4 border border-white/5">
+                            <h3 className="text-sm font-bold text-white mb-2 flex items-center space-x-2">
+                              <Zap className="w-4 h-4 text-yellow-400" />
+                              <span>Why this matters</span>
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed">
+                              As a gig worker, you need to manually set aside money for taxes (30%) and build an emergency fund (10%) before spending. This calculator shows your true spending power.
+                            </p>
+                          </div>
+
+                          <div className="bg-slate-800/50 rounded-lg p-4 border border-white/5">
+                            <h3 className="text-sm font-bold text-white mb-2 flex items-center space-x-2">
+                              <Target className="w-4 h-4 text-blue-400" />
+                              <span>Smart budgeting tip</span>
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed">
+                              Transfer ${taxSetAside.toLocaleString()} to a separate tax savings account <span className="text-white font-semibold">right now</span>. Set up auto-transfers so you never touch tax money.
+                            </p>
+                          </div>
+
+                          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-lg p-4 border border-purple-500/20">
+                            <h3 className="text-sm font-bold text-white mb-2 flex items-center space-x-2">
+                              <Heart className="w-4 h-4 text-pink-400" />
+                              <span>Good news</span>
+                            </h3>
+                            <p className="text-xs text-slate-300 leading-relaxed">
+                              You're earning <span className="text-white font-semibold">${safeToSpend.toLocaleString()}</span> in real spending power. That's <span className="text-white font-semibold">{Math.round((safeToSpend / totalIncome) * 100)}%</span> take-home after being financially responsible.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-white/10"></div>
 
                 {/* Platform Breakdown */}
                 <div>
