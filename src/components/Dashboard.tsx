@@ -5,6 +5,7 @@ import BenefitsMarketplace from './BenefitsMarketplace';
 import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
+import { parseExpenses } from '@/lib/expense-parser';
 
 interface User {
   id: string;
@@ -113,6 +114,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 {[
                   { id: 'home', label: 'Home', icon: BarChart3 },
                   { id: 'income', label: 'Income', icon: DollarSign },
+                  { id: 'expenses', label: 'Expenses', icon: Receipt },
                   { id: 'benefits', label: 'Benefits', icon: Shield },
                   { id: 'taxes', label: 'Taxes', icon: FileText },
                   { id: 'learn', label: 'Learn', icon: BookOpen }
@@ -979,6 +981,62 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </div>
           </div>
         )}
+
+        {activeTab === 'expenses' && (
+          <div className="space-y-8">
+            {/* Hero message */}
+            <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                Track every deduction
+              </h1>
+              <p className="text-base md:text-lg text-slate-300">
+                Upload your bank statement to discover hidden tax deductions and maximize your savings.
+              </p>
+            </div>
+
+            {/* Explainer text */}
+            <div className="space-y-4 text-base text-slate-300 leading-relaxed">
+              <p>
+                Every dollar you spend on your gig work is <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">potentially tax-deductible</span>. Gas for Uber. Hot bags for DoorDash. Camera gear for YouTube. Software subscriptions for Upwork. Phone bills. Internet. Home office space. Most gig workers leave thousands on the table because they don't know what qualifies.
+              </p>
+              <p>
+                We automatically scan your transactions and <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">flag deductible expenses</span> based on your gig type. Rideshare drivers get mileage tracking. Delivery workers see hot bag purchases. Freelancers catch software subscriptions. Creators track equipment costs. Everything is categorized, calculated, and ready for tax time.
+              </p>
+              <p>
+                The <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">average gig worker</span> who tracks expenses properly saves <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-semibold">$2,800 per year</span> in taxes. That's real money back in your pocket. Upload your statement and see what you've been missing.
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-white/10 mt-8"></div>
+
+            {!parsedIncome ? (
+              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
+                <Receipt className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-white mb-2">No expenses tracked yet</h3>
+                <p className="text-sm text-slate-400 mb-6 max-w-md mx-auto">
+                  Upload your bank statement in the Income tab to automatically detect deductible business expenses.
+                </p>
+                <button
+                  onClick={() => setActiveTab('income')}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity inline-flex items-center space-x-2"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>Go to Income Tab</span>
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4 text-center py-12">
+                <Receipt className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-white">Expense detection coming soon</h3>
+                <p className="text-sm text-slate-400 max-w-md mx-auto">
+                  We're building the expense parser to automatically detect deductible expenses from your uploaded CSV. Check back soon!
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === 'benefits' && <BenefitsMarketplace />}
 
         {activeTab === 'taxes' && (
