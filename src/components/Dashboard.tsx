@@ -455,14 +455,31 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         {activeTab === 'income' && (
           <div className="space-y-8">
-            {/* Hero greeting */}
+            {/* Hero greeting with upload */}
             <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                Where your money&apos;s coming from
-              </h1>
-              <p className="text-base md:text-lg text-slate-300">
-                Track every dollar across platforms. See your patterns. Get personalized tips to earn more.
-              </p>
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1">
+                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                    Where your money&apos;s coming from
+                  </h1>
+                  <p className="text-base md:text-lg text-slate-300">
+                    Track every dollar across platforms. See your patterns. Get personalized tips to earn more.
+                  </p>
+                </div>
+                <label className="cursor-pointer flex-shrink-0">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <div className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-blue-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]">
+                    <Upload className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                    <p className="text-xs font-semibold text-white mb-0.5">Upload CSV</p>
+                    <p className="text-[10px] text-slate-400 leading-tight">Parse your bank statement</p>
+                  </div>
+                </label>
+              </div>
             </div>
 
             {/* Explainer text */}
@@ -553,30 +570,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Upload Bank Statement */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Import bank statement</h2>
-                <p className="text-xs text-slate-400">Upload a CSV file to automatically parse your gig income</p>
-              </div>
-              <label className="block cursor-pointer">
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-8 border border-dashed border-white/20 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all text-center">
-                  <Upload className="w-8 h-8 text-slate-500 mx-auto mb-3" />
-                  <p className="text-base font-semibold text-white mb-1">Upload CSV bank statement</p>
-                  <p className="text-sm text-slate-400">We&apos;ll automatically detect Uber, DoorDash, Upwork, and 20+ more platforms</p>
-                </div>
-              </label>
             </div>
 
             {/* Parsed Results */}
