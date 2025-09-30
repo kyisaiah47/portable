@@ -8,6 +8,7 @@ import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, 
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
+import { calculateTaxes, getQuarterlyDeadlines, projectAnnualTax } from '@/lib/tax-calculator';
 import { getTips, getGuides, type City, type GigType } from '@/lib/content-registry';
 import {
   DropdownMenu,
