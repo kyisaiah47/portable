@@ -1863,6 +1863,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             })()}
           </div>
         )}
+      </div>
+
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 px-6 bg-slate-900/50 backdrop-blur-xl mt-16">
         <div className="max-w-7xl mx-auto">
