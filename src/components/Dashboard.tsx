@@ -621,6 +621,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </div>
               </div>
             </div>
+            </div>
           </div>
         )}
 
