@@ -1,64 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import Dashboard from '@/components/Dashboard';
-import LoginForm from '@/components/LoginForm';
-import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
 import Image from 'next/image';
+import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp } from 'lucide-react';
 
-export default function Home() {
-  const [user, setUser] = useState(null);
-  const [isLogin, setIsLogin] = useState(null);
-
-  if (user) {
-    return <Dashboard user={user} onLogout={() => setUser(null)} />;
-  }
-
-  if (isLogin !== null) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
-        <div className="max-w-md w-full">
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/10">
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center mb-6">
-                <Image src="/logo.svg" alt="Portable" width={40} height={40} className="brightness-0 invert" />
-              </div>
-              <h2 className="text-2xl font-semibold text-white mb-2">
-                {isLogin ? 'Welcome back' : 'Create your account'}
-              </h2>
-              <p className="text-slate-400">
-                {isLogin ? 'Sign in to continue' : 'Start building your safety net'}
-              </p>
-            </div>
-
-            <LoginForm isLogin={isLogin} onSuccess={setUser} />
-
-            {isLogin && (
-              <div className="mt-6 p-4 bg-indigo-500/10 rounded-lg border border-indigo-500/30">
-                <p className="text-indigo-400 text-xs font-semibold mb-1">Demo Account</p>
-                <p className="text-xs text-indigo-300 font-mono">
-                  sarah.driver@email.com / demo123
-                </p>
-              </div>
-            )}
-
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => setIsLogin(null)}
-                className="text-slate-400 hover:text-white text-sm font-medium"
-              >
-                ← Back to home
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+export default function RevolutStyle() {
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* Navigation */}
+      {/* Nav */}
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -73,16 +22,8 @@ export default function Home() {
               <a href="#" className="text-sm font-medium text-slate-400 hover:text-white">About</a>
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setIsLogin(true)}
-                className="text-sm font-semibold text-slate-400 hover:text-white"
-              >
-                Log in
-              </button>
-              <button
-                onClick={() => setIsLogin(false)}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity"
-              >
+              <button className="text-sm font-semibold text-slate-400 hover:text-white">Log in</button>
+              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity">
                 Get started
               </button>
             </div>
@@ -123,10 +64,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-20">
-              <button
-                onClick={() => setIsLogin(false)}
-                className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-14 py-6 rounded-full text-lg font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-3"
-              >
+              <button className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-14 py-6 rounded-full text-lg font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-3">
                 <span>Get Portable</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
@@ -267,10 +205,7 @@ export default function Home() {
           <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
             Get started in minutes. No credit check, no monthly fees, no minimum balance.
           </p>
-          <button
-            onClick={() => setIsLogin(false)}
-            className="bg-white text-gray-900 px-14 py-5 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors shadow-2xl inline-flex items-center gap-3"
-          >
+          <button className="bg-white text-gray-900 px-14 py-5 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors shadow-2xl inline-flex items-center gap-3">
             Download Portable
             <ArrowRight className="w-5 h-5" />
           </button>
@@ -289,6 +224,16 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Back link */}
+      <div className="fixed bottom-6 left-6 z-50">
+        <Link
+          href="/styles"
+          className="bg-white text-slate-900 px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-100 shadow-lg backdrop-blur-xl"
+        >
+          ← All styles
+        </Link>
+      </div>
     </div>
   );
 }
