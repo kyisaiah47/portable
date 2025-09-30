@@ -166,8 +166,169 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 You&apos;re crushing it, {user.firstName}
               </h1>
               <p className="text-base md:text-lg text-slate-300">
-                $4,300 earned this month. Auto-saved $876 for benefits and $1,075 for taxes. Most people don&apos;t have their shit this together.
+                {parsedIncome
+                  ? `$${parsedIncome.parsed.totalIncome.toLocaleString()} earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes.`
+                  : '$4,300 earned this month. Auto-saved $876 for benefits and $1,075 for taxes.'
+                } Most people don&apos;t have their shit this together.
               </p>
+            </div>
+
+            {/* Financial Health Score */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-white font-space-grotesk">Financial Health Score</h2>
+                <p className="text-xs text-slate-400">Your complete financial picture at a glance</p>
+              </div>
+
+              {(() => {
+                // Calculate health score components
+                const incomeScore = parsedIncome?.stability.score || 0;
+                const taxScore = parsedIncome ? 30 : 0; // 30 points if they have income data uploaded
+                const benefitsScore = 0; // TODO: Track enrolled benefits
+                const totalScore = Math.min(100, incomeScore + taxScore + benefitsScore);
+
+                const getRating = (score: number) => {
+                  if (score >= 80) return { label: 'Excellent', color: 'green' };
+                  if (score >= 60) return { label: 'Good', color: 'blue' };
+                  if (score >= 40) return { label: 'Fair', color: 'yellow' };
+                  return { label: 'Needs Work', color: 'red' };
+                };
+
+                const rating = getRating(totalScore);
+                const colorClasses = {
+                  green: 'from-green-500 to-emerald-600',
+                  blue: 'from-blue-500 to-blue-600',
+                  yellow: 'from-yellow-500 to-orange-600',
+                  red: 'from-red-500 to-red-600',
+                };
+
+                return (
+                  <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
+                    <div className="flex flex-col md:flex-row items-center gap-8">
+                      {/* Score circle */}
+                      <div className="relative">
+                        <svg className="transform -rotate-90 w-40 h-40">
+                          <circle
+                            cx="80"
+                            cy="80"
+                            r="70"
+                            stroke="currentColor"
+                            strokeWidth="12"
+                            fill="transparent"
+                            className="text-slate-800"
+                          />
+                          <circle
+                            cx="80"
+                            cy="80"
+                            r="70"
+                            stroke="url(#gradient)"
+                            strokeWidth="12"
+                            fill="transparent"
+                            strokeDasharray={`${2 * Math.PI * 70}`}
+                            strokeDashoffset={`${2 * Math.PI * 70 * (1 - totalScore / 100)}`}
+                            className="transition-all duration-1000 ease-out"
+                            strokeLinecap="round"
+                          />
+                          <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" className="text-blue-500" stopColor="currentColor" />
+                              <stop offset="100%" className="text-purple-600" stopColor="currentColor" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <div className="text-5xl font-black text-white font-space-grotesk">{totalScore}</div>
+                          <div className="text-xs text-slate-400">/ 100</div>
+                        </div>
+                      </div>
+
+                      {/* Score breakdown */}
+                      <div className="flex-1 w-full">
+                        <div className="mb-6">
+                          <div className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${colorClasses[rating.color]} text-white font-bold text-sm mb-2`}>
+                            {rating.label}
+                          </div>
+                          <p className="text-slate-300 text-sm">
+                            {totalScore >= 80 && "You're crushing it! Your financial foundation is rock solid."}
+                            {totalScore >= 60 && totalScore < 80 && "You're doing well! A few improvements will get you to excellent."}
+                            {totalScore >= 40 && totalScore < 60 && "You're on the right track. Focus on the items below to improve."}
+                            {totalScore < 40 && "Let's build your financial foundation. Start with income tracking."}
+                          </p>
+                        </div>
+
+                        <div className="space-y-4">
+                          {/* Income stability */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center space-x-2">
+                                <BarChart3 className="w-4 h-4 text-blue-400" />
+                                <span className="text-sm font-semibold text-white">Income Stability</span>
+                              </div>
+                              <span className="text-sm font-bold text-slate-300">{incomeScore}/40</span>
+                            </div>
+                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-1000"
+                                style={{ width: `${(incomeScore / 40) * 100}%` }}
+                              ></div>
+                            </div>
+                          </div>
+
+                          {/* Tax readiness */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center space-x-2">
+                                <Receipt className="w-4 h-4 text-purple-400" />
+                                <span className="text-sm font-semibold text-white">Tax Readiness</span>
+                              </div>
+                              <span className="text-sm font-bold text-slate-300">{taxScore}/30</span>
+                            </div>
+                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-1000"
+                                style={{ width: `${(taxScore / 30) * 100}%` }}
+                              ></div>
+                            </div>
+                          </div>
+
+                          {/* Benefits coverage */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center space-x-2">
+                                <Shield className="w-4 h-4 text-pink-400" />
+                                <span className="text-sm font-semibold text-white">Benefits Coverage</span>
+                              </div>
+                              <span className="text-sm font-bold text-slate-300">{benefitsScore}/30</span>
+                            </div>
+                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full transition-all duration-1000"
+                                style={{ width: `${(benefitsScore / 30) * 100}%` }}
+                              ></div>
+                            </div>
+                            {benefitsScore === 0 && (
+                              <p className="text-xs text-slate-400 mt-1">
+                                <span className="text-pink-400 font-semibold">+30 points available:</span> Add health coverage to boost your score
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {totalScore < 100 && (
+                          <div className="mt-6 pt-6 border-t border-white/10">
+                            <p className="text-xs font-semibold text-slate-400 mb-2">NEXT MILESTONE</p>
+                            <p className="text-sm text-white">
+                              {!parsedIncome && "Upload your bank statement to calculate your stability score → +40 points"}
+                              {parsedIncome && benefitsScore === 0 && "Add health insurance to reach 'Excellent' status → +30 points"}
+                              {parsedIncome && totalScore >= 70 && totalScore < 100 && "You're almost there! Keep building your safety net."}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Divider */}
