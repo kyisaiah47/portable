@@ -21,7 +21,11 @@ export default function Home() {
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/10">
             <div className="text-center mb-8">
               <div className="flex items-center justify-center mb-6">
-                <Image src="/logo.svg" alt="Portable" width={40} height={40} className="brightness-0 invert" />
+                <div className="flex -space-x-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
+                </div>
               </div>
               <h2 className="text-2xl font-semibold text-white mb-2">
                 {isLogin ? 'Welcome back' : 'Create your account'}
@@ -63,7 +67,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Image src="/logo.svg" alt="Portable" width={32} height={32} className="brightness-0 invert" />
+              <div className="flex -space-x-2">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
+              </div>
               <span className="text-2xl font-bold text-white">Portable</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -282,7 +290,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center space-x-2">
-              <Image src="/logo.svg" alt="Portable" width={28} height={28} className="brightness-0 invert" />
+              <div className="flex -space-x-2">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
+              </div>
               <span className="text-xl font-bold text-white">Portable</span>
             </div>
             <div className="text-sm text-slate-500">© 2025 Portable Financial Ltd. All rights reserved.</div>
