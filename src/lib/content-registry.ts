@@ -24,6 +24,7 @@ export interface ContentItem {
   actionLink?: string;
   readTime?: string; // For guides
   tags?: string[];
+  content?: string; // For guides
 }
 
 /**

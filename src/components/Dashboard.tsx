@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
@@ -18,6 +18,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  RadialBarChart,
+  RadialBar,
+} from 'recharts';
 
 interface User {
   id: string;
@@ -37,6 +57,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const activeTab = pathname === '/dashboard' ? 'home' : pathname.split('/').pop() || 'home';
   const [selectedCities, setSelectedCities] = useState<City[]>([]);
   const [selectedGigTypes, setSelectedGigTypes] = useState<GigType[]>([]);
+  const [incomeChartView, setIncomeChartView] = useState<'bar' | 'pie'>('bar');
+  const [incomeTimePeriod, setIncomeTimePeriod] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly');
+  const [taxChartView, setTaxChartView] = useState<'quarterly' | 'liability'>('quarterly');
   const [parsedIncome, setParsedIncome] = useState<any>(() => {
     // Load from localStorage on mount
     if (typeof window !== 'undefined') {
@@ -195,169 +218,127 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 You&apos;re crushing it, {user.firstName}
               </h1>
               <p className="text-base md:text-lg text-slate-300">
-                {parsedIncome
+                {parsedIncome?.parsed?.totalIncome
                   ? `$${parsedIncome.parsed.totalIncome.toLocaleString()} earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes.`
                   : '$4,300 earned this month. Auto-saved $876 for benefits and $1,075 for taxes.'
                 } Most people don&apos;t have their shit this together.
               </p>
             </div>
 
-            {/* Financial Health Score */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Financial Health Score</h2>
-                <p className="text-xs text-slate-400">Your complete financial picture at a glance</p>
+            {/* Dynamic Insights & Key Metrics */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Earnings Card */}
+              <div className="bg-gradient-to-br from-blue-900/40 via-blue-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-blue-500/20">
+                <div className="flex items-center justify-between mb-2">
+                  <DollarSign className="w-5 h-5 text-blue-400" />
+                  <span className="text-xs text-blue-400 font-semibold">+12%</span>
+                </div>
+                <div className="text-3xl font-black text-white font-space-grotesk mb-1">
+                  ${parsedIncome?.stability.weeklyAverage ? (parsedIncome.stability.weeklyAverage * 4).toFixed(0) : '0'}
+                </div>
+                <div className="text-xs text-slate-400">Earned this month</div>
               </div>
 
-              {(() => {
-                // Calculate health score components
-                const incomeScore = parsedIncome?.stability.score || 0;
-                const taxScore = parsedIncome ? 30 : 0; // 30 points if they have income data uploaded
-                const benefitsScore = 0; // TODO: Track enrolled benefits
-                const totalScore = Math.min(100, incomeScore + taxScore + benefitsScore);
+              {/* Tax Readiness Card */}
+              <div className="bg-gradient-to-br from-purple-900/40 via-purple-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-purple-500/20">
+                <div className="flex items-center justify-between mb-2">
+                  <Receipt className="w-5 h-5 text-purple-400" />
+                  <span className="text-xs text-purple-400 font-semibold">68%</span>
+                </div>
+                <div className="text-3xl font-black text-white font-space-grotesk mb-1">
+                  ${parsedIncome?.stability?.weeklyAverage ? ((parsedIncome.stability.weeklyAverage * 4) * 0.25).toFixed(0) : '0'}
+                </div>
+                <div className="text-xs text-slate-400">Set aside for taxes</div>
+              </div>
 
-                const getRating = (score: number) => {
-                  if (score >= 80) return { label: 'Excellent', color: 'green' };
-                  if (score >= 60) return { label: 'Good', color: 'blue' };
-                  if (score >= 40) return { label: 'Fair', color: 'yellow' };
-                  return { label: 'Needs Work', color: 'red' };
-                };
+              {/* Benefits Coverage Card */}
+              <div className="bg-gradient-to-br from-pink-900/40 via-pink-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-pink-500/20">
+                <div className="flex items-center justify-between mb-2">
+                  <Shield className="w-5 h-5 text-pink-400" />
+                  <span className="text-xs text-pink-400 font-semibold">1.2 mo</span>
+                </div>
+                <div className="text-3xl font-black text-white font-space-grotesk mb-1">
+                  $3,200
+                </div>
+                <div className="text-xs text-slate-400">Emergency fund</div>
+              </div>
 
-                const rating = getRating(totalScore);
-                const colorClasses = {
-                  green: 'from-green-500 to-emerald-600',
-                  blue: 'from-blue-500 to-blue-600',
-                  yellow: 'from-yellow-500 to-orange-600',
-                  red: 'from-red-500 to-red-600',
-                };
+              {/* Next Deadline Card */}
+              <div className="bg-gradient-to-br from-orange-900/40 via-orange-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-orange-500/20">
+                <div className="flex items-center justify-between mb-2">
+                  <Calendar className="w-5 h-5 text-orange-400" />
+                  <span className="text-xs text-orange-400 font-semibold">2 weeks</span>
+                </div>
+                <div className="text-xl font-black text-white font-space-grotesk mb-1">
+                  Q3 Taxes
+                </div>
+                <div className="text-xs text-slate-400">Next deadline</div>
+              </div>
+            </div>
 
-                return (
-                  <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
-                    <div className="flex flex-col md:flex-row items-center gap-8">
-                      {/* Score circle */}
-                      <div className="relative">
-                        <svg className="transform -rotate-90 w-40 h-40">
-                          <circle
-                            cx="80"
-                            cy="80"
-                            r="70"
-                            stroke="currentColor"
-                            strokeWidth="12"
-                            fill="transparent"
-                            className="text-slate-800"
-                          />
-                          <circle
-                            cx="80"
-                            cy="80"
-                            r="70"
-                            stroke="url(#gradient)"
-                            strokeWidth="12"
-                            fill="transparent"
-                            strokeDasharray={`${2 * Math.PI * 70}`}
-                            strokeDashoffset={`${2 * Math.PI * 70 * (1 - totalScore / 100)}`}
-                            className="transition-all duration-1000 ease-out"
-                            strokeLinecap="round"
-                          />
-                          <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                              <stop offset="0%" className="text-blue-500" stopColor="currentColor" />
-                              <stop offset="100%" className="text-purple-600" stopColor="currentColor" />
-                            </linearGradient>
-                          </defs>
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <div className="text-5xl font-black text-white font-space-grotesk">{totalScore}</div>
-                          <div className="text-xs text-slate-400">/ 100</div>
-                        </div>
-                      </div>
-
-                      {/* Score breakdown */}
-                      <div className="flex-1 w-full">
-                        <div className="mb-6">
-                          <div className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${colorClasses[rating.color]} text-white font-bold text-sm mb-2`}>
-                            {rating.label}
-                          </div>
-                          <p className="text-slate-300 text-sm">
-                            {totalScore >= 80 && "You're crushing it! Your financial foundation is rock solid."}
-                            {totalScore >= 60 && totalScore < 80 && "You're doing well! A few improvements will get you to excellent."}
-                            {totalScore >= 40 && totalScore < 60 && "You're on the right track. Focus on the items below to improve."}
-                            {totalScore < 40 && "Let's build your financial foundation. Start with income tracking."}
-                          </p>
-                        </div>
-
-                        <div className="space-y-4">
-                          {/* Income stability */}
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center space-x-2">
-                                <BarChart3 className="w-4 h-4 text-blue-400" />
-                                <span className="text-sm font-semibold text-white">Income Stability</span>
-                              </div>
-                              <span className="text-sm font-bold text-slate-300">{incomeScore}/40</span>
-                            </div>
-                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-1000"
-                                style={{ width: `${(incomeScore / 40) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-
-                          {/* Tax readiness */}
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center space-x-2">
-                                <Receipt className="w-4 h-4 text-purple-400" />
-                                <span className="text-sm font-semibold text-white">Tax Readiness</span>
-                              </div>
-                              <span className="text-sm font-bold text-slate-300">{taxScore}/30</span>
-                            </div>
-                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-1000"
-                                style={{ width: `${(taxScore / 30) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-
-                          {/* Benefits coverage */}
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center space-x-2">
-                                <Shield className="w-4 h-4 text-pink-400" />
-                                <span className="text-sm font-semibold text-white">Benefits Coverage</span>
-                              </div>
-                              <span className="text-sm font-bold text-slate-300">{benefitsScore}/30</span>
-                            </div>
-                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full transition-all duration-1000"
-                                style={{ width: `${(benefitsScore / 30) * 100}%` }}
-                              ></div>
-                            </div>
-                            {benefitsScore === 0 && (
-                              <p className="text-xs text-slate-400 mt-1">
-                                <span className="text-pink-400 font-semibold">+30 points available:</span> Add health coverage to boost your score
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        {totalScore < 100 && (
-                          <div className="mt-6 pt-6 border-t border-white/10">
-                            <p className="text-xs font-semibold text-slate-400 mb-2">NEXT MILESTONE</p>
-                            <p className="text-sm text-white">
-                              {!parsedIncome && "Upload your bank statement to calculate your stability score → +40 points"}
-                              {parsedIncome && benefitsScore === 0 && "Add health insurance to reach 'Excellent' status → +30 points"}
-                              {parsedIncome && totalScore >= 70 && totalScore < 100 && "You're almost there! Keep building your safety net."}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+            {/* Financial Pillars */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Earnings Stability Pillar */}
+              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-blue-400" />
                   </div>
-                );
-              })()}
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Earnings Stability</h3>
+                    <p className="text-xs text-slate-400">
+                      {parsedIncome ? 'Good' : 'No data'}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-300">
+                  {parsedIncome && parsedIncome.stability?.weeklyAverage
+                    ? `$${parsedIncome.stability.weeklyAverage.toFixed(0)}/week average • ${parsedIncome.stability.variability}% variability`
+                    : 'Upload income data to track stability'}
+                </p>
+              </div>
+
+              {/* Tax Readiness Pillar */}
+              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <Receipt className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Tax Readiness</h3>
+                    <p className="text-xs text-slate-400">On track</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-300">Q3 deadline in 2 weeks • 68% of taxes set aside</p>
+              </div>
+
+              {/* Benefits Coverage Pillar */}
+              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-pink-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Benefits Coverage</h3>
+                    <p className="text-xs text-slate-400">Partial</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-300">Emergency fund covers 1.2 months • Consider health insurance</p>
+              </div>
+
+              {/* Expenses & Deductions Pillar */}
+              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <TrendingDown className="w-5 h-5 text-green-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Expenses & Deductions</h3>
+                    <p className="text-xs text-slate-400">Optimized</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-300">Tracking $1,240 in deductible expenses this month</p>
+              </div>
             </div>
 
             {/* Divider */}
@@ -738,15 +719,22 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         {activeTab === 'income' && (
           <div className="space-y-8">
-            {/* Hero greeting with upload */}
+            {/* Top Card - Hero number with utilities */}
             <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
               <div className="flex items-start justify-between gap-6">
                 <div className="flex-1">
-                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                    Where your money&apos;s coming from
-                  </h1>
-                  <p className="text-base md:text-lg text-slate-300">
-                    Track every dollar across platforms. See your patterns. Get personalized tips to earn more.
+                  <h1 className="text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wide">Income This Month</h1>
+                  <div className="flex items-baseline gap-4 mb-2">
+                    <div className="text-5xl md:text-6xl font-black text-white font-space-grotesk">
+                      ${parsedIncome?.stability.weeklyAverage ? (parsedIncome.stability.weeklyAverage * 4).toFixed(0) : '0'}
+                    </div>
+                    <div className="flex items-center gap-1 text-green-400">
+                      <ArrowRight className="w-4 h-4 rotate-[-45deg]" />
+                      <span className="text-lg font-bold">+12%</span>
+                    </div>
+                  </div>
+                  <p className="text-base text-slate-300">
+                    vs last month • Track every dollar across platforms
                   </p>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
@@ -821,6 +809,190 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     </div>
                     <div className="text-xs text-slate-400 mt-1 uppercase font-semibold">{parsedIncome.stability.rating}</div>
                   </div>
+                </div>
+
+                {/* Income Chart with View Toggles */}
+                <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl font-bold text-white font-space-grotesk">Income Trends</h2>
+                      <p className="text-xs text-slate-400">Your earnings across platforms over time</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* View toggles */}
+                      <button
+                        onClick={() => setIncomeChartView('bar')}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                          incomeChartView === 'bar'
+                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                            : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        Stacked Bar
+                      </button>
+                      <button
+                        onClick={() => setIncomeChartView('pie')}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                          incomeChartView === 'pie'
+                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                            : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        Pie
+                      </button>
+                      {/* Time period toggles (only for bar chart) */}
+                      {incomeChartView === 'bar' && (
+                        <>
+                          <div className="w-px h-6 bg-white/10 mx-1"></div>
+                          {(['weekly', 'biweekly', 'monthly'] as const).map((period) => (
+                            <button
+                              key={period}
+                              onClick={() => setIncomeTimePeriod(period)}
+                              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors capitalize ${
+                                incomeTimePeriod === period
+                                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                  : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                              }`}
+                            >
+                              {period}
+                            </button>
+                          ))}
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {(() => {
+                    // Prepare chart data based on parsed income
+                    const platforms = Array.from(parsedIncome.parsed.byPlatform.entries()) as [string, any][];
+
+                    // Color mapping for platforms
+                    const platformColors: Record<string, string> = {
+                      'Uber': '#3b82f6',
+                      'Lyft': '#ec4899',
+                      'DoorDash': '#ef4444',
+                      'Instacart': '#10b981',
+                      'Grubhub': '#f59e0b',
+                      'UberEats': '#06b6d4',
+                      'Upwork': '#14b8a6',
+                      'Fiverr': '#22c55e',
+                      'Freelancer': '#8b5cf6',
+                      'Other': '#64748b',
+                    };
+
+                    if (incomeChartView === 'pie') {
+                      // Pie chart data
+                      const pieData = platforms.map(([platform, data]: [string, any]) => ({
+                        name: platform,
+                        value: data.total,
+                        fill: platformColors[platform] || platformColors['Other'],
+                      }));
+
+                      return (
+                        <div className="h-80">
+                          <ChartContainer
+                            config={Object.fromEntries(
+                              platforms.map(([platform]) => [
+                                platform,
+                                { label: platform, color: platformColors[platform] || platformColors['Other'] }
+                              ])
+                            )}
+                            className="h-full w-full"
+                          >
+                            <PieChart>
+                              <ChartTooltip
+                                content={<ChartTooltipContent />}
+                              />
+                              <Pie
+                                data={pieData}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                outerRadius={120}
+                                fill="#8884d8"
+                                dataKey="value"
+                              >
+                                {pieData.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                              </Pie>
+                              <ChartLegend content={<ChartLegendContent />} />
+                            </PieChart>
+                          </ChartContainer>
+                        </div>
+                      );
+                    }
+
+                    // Stacked bar chart data - group by time period
+                    const groupedData: Record<string, any> = {};
+
+                    parsedIncome.parsed.income.forEach((item: any) => {
+                      const date = new Date(item.date);
+                      let key: string;
+
+                      if (incomeTimePeriod === 'weekly') {
+                        const weekStart = new Date(date);
+                        weekStart.setDate(date.getDate() - date.getDay());
+                        key = weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                      } else if (incomeTimePeriod === 'biweekly') {
+                        const weekOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 1).getTime()) / (7 * 24 * 60 * 60 * 1000));
+                        const biweekNum = Math.floor(weekOfYear / 2);
+                        key = `BW ${biweekNum}`;
+                      } else {
+                        key = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                      }
+
+                      if (!groupedData[key]) {
+                        groupedData[key] = { period: key };
+                      }
+
+                      const platform = item.platform || 'Other';
+                      groupedData[key][platform] = (groupedData[key][platform] || 0) + item.amount;
+                    });
+
+                    const barData = Object.values(groupedData);
+
+                    return (
+                      <div className="h-80">
+                        <ChartContainer
+                          config={Object.fromEntries(
+                            platforms.map(([platform]) => [
+                              platform,
+                              { label: platform, color: platformColors[platform] || platformColors['Other'] }
+                            ])
+                          )}
+                          className="h-full w-full"
+                        >
+                          <BarChart data={barData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                            <XAxis
+                              dataKey="period"
+                              stroke="#64748b"
+                              style={{ fontSize: '12px' }}
+                            />
+                            <YAxis
+                              stroke="#64748b"
+                              style={{ fontSize: '12px' }}
+                              tickFormatter={(value) => `$${value}`}
+                            />
+                            <ChartTooltip
+                              content={<ChartTooltipContent />}
+                            />
+                            <ChartLegend content={<ChartLegendContent />} />
+                            {platforms.map(([platform]) => (
+                              <Bar
+                                key={platform}
+                                dataKey={platform}
+                                stackId="a"
+                                fill={platformColors[platform] || platformColors['Other']}
+                              />
+                            ))}
+                          </BarChart>
+                        </ChartContainer>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Safe-to-Spend Calculator */}
@@ -950,10 +1122,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 {/* Platform Breakdown */}
                 <div>
                   <div className="mb-4">
-                    <h2 className="text-xl font-bold text-white font-space-grotesk">Detected platforms</h2>
-                    <p className="text-xs text-slate-400">Income breakdown by platform</p>
+                    <h2 className="text-xl font-bold text-white font-space-grotesk">Platform Breakdown</h2>
+                    <p className="text-xs text-slate-400">Income sources with trend indicators</p>
                   </div>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="space-y-3">
                     {Array.from(parsedIncome.parsed.byPlatform.entries())
                       .map((entry) => {
                         const [platform, payments] = entry as [string, any[]];
@@ -966,7 +1138,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         };
                       })
                       .sort((a, b) => b.total - a.total)
-                      .map(({ platform, total, count, category }) => {
+                      .map(({ platform, total, count, category }, index) => {
                         // Map platforms to brand icons
                         const platformIconMap: Record<string, any> = {
                           'Uber': SiUber,
@@ -999,21 +1171,33 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
                         const IconComponent = platformIconMap[platform] || categoryIconMap[category];
 
+                        // Mock trend data (in production, calculate from historical data)
+                        const trendPercent = [8, -3, 15, 5, -2][index % 5];
+                        const isPositive = trendPercent > 0;
+                        const totalIncome = parsedIncome.parsed.totalIncome;
+                        const percentOfTotal = ((total / totalIncome) * 100).toFixed(1);
+
                         return (
-                          <div key={platform} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex items-center space-x-2">
-                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center">
+                          <div key={platform} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-4 border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3 flex-1">
+                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                                   <IconComponent className="w-5 h-5 text-blue-400" />
                                 </div>
-                                <div>
-                                  <h3 className="text-base font-bold text-white font-space-grotesk">{platform}</h3>
-                                  <p className="text-xs text-slate-400">{count} payments</p>
+                                <div className="flex-1">
+                                  <h3 className="text-sm font-bold text-white font-space-grotesk">{platform}</h3>
+                                  <p className="text-xs text-slate-400">{count} payments • {percentOfTotal}% of total</p>
                                 </div>
                               </div>
-                              <div className="text-right">
-                                <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">
-                                  ${total.toFixed(2)}
+                              <div className="flex items-center gap-4">
+                                <div className={`flex items-center gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                                  <ArrowRight className={`w-4 h-4 ${isPositive ? 'rotate-[-45deg]' : 'rotate-[45deg]'}`} />
+                                  <span className="text-xs font-semibold">{Math.abs(trendPercent)}%</span>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-lg font-black text-white font-space-grotesk">
+                                    ${total.toFixed(0)}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1325,6 +1509,78 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* Divider */}
                   <div className="border-t border-white/10"></div>
 
+                  {/* Expenses Chart with View Toggle */}
+                  <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h2 className="text-xl font-bold text-white font-space-grotesk">Expenses Overview</h2>
+                        <p className="text-xs text-slate-400">Monthly breakdown by category</p>
+                      </div>
+                    </div>
+
+                    {(() => {
+                      // Prepare donut chart data
+                      const donutData = Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
+                        const categoryTotal = categoryExpenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
+                        const color = categoryColors[category] || 'slate';
+                        const colorMap: Record<string, string> = {
+                          'blue': '#3b82f6',
+                          'purple': '#a855f7',
+                          'green': '#22c55e',
+                          'pink': '#ec4899',
+                          'orange': '#f97316',
+                          'indigo': '#6366f1',
+                          'slate': '#64748b',
+                        };
+
+                        return {
+                          name: category.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+                          value: categoryTotal,
+                          fill: colorMap[color] || colorMap['slate'],
+                        };
+                      });
+
+                      return (
+                        <div className="h-80">
+                          <ChartContainer
+                            config={Object.fromEntries(
+                              donutData.map((item) => [
+                                item.name,
+                                { label: item.name, color: item.fill }
+                              ])
+                            )}
+                            className="h-full w-full"
+                          >
+                            <PieChart>
+                              <ChartTooltip
+                                content={<ChartTooltipContent />}
+                              />
+                              <Pie
+                                data={donutData}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                outerRadius={120}
+                                innerRadius={60}
+                                fill="#8884d8"
+                                dataKey="value"
+                              >
+                                {donutData.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                              </Pie>
+                              <ChartLegend content={<ChartLegendContent />} />
+                            </PieChart>
+                          </ChartContainer>
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-white/10"></div>
+
                   {/* Expenses by Category */}
                   <div>
                     <div className="mb-4">
@@ -1613,6 +1869,125 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* Divider */}
                   <div className="border-t border-white/10"></div>
 
+                  {/* Tax Visualization */}
+                  <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h2 className="text-xl font-bold text-white font-space-grotesk">Tax Overview</h2>
+                        <p className="text-xs text-slate-400">Quarterly payments and tax liability breakdown</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setTaxChartView('quarterly')}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                            taxChartView === 'quarterly'
+                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                          }`}
+                        >
+                          Quarterly
+                        </button>
+                        <button
+                          onClick={() => setTaxChartView('liability')}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                            taxChartView === 'liability'
+                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                          }`}
+                        >
+                          Liability
+                        </button>
+                      </div>
+                    </div>
+
+                    {taxChartView === 'liability' ? (
+                      (() => {
+                        // Pie chart for tax liability breakdown
+                        const liabilityData = [
+                          { name: 'Federal Income', value: taxCalc.breakdown.federalIncome, fill: '#3b82f6' },
+                          { name: 'Social Security', value: taxCalc.breakdown.socialSecurity, fill: '#a855f7' },
+                          { name: 'Medicare', value: taxCalc.breakdown.medicare, fill: '#ec4899' },
+                          { name: 'State Tax', value: taxCalc.breakdown.state, fill: '#f97316' },
+                        ];
+
+                        return (
+                          <div className="h-80">
+                            <ChartContainer
+                              config={{
+                                'Federal Income': { label: 'Federal Income Tax', color: '#3b82f6' },
+                                'Social Security': { label: 'Social Security', color: '#a855f7' },
+                                'Medicare': { label: 'Medicare', color: '#ec4899' },
+                                'State Tax': { label: 'State Tax', color: '#f97316' },
+                              }}
+                              className="h-full w-full"
+                            >
+                              <PieChart>
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <Pie
+                                  data={liabilityData}
+                                  cx="50%"
+                                  cy="50%"
+                                  labelLine={false}
+                                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                  outerRadius={120}
+                                  fill="#8884d8"
+                                  dataKey="value"
+                                >
+                                  {liabilityData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                  ))}
+                                </Pie>
+                                <ChartLegend content={<ChartLegendContent />} />
+                              </PieChart>
+                            </ChartContainer>
+                          </div>
+                        );
+                      })()
+                    ) : (
+                      (() => {
+                        // Quarterly bar chart (default)
+                        const quarterlyData = deadlines.map((deadline) => ({
+                          quarter: deadline.quarter,
+                          owed: deadline.amount,
+                          setAside: deadline.amount * 0.68, // Mock 68% set aside
+                        }));
+
+                        return (
+                          <div className="h-80">
+                            <ChartContainer
+                              config={{
+                                owed: { label: 'Owed', color: '#ef4444' },
+                                setAside: { label: 'Set Aside', color: '#22c55e' },
+                              }}
+                              className="h-full w-full"
+                            >
+                              <BarChart data={quarterlyData}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                                <XAxis
+                                  dataKey="quarter"
+                                  stroke="#64748b"
+                                  style={{ fontSize: '12px' }}
+                                />
+                                <YAxis
+                                  stroke="#64748b"
+                                  style={{ fontSize: '12px' }}
+                                  tickFormatter={(value) => `$${value}`}
+                                />
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <ChartLegend content={<ChartLegendContent />} />
+                                <Bar dataKey="setAside" fill="#22c55e" />
+                                <Bar dataKey="owed" fill="#ef4444" />
+                              </BarChart>
+                            </ChartContainer>
+                          </div>
+                        );
+                      })()
+                    )}
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-white/10"></div>
+
                   {/* Quarterly Payment Cards */}
                   <div>
                     <div className="mb-4">
@@ -1752,7 +2127,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     <DropdownMenuContent className="w-56 bg-slate-900 border-white/10">
                       <DropdownMenuLabel className="text-slate-400">Select Cities</DropdownMenuLabel>
                       <DropdownMenuSeparator className="bg-white/10" />
-                      {['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Austin'].map((city) => (
+                      {(['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Austin'] as City[]).map((city) => (
                         <DropdownMenuCheckboxItem
                           key={city}
                           checked={selectedCities.includes(city)}
@@ -1796,7 +2171,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     <DropdownMenuContent className="w-56 bg-slate-900 border-white/10">
                       <DropdownMenuLabel className="text-slate-400">Select Gig Types</DropdownMenuLabel>
                       <DropdownMenuSeparator className="bg-white/10" />
-                      {['Rideshare', 'Delivery', 'Freelance', 'Creator', 'Rental'].map((gigType) => (
+                      {(['rideshare', 'delivery', 'freelance', 'creator', 'rental'] as const).map((gigType) => (
                         <DropdownMenuCheckboxItem
                           key={gigType}
                           checked={selectedGigTypes.includes(gigType)}
@@ -1809,7 +2184,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           }}
                           className="text-slate-300 focus:bg-slate-800 focus:text-white"
                         >
-                          {gigType}
+                          {gigType.charAt(0).toUpperCase() + gigType.slice(1)}
                         </DropdownMenuCheckboxItem>
                       ))}
                       {selectedGigTypes.length > 0 && (
