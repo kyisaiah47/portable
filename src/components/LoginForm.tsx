@@ -84,15 +84,25 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
 
         if (signUpError) throw signUpError;
 
-        // Wait a moment for the trigger to create the user
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Update user with referral info if provided
-        if (referrerId && signUpData.user?.id) {
-          await supabase
+        // Create user profile using service role to bypass RLS
+        if (signUpData.user?.id) {
+          // Use upsert to handle if trigger already created it
+          const { error: upsertError } = await supabase
             .from('portable_users')
-            .update({ referred_by: referrerId })
-            .eq('id', signUpData.user.id);
+            .upsert({
+              id: signUpData.user.id,
+              email: formData.email,
+              first_name: formData.firstName,
+              last_name: formData.lastName,
+              referred_by: referrerId,
+            }, {
+              onConflict: 'id'
+            });
+
+          if (upsertError) {
+            console.error('Error creating user profile:', upsertError);
+            throw new Error(`Failed to create user profile: ${upsertError.message}`);
+          }
         }
 
         // If there's a valid referrer, create referral record
