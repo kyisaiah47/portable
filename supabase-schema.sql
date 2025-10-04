@@ -163,3 +163,84 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_new_user();
+
+-- Referrals table
+CREATE TABLE IF NOT EXISTS public.referrals (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  referrer_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  referee_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
+  referral_code TEXT UNIQUE NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'rewarded')),
+  reward_amount NUMERIC(10, 2) DEFAULT 10.00,
+  referee_email TEXT, -- Store email before signup
+  completed_at TIMESTAMPTZ,
+  rewarded_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for referrals
+CREATE INDEX idx_referrals_referrer ON public.referrals(referrer_id);
+CREATE INDEX idx_referrals_referee ON public.referrals(referee_id);
+CREATE INDEX idx_referrals_code ON public.referrals(referral_code);
+CREATE INDEX idx_referrals_status ON public.referrals(status);
+
+-- RLS for referrals
+ALTER TABLE public.referrals ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own referrals"
+  ON public.referrals FOR SELECT
+  USING (auth.uid() = referrer_id OR auth.uid() = referee_id);
+
+CREATE POLICY "Users can create referrals"
+  ON public.referrals FOR INSERT
+  WITH CHECK (auth.uid() = referrer_id);
+
+CREATE POLICY "System can update referrals"
+  ON public.referrals FOR UPDATE
+  USING (true); -- Allow system updates for completion/rewards
+
+-- User referral stats (denormalized for performance)
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referral_code TEXT UNIQUE;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referred_by UUID REFERENCES public.users(id);
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS total_referrals INTEGER DEFAULT 0;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referral_earnings NUMERIC(10, 2) DEFAULT 0.00;
+
+-- Function to generate unique referral code
+CREATE OR REPLACE FUNCTION generate_referral_code()
+RETURNS TEXT AS $$
+DECLARE
+  chars TEXT := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; -- Removed ambiguous chars
+  result TEXT := '';
+  i INTEGER;
+BEGIN
+  FOR i IN 1..8 LOOP
+    result := result || substr(chars, floor(random() * length(chars) + 1)::int, 1);
+  END LOOP;
+  RETURN result;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to assign referral code on user creation
+CREATE OR REPLACE FUNCTION assign_referral_code()
+RETURNS TRIGGER AS $$
+DECLARE
+  new_code TEXT;
+  code_exists BOOLEAN;
+BEGIN
+  -- Generate unique code
+  LOOP
+    new_code := generate_referral_code();
+    SELECT EXISTS(SELECT 1 FROM public.users WHERE referral_code = new_code) INTO code_exists;
+    EXIT WHEN NOT code_exists;
+  END LOOP;
+
+  NEW.referral_code := new_code;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to assign referral code
+CREATE TRIGGER assign_user_referral_code
+  BEFORE INSERT ON public.users
+  FOR EACH ROW
+  EXECUTE FUNCTION assign_referral_code();
