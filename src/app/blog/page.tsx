@@ -22,7 +22,6 @@ const blogPosts = [
     category: "Income Tracking",
     readTime: "5 min read",
     date: "January 4, 2025",
-    image: "/blog/income-tracking.jpg",
   },
   {
     slug: "quarterly-tax-guide-for-gig-workers",
@@ -31,7 +30,6 @@ const blogPosts = [
     category: "Taxes",
     readTime: "8 min read",
     date: "January 3, 2025",
-    image: "/blog/quarterly-taxes.jpg",
   },
   {
     slug: "top-10-tax-deductions-for-uber-drivers",
@@ -40,7 +38,6 @@ const blogPosts = [
     category: "Taxes",
     readTime: "6 min read",
     date: "January 2, 2025",
-    image: "/blog/uber-deductions.jpg",
   },
   {
     slug: "building-emergency-fund-as-freelancer",
@@ -49,7 +46,6 @@ const blogPosts = [
     category: "Savings",
     readTime: "7 min read",
     date: "December 30, 2024",
-    image: "/blog/emergency-fund.jpg",
   },
   {
     slug: "doordash-vs-uber-eats-which-pays-more",
@@ -58,7 +54,6 @@ const blogPosts = [
     category: "Income Optimization",
     readTime: "10 min read",
     date: "December 28, 2024",
-    image: "/blog/doordash-vs-ubereats.jpg",
   },
   {
     slug: "health-insurance-options-for-gig-workers",
@@ -67,7 +62,6 @@ const blogPosts = [
     category: "Benefits",
     readTime: "12 min read",
     date: "December 25, 2024",
-    image: "/blog/health-insurance.jpg",
   },
 ];
 
