@@ -37,6 +37,8 @@ import {
   ResponsiveContainer,
   RadialBarChart,
   RadialBar,
+  LineChart,
+  Line,
 } from 'recharts';
 
 interface User {
@@ -60,6 +62,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [incomeChartView, setIncomeChartView] = useState<'bar' | 'pie'>('bar');
   const [incomeTimePeriod, setIncomeTimePeriod] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly');
   const [taxChartView, setTaxChartView] = useState<'quarterly' | 'liability'>('quarterly');
+  const [expenseChartView, setExpenseChartView] = useState<'donut' | 'bar' | 'line'>('donut');
   const [parsedIncome, setParsedIncome] = useState<any>(() => {
     // Load from localStorage on mount
     if (typeof window !== 'undefined') {
@@ -1514,64 +1517,186 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-bold text-white font-space-grotesk">Expenses Overview</h2>
-                        <p className="text-xs text-slate-400">Monthly breakdown by category</p>
+                        <p className="text-xs text-slate-400">
+                          {expenseChartView === 'donut' && 'Monthly breakdown by category'}
+                          {expenseChartView === 'bar' && 'Category trends over time'}
+                          {expenseChartView === 'line' && 'Cumulative expenses year-to-date'}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setExpenseChartView('donut')}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                            expenseChartView === 'donut'
+                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                          }`}
+                        >
+                          Donut
+                        </button>
+                        <button
+                          onClick={() => setExpenseChartView('bar')}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                            expenseChartView === 'bar'
+                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                          }`}
+                        >
+                          Trend
+                        </button>
+                        <button
+                          onClick={() => setExpenseChartView('line')}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                            expenseChartView === 'line'
+                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
+                          }`}
+                        >
+                          YTD
+                        </button>
                       </div>
                     </div>
 
                     {(() => {
-                      // Prepare donut chart data
-                      const donutData = Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
-                        const categoryTotal = categoryExpenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
-                        const color = categoryColors[category] || 'slate';
-                        const colorMap: Record<string, string> = {
-                          'blue': '#3b82f6',
-                          'purple': '#a855f7',
-                          'green': '#22c55e',
-                          'pink': '#ec4899',
-                          'orange': '#f97316',
-                          'indigo': '#6366f1',
-                          'slate': '#64748b',
-                        };
+                      const colorMap: Record<string, string> = {
+                        'blue': '#3b82f6',
+                        'purple': '#a855f7',
+                        'green': '#22c55e',
+                        'pink': '#ec4899',
+                        'orange': '#f97316',
+                        'indigo': '#6366f1',
+                        'slate': '#64748b',
+                      };
 
+                      // Prepare category data
+                      const categories = Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
+                        const color = categoryColors[category] || 'slate';
                         return {
-                          name: category.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-                          value: categoryTotal,
-                          fill: colorMap[color] || colorMap['slate'],
+                          category,
+                          displayName: category.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+                          expenses: categoryExpenses,
+                          color: colorMap[color] || colorMap['slate'],
                         };
+                      });
+
+                      if (expenseChartView === 'donut') {
+                        // Donut chart - current month snapshot
+                        const donutData = categories.map(cat => ({
+                          name: cat.displayName,
+                          value: cat.expenses.reduce((sum, e) => sum + e.deductibleAmount, 0),
+                          fill: cat.color,
+                        }));
+
+                        return (
+                          <div className="h-80">
+                            <ChartContainer
+                              config={Object.fromEntries(
+                                donutData.map((item) => [item.name, { label: item.name, color: item.fill }])
+                              )}
+                              className="h-full w-full"
+                            >
+                              <PieChart>
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <Pie
+                                  data={donutData}
+                                  cx="50%"
+                                  cy="50%"
+                                  labelLine={false}
+                                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                  outerRadius={120}
+                                  innerRadius={60}
+                                  dataKey="value"
+                                >
+                                  {donutData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                  ))}
+                                </Pie>
+                                <ChartLegend content={<ChartLegendContent />} />
+                              </PieChart>
+                            </ChartContainer>
+                          </div>
+                        );
+                      }
+
+                      if (expenseChartView === 'bar') {
+                        // Stacked bar - monthly trend
+                        // Group expenses by month
+                        const monthlyData: Record<string, any> = {};
+
+                        categories.forEach(cat => {
+                          cat.expenses.forEach(exp => {
+                            const monthKey = exp.date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                            if (!monthlyData[monthKey]) {
+                              monthlyData[monthKey] = { month: monthKey };
+                            }
+                            monthlyData[monthKey][cat.displayName] = (monthlyData[monthKey][cat.displayName] || 0) + exp.deductibleAmount;
+                          });
+                        });
+
+                        const barData = Object.values(monthlyData);
+
+                        return (
+                          <div className="h-80">
+                            <ChartContainer
+                              config={Object.fromEntries(
+                                categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
+                              )}
+                              className="h-full w-full"
+                            >
+                              <BarChart data={barData}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                                <XAxis dataKey="month" stroke="#64748b" style={{ fontSize: '12px' }} />
+                                <YAxis stroke="#64748b" style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <ChartLegend content={<ChartLegendContent />} />
+                                {categories.map(cat => (
+                                  <Bar key={cat.category} dataKey={cat.displayName} stackId="a" fill={cat.color} />
+                                ))}
+                              </BarChart>
+                            </ChartContainer>
+                          </div>
+                        );
+                      }
+
+                      // Line chart - cumulative YTD
+                      // Sort all expenses by date and calculate running totals per category
+                      const allExpenses = categories.flatMap(cat =>
+                        cat.expenses.map(exp => ({
+                          ...exp,
+                          category: cat.displayName,
+                          color: cat.color,
+                        }))
+                      ).sort((a, b) => a.date.getTime() - b.date.getTime());
+
+                      const cumulativeData: Record<string, any>[] = [];
+                      const runningTotals: Record<string, number> = {};
+
+                      allExpenses.forEach(exp => {
+                        runningTotals[exp.category] = (runningTotals[exp.category] || 0) + exp.deductibleAmount;
+                        cumulativeData.push({
+                          date: exp.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                          ...runningTotals,
+                        });
                       });
 
                       return (
                         <div className="h-80">
                           <ChartContainer
                             config={Object.fromEntries(
-                              donutData.map((item) => [
-                                item.name,
-                                { label: item.name, color: item.fill }
-                              ])
+                              categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
                             )}
                             className="h-full w-full"
                           >
-                            <PieChart>
-                              <ChartTooltip
-                                content={<ChartTooltipContent />}
-                              />
-                              <Pie
-                                data={donutData}
-                                cx="50%"
-                                cy="50%"
-                                labelLine={false}
-                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                outerRadius={120}
-                                innerRadius={60}
-                                fill="#8884d8"
-                                dataKey="value"
-                              >
-                                {donutData.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                                ))}
-                              </Pie>
+                            <LineChart data={cumulativeData}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                              <XAxis dataKey="date" stroke="#64748b" style={{ fontSize: '12px' }} />
+                              <YAxis stroke="#64748b" style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
+                              <ChartTooltip content={<ChartTooltipContent />} />
                               <ChartLegend content={<ChartLegendContent />} />
-                            </PieChart>
+                              {categories.map(cat => (
+                                <Line key={cat.category} type="monotone" dataKey={cat.displayName} stroke={cat.color} strokeWidth={2} />
+                              ))}
+                            </LineChart>
                           </ChartContainer>
                         </div>
                       );
