@@ -221,6 +221,335 @@ export const PLATFORM_PATTERNS: PlatformPattern[] = [
     ],
     icon: '🚙',
   },
+  {
+    name: 'Getaround',
+    category: 'rental',
+    patterns: [
+      /getaround/i,
+      /get around/i,
+    ],
+    icon: '🚙',
+  },
+
+  // Additional Delivery Platforms
+  {
+    name: 'Amazon Flex',
+    category: 'delivery',
+    patterns: [
+      /amazon flex/i,
+      /amzn flex/i,
+      /flex.*driver/i,
+    ],
+    icon: '📦',
+  },
+  {
+    name: 'Shipt',
+    category: 'delivery',
+    patterns: [
+      /shipt/i,
+      /shipt.*shopper/i,
+    ],
+    icon: '🛒',
+  },
+  {
+    name: 'Gopuff',
+    category: 'delivery',
+    patterns: [
+      /gopuff/i,
+      /go puff/i,
+    ],
+    icon: '🏪',
+  },
+  {
+    name: 'Caviar',
+    category: 'delivery',
+    patterns: [
+      /caviar/i,
+      /caviar.*delivery/i,
+    ],
+    icon: '🍱',
+  },
+  {
+    name: 'Roadie',
+    category: 'delivery',
+    patterns: [
+      /roadie/i,
+      /roadie.*driver/i,
+    ],
+    icon: '📦',
+  },
+  {
+    name: 'Favor',
+    category: 'delivery',
+    patterns: [
+      /favor.*delivery/i,
+      /favor runner/i,
+    ],
+    icon: '🛍️',
+  },
+
+  // Additional Freelance Platforms
+  {
+    name: 'Guru',
+    category: 'freelance',
+    patterns: [
+      /guru\.com/i,
+      /guru inc/i,
+    ],
+    icon: '💼',
+  },
+  {
+    name: 'PeoplePerHour',
+    category: 'freelance',
+    patterns: [
+      /peopleperhour/i,
+      /people per hour/i,
+    ],
+    icon: '💼',
+  },
+  {
+    name: '99designs',
+    category: 'freelance',
+    patterns: [
+      /99designs/i,
+      /ninety nine designs/i,
+    ],
+    icon: '🎨',
+  },
+  {
+    name: 'TaskRabbit',
+    category: 'freelance',
+    patterns: [
+      /taskrabbit/i,
+      /task rabbit/i,
+    ],
+    icon: '🔧',
+  },
+  {
+    name: 'Thumbtack',
+    category: 'freelance',
+    patterns: [
+      /thumbtack/i,
+      /thumb tack/i,
+    ],
+    icon: '🔨',
+  },
+  {
+    name: 'Handy',
+    category: 'freelance',
+    patterns: [
+      /handy\.com/i,
+      /handy inc/i,
+    ],
+    icon: '🛠️',
+  },
+
+  // E-commerce/Marketplace Platforms
+  {
+    name: 'Etsy',
+    category: 'other',
+    patterns: [
+      /etsy/i,
+      /etsy.*seller/i,
+      /etsy payment/i,
+    ],
+    icon: '🎨',
+  },
+  {
+    name: 'eBay',
+    category: 'other',
+    patterns: [
+      /ebay/i,
+      /paypal.*seller/i,
+    ],
+    icon: '🛍️',
+  },
+  {
+    name: 'Poshmark',
+    category: 'other',
+    patterns: [
+      /poshmark/i,
+      /posh mark/i,
+    ],
+    icon: '👗',
+  },
+  {
+    name: 'Mercari',
+    category: 'other',
+    patterns: [
+      /mercari/i,
+    ],
+    icon: '📱',
+  },
+  {
+    name: 'Depop',
+    category: 'other',
+    patterns: [
+      /depop/i,
+    ],
+    icon: '👕',
+  },
+
+  // Additional Creator Platforms
+  {
+    name: 'TikTok Creator Fund',
+    category: 'creator',
+    patterns: [
+      /tiktok.*creator/i,
+      /tiktok.*fund/i,
+      /bytedance/i,
+    ],
+    icon: '📱',
+  },
+  {
+    name: 'Instagram Reels',
+    category: 'creator',
+    patterns: [
+      /instagram.*bonus/i,
+      /ig.*creator/i,
+      /meta.*creator/i,
+    ],
+    icon: '📸',
+  },
+  {
+    name: 'Snapchat Spotlight',
+    category: 'creator',
+    patterns: [
+      /snapchat.*spotlight/i,
+      /snap.*creator/i,
+    ],
+    icon: '👻',
+  },
+  {
+    name: 'Medium Partner',
+    category: 'creator',
+    patterns: [
+      /medium.*partner/i,
+      /medium.*payment/i,
+    ],
+    icon: '📝',
+  },
+  {
+    name: 'Teachable',
+    category: 'creator',
+    patterns: [
+      /teachable/i,
+      /teachable.*payment/i,
+    ],
+    icon: '📚',
+  },
+  {
+    name: 'Udemy',
+    category: 'creator',
+    patterns: [
+      /udemy/i,
+      /udemy.*instructor/i,
+    ],
+    icon: '🎓',
+  },
+  {
+    name: 'Skillshare',
+    category: 'creator',
+    patterns: [
+      /skillshare/i,
+      /skillshare.*teacher/i,
+    ],
+    icon: '🎨',
+  },
+  {
+    name: 'Ko-fi',
+    category: 'creator',
+    patterns: [
+      /ko-fi/i,
+      /kofi/i,
+    ],
+    icon: '☕',
+  },
+  {
+    name: 'Buy Me a Coffee',
+    category: 'creator',
+    patterns: [
+      /buymeacoffee/i,
+      /buy me a coffee/i,
+    ],
+    icon: '☕',
+  },
+
+  // Pet Care
+  {
+    name: 'Rover',
+    category: 'other',
+    patterns: [
+      /rover\.com/i,
+      /rover.*sitter/i,
+    ],
+    icon: '🐕',
+  },
+  {
+    name: 'Wag',
+    category: 'other',
+    patterns: [
+      /wag.*walker/i,
+      /wag inc/i,
+    ],
+    icon: '🐕',
+  },
+
+  // Tutoring/Education
+  {
+    name: 'VIPKid',
+    category: 'freelance',
+    patterns: [
+      /vipkid/i,
+      /vip kid/i,
+    ],
+    icon: '👨‍🏫',
+  },
+  {
+    name: 'Wyzant',
+    category: 'freelance',
+    patterns: [
+      /wyzant/i,
+    ],
+    icon: '📖',
+  },
+  {
+    name: 'Cambly',
+    category: 'freelance',
+    patterns: [
+      /cambly/i,
+    ],
+    icon: '💬',
+  },
+
+  // Miscellaneous
+  {
+    name: 'Care.com',
+    category: 'other',
+    patterns: [
+      /care\.com/i,
+      /care inc/i,
+    ],
+    icon: '👶',
+  },
+  {
+    name: 'Field Agent',
+    category: 'other',
+    patterns: [
+      /field agent/i,
+      /fieldagent/i,
+    ],
+    icon: '🔍',
+  },
+  {
+    name: 'Gigwalk',
+    category: 'other',
+    patterns: [
+      /gigwalk/i,
+      /gig walk/i,
+    ],
+    icon: '🚶',
+  },
 ];
 
 /**
