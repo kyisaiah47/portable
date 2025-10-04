@@ -31,16 +31,24 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
     try {
       if (isLogin) {
         // Login with Supabase Auth
+        console.log('Starting login...');
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
 
-        if (signInError) throw signInError;
+        console.log('Login response:', { data, error: signInError });
 
+        if (signInError) {
+          console.error('Sign in error:', signInError);
+          throw signInError;
+        }
+
+        console.log('Calling onSuccess...');
         // Session is now established - redirect immediately
         // Don't set loading to false, we're leaving the page
         onSuccess(data.user);
+        console.log('onSuccess called, returning...');
         return; // Exit early to prevent finally block
       } else {
         // If there's a referral code, validate it first

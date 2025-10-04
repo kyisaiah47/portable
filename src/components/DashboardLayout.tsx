@@ -3,7 +3,13 @@
 import { ReactNode, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { BarChart3, DollarSign, Shield, LogOut, User, FileText, Receipt, BookOpen, Users, Target } from 'lucide-react';
+import { BarChart3, DollarSign, Shield, LogOut, User, FileText, Receipt, BookOpen, Users, Target, ChevronDown, MoreHorizontal } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useParsedIncome, useTransactions, usePlaidItems } from '@/hooks/useSupabaseData';
 import { Transaction } from '@/lib/income-parser';
 
@@ -62,24 +68,29 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
       return null;
     }
 
+    // Extract data from JSONB fields
+    const stabilityData = supabaseParsedIncome.stability as any;
+    const platformData = supabaseParsedIncome.by_platform as any;
+    const incomeData = stabilityData?.incomeData || [];
+
     // Transform Supabase format to Dashboard format
     return {
       parsed: {
         totalIncome: supabaseParsedIncome.total_income,
-        income: supabaseParsedIncome.income_data.map((item) => ({
+        income: incomeData.map((item: any) => ({
           date: new Date(item.date),
           amount: item.amount,
           platform: item.platform,
         })),
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
-        byPlatform: new Map(Object.entries(supabaseParsedIncome.platforms)),
+        byPlatform: new Map(Object.entries(platformData || {})),
       },
       stability: {
-        score: supabaseParsedIncome.stability_score,
-        rating: supabaseParsedIncome.stability_rating,
-        weeklyAverage: supabaseParsedIncome.weekly_average,
-        variability: supabaseParsedIncome.variability,
+        score: stabilityData?.score || 0,
+        rating: stabilityData?.rating || 'Unknown',
+        weeklyAverage: stabilityData?.weeklyAverage || 0,
+        variability: stabilityData?.variability || 0,
       },
       rawTransactions: transactions.map((tx) => ({
         id: tx.id,
@@ -148,25 +159,55 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
                   { id: 'home', label: 'Home', icon: BarChart3, path: '/dashboard' },
                   { id: 'income', label: 'Income', icon: DollarSign, path: '/dashboard/income' },
                   { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
-                  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' },
                   { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
-                  { id: 'insights', label: 'Insights', icon: Target, path: '/dashboard/insights' },
-                  { id: 'referrals', label: 'Referrals', icon: Users, path: '/dashboard/referrals' },
-                  { id: 'learn', label: 'Learn', icon: BookOpen, path: '/dashboard/learn' }
+                  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' }
                 ].map((tab) => (
                   <Link
                     key={tab.id}
                     href={tab.path}
-                    className={`flex items-center space-x-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                    className={`flex items-center space-x-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
                       activeTab === tab.id
-                        ? 'text-white'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'text-white bg-white/10'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <tab.icon className="w-4 h-4" />
                     <span>{tab.label}</span>
                   </Link>
                 ))}
+
+                {/* More dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger className={`flex items-center space-x-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                    ['insights', 'referrals', 'learn'].includes(activeTab)
+                      ? 'text-white bg-white/10'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}>
+                    <MoreHorizontal className="w-4 h-4" />
+                    <span>More</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-900 border-white/10">
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/insights" className="flex items-center space-x-2 cursor-pointer">
+                        <Target className="w-4 h-4" />
+                        <span>Insights</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/referrals" className="flex items-center space-x-2 cursor-pointer">
+                        <Users className="w-4 h-4" />
+                        <span>Referrals</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/learn" className="flex items-center space-x-2 cursor-pointer">
+                        <BookOpen className="w-4 h-4" />
+                        <span>Learn</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
             <div className="flex items-center space-x-6">

@@ -48,29 +48,36 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
   const { data: transactions, loading: transactionsLoading } = useTransactions(user.id);
   const { data: plaidItems, loading: plaidItemsLoading } = usePlaidItems(user.id);
 
+  console.log('DashboardDataProvider loading states:', { incomeLoading, transactionsLoading, plaidItemsLoading });
+
   // Transform Supabase data to Dashboard format
   const parsedIncome = useMemo(() => {
     if (!supabaseParsedIncome) {
       return null;
     }
 
+    // Extract data from JSONB fields
+    const stabilityData = supabaseParsedIncome.stability as any;
+    const platformData = supabaseParsedIncome.by_platform as any;
+    const incomeData = stabilityData?.incomeData || [];
+
     return {
       parsed: {
         totalIncome: supabaseParsedIncome.total_income,
-        income: supabaseParsedIncome.income_data.map((item) => ({
+        income: incomeData.map((item: any) => ({
           date: new Date(item.date),
           amount: item.amount,
           platform: item.platform,
         })),
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
-        byPlatform: new Map(Object.entries(supabaseParsedIncome.platforms)),
+        byPlatform: new Map(Object.entries(platformData || {})),
       },
       stability: {
-        score: supabaseParsedIncome.stability_score,
-        rating: supabaseParsedIncome.stability_rating,
-        weeklyAverage: supabaseParsedIncome.weekly_average,
-        variability: supabaseParsedIncome.variability,
+        score: stabilityData?.score || 0,
+        rating: stabilityData?.rating || 'Unknown',
+        weeklyAverage: stabilityData?.weeklyAverage || 0,
+        variability: stabilityData?.variability || 0,
       },
       rawTransactions: transactions.map((tx) => ({
         id: tx.id,

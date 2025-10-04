@@ -8,10 +8,16 @@ import Link from 'next/link';
 export default function LoginPage() {
   const router = useRouter();
 
-  const handleSuccess = async (user: any) => {
+  const handleSuccess = (user: any) => {
     console.log('handleSuccess called with user:', user);
-    // Force redirect using window.location for immediate navigation
-    window.location.href = '/dashboard';
+    try {
+      console.log('Attempting redirect to /dashboard');
+      // Use router.push instead of window.location
+      router.push('/dashboard');
+      console.log('router.push called');
+    } catch (error) {
+      console.error('Redirect error:', error);
+    }
   };
 
   return (
