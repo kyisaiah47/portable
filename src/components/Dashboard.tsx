@@ -2386,6 +2386,30 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     )}
                   </div>
 
+                  {/* Divider */}
+                  <div className="border-t border-white/10"></div>
+
+                  {/* Quarterly Tax Calculator */}
+                  {(() => {
+                    const QuarterlyTaxCalculator = require('./QuarterlyTaxCalculator').default;
+                    return (
+                      <div>
+                        <div className="mb-6">
+                          <h2 className="text-2xl font-bold text-white font-space-grotesk">
+                            Quarterly Tax Calculator
+                          </h2>
+                          <p className="text-slate-400 text-sm mt-1">
+                            Calculate and track your quarterly estimated tax payments
+                          </p>
+                        </div>
+                        <QuarterlyTaxCalculator
+                          yearToDateIncome={parsedIncome.parsed.totalIncome}
+                          yearToDateExpenses={expenseResults.totalDeductions}
+                        />
+                      </div>
+                    );
+                  })()}
+
                   {/* End of tax calculations */}
                 </>
               );
