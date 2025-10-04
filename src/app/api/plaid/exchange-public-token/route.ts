@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { plaidClient } from '@/lib/plaid';
+import { plaidClient, PLAID_ENABLED } from '@/lib/plaid';
 import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Plaid is enabled
+    if (!PLAID_ENABLED || !plaidClient) {
+      return NextResponse.json(
+        { error: 'Plaid integration is not configured' },
+        { status: 503 }
+      );
+    }
+
     const { public_token, userId } = await request.json();
 
     if (!public_token || !userId) {
