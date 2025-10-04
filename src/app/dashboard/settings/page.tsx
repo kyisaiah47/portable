@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { User, Mail, Lock, Trash2, Save, Loader2 } from 'lucide-react';
+import { User, Mail, Lock, Trash2, Save, Loader2, Bell } from 'lucide-react';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -17,13 +17,18 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [weeklyReports, setWeeklyReports] = useState(true);
+  const [taxReminders, setTaxReminders] = useState(true);
+
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
+  const [savingNotifications, setSavingNotifications] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const [profileMessage, setProfileMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
+  const [notificationsMessage, setNotificationsMessage] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -34,6 +39,21 @@ export default function SettingsPage() {
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setEmail(user.email);
+
+      // Load notification preferences (stored in user metadata)
+      const loadPreferences = async () => {
+        const { data } = await supabase
+          .from('portable_users')
+          .select('email_preferences')
+          .eq('id', user.id)
+          .single();
+
+        if (data?.email_preferences) {
+          setWeeklyReports(data.email_preferences.weeklyReports ?? true);
+          setTaxReminders(data.email_preferences.taxReminders ?? true);
+        }
+      };
+      loadPreferences();
     }
   }, [user, authLoading, router]);
 
@@ -112,6 +132,34 @@ export default function SettingsPage() {
       setError(err instanceof Error ? err.message : 'Failed to update password');
     } finally {
       setSavingPassword(false);
+    }
+  };
+
+  const handleUpdateNotifications = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingNotifications(true);
+    setNotificationsMessage('');
+    setError('');
+
+    try {
+      const { error } = await supabase
+        .from('portable_users')
+        .update({
+          email_preferences: {
+            weeklyReports,
+            taxReminders,
+          },
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setNotificationsMessage('✅ Notification preferences updated');
+      setTimeout(() => setNotificationsMessage(''), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update preferences');
+    } finally {
+      setSavingNotifications(false);
     }
   };
 
@@ -215,6 +263,87 @@ export default function SettingsPage() {
                   <>
                     <Save className="w-4 h-4" />
                     Save Changes
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Email Notifications */}
+          <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <Bell className="w-5 h-5 text-green-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white font-space-grotesk">Email Notifications</h2>
+            </div>
+
+            <form onSubmit={handleUpdateNotifications} className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-lg border border-white/5">
+                  <input
+                    type="checkbox"
+                    id="weeklyReports"
+                    checked={weeklyReports}
+                    onChange={(e) => setWeeklyReports(e.target.checked)}
+                    className="mt-1 w-5 h-5 rounded border-white/20 bg-slate-800 text-blue-500 focus:ring-2 focus:ring-blue-500/50"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="weeklyReports" className="block text-white font-semibold mb-1 cursor-pointer">
+                      Weekly Earnings Reports
+                    </label>
+                    <p className="text-sm text-slate-400">
+                      Get a summary of your weekly income, platform breakdown, and personalized insights every Monday morning.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-lg border border-white/5">
+                  <input
+                    type="checkbox"
+                    id="taxReminders"
+                    checked={taxReminders}
+                    onChange={(e) => setTaxReminders(e.target.checked)}
+                    className="mt-1 w-5 h-5 rounded border-white/20 bg-slate-800 text-blue-500 focus:ring-2 focus:ring-blue-500/50"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="taxReminders" className="block text-white font-semibold mb-1 cursor-pointer">
+                      Quarterly Tax Reminders
+                    </label>
+                    <p className="text-sm text-slate-400">
+                      Receive reminders before quarterly tax deadlines (April 15, June 15, September 15, January 15) with estimated payment amounts.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {notificationsMessage && (
+                <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                  {notificationsMessage}
+                </div>
+              )}
+
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                <p className="text-sm text-slate-300">
+                  <strong className="text-blue-400">Note:</strong> Email notifications require your Supabase project to have SMTP configured.
+                  Until then, these preferences are saved but emails won't be sent.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={savingNotifications}
+                className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                {savingNotifications ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    Save Preferences
                   </>
                 )}
               </button>

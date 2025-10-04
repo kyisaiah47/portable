@@ -13,7 +13,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [step, setStep] = useState(1);
-  const [method, setMethod] = useState<'plaid' | 'csv' | null>(null);
+  const [method, setMethod] = useState<'plaid' | 'csv' | 'demo' | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {

@@ -109,18 +109,22 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
         ])
       );
 
+      // Calculate weekly average and variability
+      const weeklyAverage = parsed.totalIncome / 4; // Assuming 4 weeks
+      const variability = Math.round((1 - stability.score / 100) * 100);
+
       const { error: incomeError } = await supabase
         .from('portable_parsed_income')
         .upsert({
           user_id: userId,
           total_income: parsed.totalIncome,
-          start_date: parsed.startDate.toISOString(),
-          end_date: parsed.endDate.toISOString(),
+          start_date: parsed.startDate?.toISOString() || new Date().toISOString(),
+          end_date: parsed.endDate?.toISOString() || new Date().toISOString(),
           platforms,
           stability_score: stability.score,
           stability_rating: stability.rating,
-          weekly_average: stability.weeklyAverage,
-          variability: stability.variability,
+          weekly_average: weeklyAverage,
+          variability: variability,
           income_data: incomeData,
         }, { onConflict: 'user_id' });
 
