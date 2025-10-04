@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import LoginForm from '@/components/LoginForm';
 import Link from 'next/link';
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [referralCode, setReferralCode] = useState<string | null>(null);
@@ -70,5 +70,17 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    }>
+      <SignupContent />
+    </Suspense>
   );
 }
