@@ -5,6 +5,18 @@ export const metadata: Metadata = {
   title: "DoorDash vs Uber Eats: Which Pays More in 2025?",
   description: "Real data from 10,000+ drivers. See which platform pays better in your city and time slot. Maximize your delivery driver earnings.",
   keywords: ["doordash vs uber eats", "delivery driver pay", "food delivery earnings", "doordash pay", "uber eats earnings"],
+  openGraph: {
+    title: "DoorDash vs Uber Eats: Which Pays More in 2025?",
+    description: "Real data from 10,000+ drivers. See which platform pays better in your city and time slot. Maximize your delivery driver earnings.",
+    type: "article",
+    publishedTime: "2024-12-28T00:00:00.000Z",
+    authors: ["Portable"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DoorDash vs Uber Eats: Which Pays More in 2025?",
+    description: "Real data from 10,000+ drivers. See which platform pays better in your city and time slot. Maximize your delivery driver earnings.",
+  },
 };
 
 export default function BlogPost() {

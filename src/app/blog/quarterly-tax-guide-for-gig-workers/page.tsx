@@ -5,6 +5,18 @@ export const metadata: Metadata = {
   title: "Quarterly Tax Guide for Gig Workers (2025)",
   description: "Complete guide to quarterly tax payments for 1099 contractors. Deadlines, calculations, and how to avoid penalties.",
   keywords: ["quarterly taxes", "1099 taxes", "gig worker taxes", "self employment tax", "estimated taxes"],
+  openGraph: {
+    title: "Quarterly Tax Guide for Gig Workers (2025)",
+    description: "Complete guide to quarterly tax payments for 1099 contractors. Deadlines, calculations, and how to avoid penalties.",
+    type: "article",
+    publishedTime: "2025-01-03T00:00:00.000Z",
+    authors: ["Portable"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quarterly Tax Guide for Gig Workers (2025)",
+    description: "Complete guide to quarterly tax payments for 1099 contractors. Deadlines, calculations, and how to avoid penalties.",
+  },
 };
 
 export default function BlogPost() {

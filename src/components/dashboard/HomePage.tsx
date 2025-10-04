@@ -12,6 +12,7 @@ import {
   Line,
 } from 'recharts';
 import { DashboardData } from '@/components/DashboardLayout';
+import { HomePageSkeleton } from '@/components/LoadingSkeleton';
 
 interface User {
   id: string;
@@ -27,6 +28,11 @@ interface HomePageProps {
 
 export default function HomePage({ dashboardData, user }: HomePageProps) {
   const { parsedIncome } = dashboardData;
+
+  // Show loading skeleton if no data yet
+  if (!parsedIncome) {
+    return <HomePageSkeleton />;
+  }
 
   return (
     <div className="space-y-8">

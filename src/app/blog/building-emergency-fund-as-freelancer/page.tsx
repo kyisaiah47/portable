@@ -5,6 +5,18 @@ export const metadata: Metadata = {
   title: "Building an Emergency Fund as a Freelancer",
   description: "Income fluctuates? Here's how to build a safety net that protects you during slow months. Complete guide for gig workers and freelancers.",
   keywords: ["emergency fund", "freelancer savings", "gig worker savings", "financial stability", "income stability"],
+  openGraph: {
+    title: "Building an Emergency Fund as a Freelancer",
+    description: "Income fluctuates? Here's how to build a safety net that protects you during slow months. Complete guide for gig workers and freelancers.",
+    type: "article",
+    publishedTime: "2024-12-30T00:00:00.000Z",
+    authors: ["Portable"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Building an Emergency Fund as a Freelancer",
+    description: "Income fluctuates? Here's how to build a safety net that protects you during slow months. Complete guide for gig workers and freelancers.",
+  },
 };
 
 export default function BlogPost() {

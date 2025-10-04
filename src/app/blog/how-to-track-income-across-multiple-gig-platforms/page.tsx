@@ -11,6 +11,18 @@ export const metadata: Metadata = {
     "doordash earnings",
     "freelance income tracking",
   ],
+  openGraph: {
+    title: "How to Track Income Across Multiple Gig Platforms",
+    description: "Complete guide to tracking income from Uber, DoorDash, Upwork, and other gig platforms. Automate your income tracking and never miss a payment.",
+    type: "article",
+    publishedTime: "2024-12-20T00:00:00.000Z",
+    authors: ["Portable"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How to Track Income Across Multiple Gig Platforms",
+    description: "Complete guide to tracking income from Uber, DoorDash, Upwork, and other gig platforms. Automate your income tracking and never miss a payment.",
+  },
 };
 
 export default function BlogPost() {

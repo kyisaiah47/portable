@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Space_Grotesk, Outfit, Sora } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://portable.app'),
   title: {
     default: "Portable — Financial Platform for Gig Workers",
     template: "%s | Portable",
@@ -57,7 +59,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://getportable.app",
+    url: "https://portable.app",
     siteName: "Portable",
     title: "Portable — Financial Platform for Gig Workers",
     description: "Track income, manage taxes, and build financial stability. Automatic income tracking from 50+ gig platforms.",
@@ -102,12 +104,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script
+          defer
+          data-domain="portable.app"
+          src="https://plausible.io/js/script.js"
+        ></script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${spaceGrotesk.variable} ${outfit.variable} ${sora.variable} antialiased`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

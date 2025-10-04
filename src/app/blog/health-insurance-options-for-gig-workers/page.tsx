@@ -5,6 +5,18 @@ export const metadata: Metadata = {
   title: "Health Insurance Options for Gig Workers",
   description: "No employer benefits? Compare your options: ACA marketplace, health sharing, and catastrophic plans. Find affordable coverage as an independent worker.",
   keywords: ["gig worker health insurance", "freelancer health insurance", "aca marketplace", "self employed insurance", "health sharing plans"],
+  openGraph: {
+    title: "Health Insurance Options for Gig Workers",
+    description: "No employer benefits? Compare your options: ACA marketplace, health sharing, and catastrophic plans. Find affordable coverage as an independent worker.",
+    type: "article",
+    publishedTime: "2024-12-25T00:00:00.000Z",
+    authors: ["Portable"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Health Insurance Options for Gig Workers",
+    description: "No employer benefits? Compare your options: ACA marketplace, health sharing, and catastrophic plans. Find affordable coverage as an independent worker.",
+  },
 };
 
 export default function BlogPost() {

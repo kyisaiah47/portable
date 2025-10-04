@@ -5,6 +5,18 @@ export const metadata: Metadata = {
   title: "Top 10 Tax Deductions for Uber Drivers",
   description: "Maximize your tax savings with these often-overlooked deductions. Save thousands on your 2025 taxes as an Uber or Lyft driver.",
   keywords: ["uber tax deductions", "rideshare taxes", "lyft deductions", "mileage deduction", "1099 deductions"],
+  openGraph: {
+    title: "Top 10 Tax Deductions for Uber Drivers",
+    description: "Maximize your tax savings with these often-overlooked deductions. Save thousands on your 2025 taxes as an Uber or Lyft driver.",
+    type: "article",
+    publishedTime: "2025-01-02T00:00:00.000Z",
+    authors: ["Portable"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Top 10 Tax Deductions for Uber Drivers",
+    description: "Maximize your tax savings with these often-overlooked deductions. Save thousands on your 2025 taxes as an Uber or Lyft driver.",
+  },
 };
 
 export default function BlogPost() {

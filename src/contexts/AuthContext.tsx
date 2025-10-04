@@ -49,6 +49,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
 
+      // Handle token expiration
+      if (event === 'TOKEN_REFRESHED') {
+        console.log('Session token refreshed');
+      }
+
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setLoading(false);
+        router.push('/login');
+        return;
+      }
+
       if (session?.user) {
         await fetchUserProfile(session.user.id);
       } else {
@@ -79,7 +91,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         lastName: userProfile.last_name,
       });
     } catch (error) {
+      console.error('Failed to fetch user profile:', error);
       setUser(null);
+      // If user profile doesn't exist, sign out
+      await supabase.auth.signOut();
+      router.push('/login');
     } finally {
       setLoading(false);
     }
