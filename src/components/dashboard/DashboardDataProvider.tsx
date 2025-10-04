@@ -86,7 +86,13 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
 
   const dashboardData: DashboardData = {
     parsedIncome,
-    transactions,
+    transactions: transactions.map((tx) => ({
+      id: tx.id,
+      date: new Date(tx.date),
+      description: tx.name,
+      amount: tx.amount,
+      type: tx.amount > 0 ? 'credit' : 'debit' as 'credit' | 'debit',
+    })),
     plaidItems,
     isLoading,
   };
