@@ -39,12 +39,12 @@ export default function TestParserPage() {
   };
 
   // Parse CSV file
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const text = e.target?.result as string;
       const lines = text.split('\n');
       const parsedTransactions: Transaction[] = [];
@@ -57,7 +57,7 @@ export default function TestParserPage() {
         const [date, description, amount, type] = line.split(',');
         if (date && description && amount && type) {
           parsedTransactions.push({
-            id: `${i}`,
+            id: `test-parser-${i}`,
             date: new Date(date),
             description,
             amount: parseFloat(amount),
@@ -76,6 +76,13 @@ export default function TestParserPage() {
         parsed,
         stability,
       });
+
+      console.log('Test Parser Results (Not saved to database):', {
+        totalIncome: parsed.totalIncome,
+        platforms: parsed.byPlatform.size,
+        stabilityScore: stability.score,
+        stabilityRating: stability.rating,
+      });
     };
 
     reader.readAsText(file);
@@ -92,6 +99,12 @@ export default function TestParserPage() {
           <p className="text-slate-400 text-lg">
             Upload a CSV bank statement to test the income parsing regex engine
           </p>
+          <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+            <p className="text-sm text-yellow-400">
+              <strong>Note:</strong> This page is for testing the parser only. Results are not saved to database.
+              Use the dashboard CSV upload to save your real transactions.
+            </p>
+          </div>
         </div>
 
         {/* Upload Section */}

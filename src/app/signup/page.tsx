@@ -18,7 +18,9 @@ function SignupContent() {
   }, [searchParams]);
 
   const handleSuccess = (user: any) => {
-    router.push('/dashboard');
+    // Check if user has any parsed income data
+    // If not, redirect to onboarding
+    router.push('/onboarding');
   };
 
   return (

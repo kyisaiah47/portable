@@ -1,6 +1,6 @@
 'use client';
 
-import { DollarSign, Receipt, Shield, ArrowRight, Heart, PiggyBank, Briefcase, BarChart3, TrendingDown, Users, BookOpen, Wallet, Target, FileText, Calendar } from 'lucide-react';
+import { DollarSign, Receipt, Shield, ArrowRight, Heart, PiggyBank, Briefcase, BarChart3, TrendingDown, Users, BookOpen, Wallet, Target, FileText, Calendar, Upload } from 'lucide-react';
 import { getTips } from '@/lib/content-registry';
 import {
   ChartContainer,
@@ -13,6 +13,8 @@ import {
 } from 'recharts';
 import { DashboardData } from '@/components/DashboardLayout';
 import { HomePageSkeleton } from '@/components/LoadingSkeleton';
+import CSVUpload from '@/components/CSVUpload';
+import { useState } from 'react';
 
 interface User {
   id: string;
@@ -28,11 +30,19 @@ interface HomePageProps {
 
 export default function HomePage({ dashboardData, user }: HomePageProps) {
   const { parsedIncome } = dashboardData;
+  const [showUpload, setShowUpload] = useState(!parsedIncome);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Show loading skeleton if no data yet
-  if (!parsedIncome) {
+  if (!parsedIncome && !showUpload) {
     return <HomePageSkeleton />;
   }
+
+  const handleUploadComplete = () => {
+    setShowUpload(false);
+    setRefreshKey(prev => prev + 1);
+    window.location.reload(); // Refresh to show new data
+  };
 
   return (
     <div className="space-y-8">
@@ -53,6 +63,23 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           )}
         </p>
       </div>
+
+      {/* CSV Upload Section - Show when no data or on demand */}
+      {(!parsedIncome || showUpload) && (
+        <CSVUpload userId={user.id} onUploadComplete={handleUploadComplete} />
+      )}
+
+      {parsedIncome && !showUpload && (
+        <div className="flex justify-end">
+          <button
+            onClick={() => setShowUpload(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            Upload More Transactions
+          </button>
+        </div>
+      )}
 
       {/* Dynamic Insights & Key Metrics */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
