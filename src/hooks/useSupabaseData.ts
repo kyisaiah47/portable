@@ -64,7 +64,7 @@ export function useParsedIncome(userId: string | null) {
       try {
         setLoading(true);
         const { data: parsedIncome, error: fetchError } = await supabase
-          .from('parsed_income')
+          .from('portable_parsed_income')
           .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false })
@@ -101,7 +101,7 @@ export function useParsedIncome(userId: string | null) {
         {
           event: '*',
           schema: 'public',
-          table: 'parsed_income',
+          table: 'portable_parsed_income',
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
@@ -137,7 +137,7 @@ export function useTransactions(userId: string | null) {
       try {
         setLoading(true);
         const { data: transactions, error: fetchError } = await supabase
-          .from('transactions')
+          .from('portable_transactions')
           .select('*')
           .eq('user_id', userId)
           .order('date', { ascending: false });
@@ -164,7 +164,7 @@ export function useTransactions(userId: string | null) {
         {
           event: '*',
           schema: 'public',
-          table: 'transactions',
+          table: 'portable_transactions',
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
@@ -204,7 +204,7 @@ export function usePlaidItems(userId: string | null) {
       try {
         setLoading(true);
         const { data: items, error: fetchError } = await supabase
-          .from('plaid_items')
+          .from('portable_plaid_items')
           .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false });
@@ -231,7 +231,7 @@ export function usePlaidItems(userId: string | null) {
         {
           event: '*',
           schema: 'public',
-          table: 'plaid_items',
+          table: 'portable_plaid_items',
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {

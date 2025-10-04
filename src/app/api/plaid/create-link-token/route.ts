@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
     // Get user from Supabase
     const { data: user, error: userError } = await supabase
-      .from('users')
+      .from('portable_users')
       .select('*')
       .eq('id', userId)
       .single();

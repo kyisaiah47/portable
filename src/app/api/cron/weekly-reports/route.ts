@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     // Get all users who have email reports enabled
     const { data: users, error: usersError } = await supabaseAdmin
-      .from('users')
+      .from('portable_users')
       .select('id, email, first_name, last_name')
       .eq('email_reports_enabled', true); // You'll need to add this column
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
           // Fetch this week's transactions
           const { data: thisWeekTx, error: txError } = await supabaseAdmin
-            .from('transactions')
+            .from('portable_transactions')
             .select('*')
             .eq('user_id', user.id)
             .gte('date', startDate.toISOString().split('T')[0])
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 
           // Fetch last week's transactions for comparison
           const { data: lastWeekTx } = await supabaseAdmin
-            .from('transactions')
+            .from('portable_transactions')
             .select('amount')
             .eq('user_id', user.id)
             .gte('date', prevStartDate.toISOString().split('T')[0])

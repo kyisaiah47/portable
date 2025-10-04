@@ -40,7 +40,7 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
 
         // Fetch user profile from users table
         const { data: userProfile, error: profileError } = await supabase
-          .from('users')
+          .from('portable_users')
           .select('*')
           .eq('id', data.user?.id)
           .single();
@@ -58,7 +58,7 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
         let referrerId = null;
         if (referralCode) {
           const { data: referrer, error: referrerError } = await supabase
-            .from('users')
+            .from('portable_users')
             .select('id')
             .eq('referral_code', referralCode.toUpperCase())
             .single();
@@ -86,7 +86,7 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
 
         // Create user profile (trigger will auto-create, but we'll explicitly insert)
         const { error: insertError } = await supabase
-          .from('users')
+          .from('portable_users')
           .insert({
             id: signUpData.user?.id,
             email: formData.email,
@@ -103,7 +103,7 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
         // If there's a valid referrer, create referral record
         if (referrerId && signUpData.user?.id) {
           await supabase
-            .from('referrals')
+            .from('portable_referrals')
             .insert({
               referrer_id: referrerId,
               referee_id: signUpData.user.id,

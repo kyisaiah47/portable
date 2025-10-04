@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     // Store access token in Supabase
     const { data, error } = await supabase
-      .from('plaid_items')
+      .from('portable_plaid_items')
       .insert({
         user_id: userId,
         plaid_item_id: item_id,

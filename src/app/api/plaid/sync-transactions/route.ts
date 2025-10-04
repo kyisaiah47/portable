@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
     // Get all Plaid items for user
     const { data: items, error: itemsError } = await supabase
-      .from('plaid_items')
+      .from('portable_plaid_items')
       .select('*')
       .eq('user_id', userId);
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
             }));
 
             const { error } = await supabase
-              .from('transactions')
+              .from('portable_transactions')
               .upsert(transactionsToInsert, {
                 onConflict: 'plaid_transaction_id',
                 ignoreDuplicates: false,
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
           if (modified.length > 0) {
             for (const tx of modified) {
               await supabase
-                .from('transactions')
+                .from('portable_transactions')
                 .update({
                   amount: tx.amount,
                   name: tx.name,
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
           if (removed.length > 0) {
             const removedIds = removed.map((tx: any) => tx.transaction_id);
             await supabase
-              .from('transactions')
+              .from('portable_transactions')
               .delete()
               .in('plaid_transaction_id', removedIds);
             totalRemoved += removed.length;
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
 
           // Update stored cursor
           await supabase
-            .from('plaid_items')
+            .from('portable_plaid_items')
             .update({ cursor: next_cursor })
             .eq('id', item.id);
         }

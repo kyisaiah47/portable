@@ -43,14 +43,14 @@ export default function ReferralDashboard() {
 
       // Fetch user's referral stats
       const { data: userData } = await supabase
-        .from('users')
+        .from('portable_users')
         .select('referral_code, total_referrals, referral_earnings')
         .eq('id', user.id)
         .single();
 
       // Fetch detailed referrals
       const { data: referralsData } = await supabase
-        .from('referrals')
+        .from('portable_referrals')
         .select('*')
         .eq('referrer_id', user.id)
         .order('created_at', { ascending: false });
