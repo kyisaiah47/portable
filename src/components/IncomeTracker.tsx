@@ -42,7 +42,7 @@ export default function IncomeTracker({ userId }: IncomeTrackerProps) {
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Manual entry:', manualEntry);
+    // TODO: Save manual entry to Supabase
     setManualEntry({
       platform: '',
       amount: '',

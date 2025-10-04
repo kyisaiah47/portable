@@ -5,9 +5,9 @@
 A comprehensive benefits platform designed specifically for the 60M+ independent workers in the gig economy. Built for HackNomics 2025.
 
 ## 🎥 Demo Video
-[**► Watch the full demo on YouTube**](YOUTUBE_LINK_PLACEHOLDER)
+[**► Watch the full demo on YouTube**](#) (Coming soon)
 
-> 🚀 **Live Demo**: Try it at [portable-benefits.vercel.app](https://gig-benefits-platform.vercel.app) or run locally below
+> 🚀 **Live Demo**: Try it at [portable-buwubjqtb-kyisaiah47s-projects.vercel.app](https://portable-buwubjqtb-kyisaiah47s-projects.vercel.app)
 
 ---
 

@@ -128,8 +128,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('parsedIncome');
     onLogout();
   };
 
@@ -164,10 +162,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       const stability = calculateStabilityScore(parsed.income);
       const incomeData = { parsed, stability, rawTransactions: transactions };
 
-      // Save to localStorage (for backward compatibility)
-      localStorage.setItem('parsedIncome', JSON.stringify(incomeData));
-
-      // Reload to fetch new data
+      // TODO: Save to Supabase instead of localStorage
+      // For now, just reload to trigger re-fetch
       window.location.reload();
     };
 
