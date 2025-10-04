@@ -1261,13 +1261,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <div className="space-y-3">
                     {Array.from(parsedIncome.parsed.byPlatform.entries())
                       .map((entry) => {
-                        const [platform, payments] = entry as [string, any[]];
+                        const [platform, total] = entry;
                         return {
                           platform,
-                          payments,
-                          total: payments.reduce((sum: number, p: any) => sum + p.amount, 0),
-                          count: payments.length,
-                          category: payments[0]?.category || 'other',
+                          total: typeof total === 'number' ? total : 0,
+                          count: 1, // Placeholder - would need historical data
+                          category: 'other', // Placeholder - would need to map platform to category
                         };
                       })
                       .sort((a, b) => b.total - a.total)
