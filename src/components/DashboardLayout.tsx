@@ -159,7 +159,7 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
                   { id: 'income', label: 'Income', icon: DollarSign, path: '/dashboard/income' },
                   { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
                   { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
-                  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' }
+                  { id: 'settings', label: 'Settings', icon: User, path: '/dashboard/settings' }
                 ].map((tab) => (
                   <Link
                     key={tab.id}
