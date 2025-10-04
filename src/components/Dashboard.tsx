@@ -74,39 +74,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   // Transform Supabase data to Dashboard format
   const parsedIncome = useMemo(() => {
     if (!supabaseParsedIncome) {
-      // Fallback to localStorage for backward compatibility
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem('parsedIncome');
-        if (saved) {
-          try {
-            const data = JSON.parse(saved);
-            if (data?.parsed?.income) {
-              data.parsed.income = data.parsed.income.map((item: any) => ({
-                ...item,
-                date: new Date(item.date),
-              }));
-            }
-            if (data?.parsed?.startDate) {
-              data.parsed.startDate = new Date(data.parsed.startDate);
-            }
-            if (data?.parsed?.endDate) {
-              data.parsed.endDate = new Date(data.parsed.endDate);
-            }
-            if (data?.parsed?.byPlatform) {
-              data.parsed.byPlatform = new Map(Object.entries(data.parsed.byPlatform));
-            }
-            if (data?.rawTransactions) {
-              data.rawTransactions = data.rawTransactions.map((item: any) => ({
-                ...item,
-                date: new Date(item.date),
-              }));
-            }
-            return data;
-          } catch (e) {
-            console.error('Error loading from localStorage:', e);
-          }
-        }
-      }
       return null;
     }
 
