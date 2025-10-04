@@ -239,7 +239,43 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <div className="text-3xl font-black text-white font-space-grotesk mb-1">
                   ${parsedIncome?.stability.weeklyAverage ? (parsedIncome.stability.weeklyAverage * 4).toFixed(0) : '0'}
                 </div>
-                <div className="text-xs text-slate-400">Earned this month</div>
+                <div className="text-xs text-slate-400 mb-3">Earned this month</div>
+
+                {/* Mini Sparkline */}
+                {parsedIncome?.parsed?.income && parsedIncome.parsed.income.length > 0 && (
+                  <div className="h-12 -mx-2">
+                    <ChartContainer
+                      config={{ income: { label: 'Income', color: '#3b82f6' } }}
+                      className="h-full w-full"
+                    >
+                      <LineChart
+                        data={(() => {
+                          // Get last 6 weeks of income
+                          const weeklyData: Record<string, number> = {};
+                          parsedIncome.parsed.income.forEach((item: any) => {
+                            const date = new Date(item.date);
+                            const weekStart = new Date(date);
+                            weekStart.setDate(date.getDate() - date.getDay());
+                            const key = weekStart.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+                            weeklyData[key] = (weeklyData[key] || 0) + item.amount;
+                          });
+                          return Object.entries(weeklyData)
+                            .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+                            .slice(-6)
+                            .map(([week, amount]) => ({ week, amount }));
+                        })()}
+                      >
+                        <Line
+                          type="monotone"
+                          dataKey="amount"
+                          stroke="#3b82f6"
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      </LineChart>
+                    </ChartContainer>
+                  </div>
+                )}
               </div>
 
               {/* Tax Readiness Card */}
@@ -868,6 +904,19 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {(() => {
                     // Prepare chart data based on parsed income
                     const platforms = Array.from(parsedIncome.parsed.byPlatform.entries()) as [string, any][];
+
+                    // Empty state check
+                    if (!platforms.length || parsedIncome.parsed.income.length === 0) {
+                      return (
+                        <div className="h-80 flex items-center justify-center bg-slate-900/30 rounded-lg border border-white/5">
+                          <div className="text-center px-8">
+                            <BarChart3 className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                            <p className="text-sm text-slate-400 font-medium mb-1">No income data yet</p>
+                            <p className="text-xs text-slate-500">Upload a bank statement to see your earnings visualized</p>
+                          </div>
+                        </div>
+                      );
+                    }
 
                     // Color mapping for platforms
                     const platformColors: Record<string, string> = {
@@ -1578,6 +1627,19 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           color: colorMap[color] || colorMap['slate'],
                         };
                       });
+
+                      // Empty state check
+                      if (!categories.length || expenses.length === 0) {
+                        return (
+                          <div className="h-80 flex items-center justify-center bg-slate-900/30 rounded-lg border border-white/5">
+                            <div className="text-center px-8">
+                              <Receipt className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                              <p className="text-sm text-slate-400 font-medium mb-1">No expense data yet</p>
+                              <p className="text-xs text-slate-500">Upload transactions to track deductible business expenses</p>
+                            </div>
+                          </div>
+                        );
+                      }
 
                       if (expenseChartView === 'donut') {
                         // Donut chart - current month snapshot

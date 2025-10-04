@@ -2,6 +2,16 @@
 
 import { useState } from 'react';
 import { Heart, Building2, AlertTriangle, Calculator, CheckCircle, ArrowRight, Shield, ExternalLink } from 'lucide-react';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+import {
+  RadialBarChart,
+  RadialBar,
+  PolarAngleAxis,
+} from 'recharts';
 
 interface Benefit {
   id: number;
@@ -146,6 +156,141 @@ export default function BenefitsMarketplace() {
         <p className="text-base md:text-lg text-slate-300">
           Health coverage, retirement savings, and emergency funds designed for gig workers. No employer required.
         </p>
+      </div>
+
+      {/* Progress Rings - Benefits Coverage */}
+      <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-white font-space-grotesk">Your safety net progress</h2>
+          <p className="text-xs text-slate-400">Track your coverage across key areas</p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Emergency Fund Ring */}
+          <div className="flex flex-col items-center">
+            <div className="relative w-40 h-40">
+              <ChartContainer
+                config={{
+                  coverage: { label: 'Coverage', color: '#22c55e' },
+                }}
+                className="h-full w-full"
+              >
+                <RadialBarChart
+                  data={[{ name: 'Emergency Fund', value: 40, fill: '#22c55e' }]}
+                  startAngle={90}
+                  endAngle={-270}
+                  innerRadius="70%"
+                  outerRadius="100%"
+                >
+                  <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                  <RadialBar dataKey="value" background cornerRadius={10} />
+                </RadialBarChart>
+              </ChartContainer>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-3xl font-black text-green-400 font-space-grotesk">40%</div>
+                  <div className="text-xs text-slate-400">Complete</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <AlertTriangle className="w-4 h-4 text-green-400" />
+                <h3 className="text-sm font-bold text-white">Emergency Fund</h3>
+              </div>
+              <p className="text-xs text-slate-400">1.2 of 3 months covered</p>
+              <p className="text-xs text-green-400 mt-1 font-semibold">$3,600 saved</p>
+            </div>
+          </div>
+
+          {/* Retirement Ring */}
+          <div className="flex flex-col items-center">
+            <div className="relative w-40 h-40">
+              <ChartContainer
+                config={{
+                  coverage: { label: 'Coverage', color: '#8b5cf6' },
+                }}
+                className="h-full w-full"
+              >
+                <RadialBarChart
+                  data={[{ name: 'Retirement', value: 25, fill: '#8b5cf6' }]}
+                  startAngle={90}
+                  endAngle={-270}
+                  innerRadius="70%"
+                  outerRadius="100%"
+                >
+                  <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                  <RadialBar dataKey="value" background cornerRadius={10} />
+                </RadialBarChart>
+              </ChartContainer>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-3xl font-black text-purple-400 font-space-grotesk">25%</div>
+                  <div className="text-xs text-slate-400">Complete</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Building2 className="w-4 h-4 text-purple-400" />
+                <h3 className="text-sm font-bold text-white">Retirement</h3>
+              </div>
+              <p className="text-xs text-slate-400">Contributing $500/mo</p>
+              <p className="text-xs text-purple-400 mt-1 font-semibold">On track for 35 years</p>
+            </div>
+          </div>
+
+          {/* Health Coverage Ring */}
+          <div className="flex flex-col items-center">
+            <div className="relative w-40 h-40">
+              <ChartContainer
+                config={{
+                  coverage: { label: 'Coverage', color: '#ef4444' },
+                }}
+                className="h-full w-full"
+              >
+                <RadialBarChart
+                  data={[{ name: 'Health', value: 100, fill: '#ef4444' }]}
+                  startAngle={90}
+                  endAngle={-270}
+                  innerRadius="70%"
+                  outerRadius="100%"
+                >
+                  <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                  <RadialBar dataKey="value" background cornerRadius={10} />
+                </RadialBarChart>
+              </ChartContainer>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-3xl font-black text-red-400 font-space-grotesk">100%</div>
+                  <div className="text-xs text-slate-400">Complete</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Heart className="w-4 h-4 text-red-400" />
+                <h3 className="text-sm font-bold text-white">Health Insurance</h3>
+              </div>
+              <p className="text-xs text-slate-400">ACA Marketplace</p>
+              <p className="text-xs text-red-400 mt-1 font-semibold">$180/mo with subsidy</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Overall Summary */}
+        <div className="mt-8 pt-6 border-t border-white/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-slate-400">Overall Benefits Coverage</p>
+              <p className="text-xs text-slate-500 mt-1">You're covering 2 of 3 core areas</p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-black text-blue-400 font-space-grotesk">67%</div>
+              <p className="text-xs text-slate-400">Safety net strength</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Explainer text */}
