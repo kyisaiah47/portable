@@ -64,14 +64,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId);
       const { data: userProfile, error } = await supabase
         .from('portable_users')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Profile fetch error:', error);
+        throw error;
+      }
 
+      console.log('Profile fetched successfully:', userProfile);
       setUser({
         id: userProfile.id,
         email: userProfile.email,
@@ -82,6 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error fetching user profile:', error);
       setUser(null);
     } finally {
+      console.log('Setting loading to false');
       setLoading(false);
     }
   };

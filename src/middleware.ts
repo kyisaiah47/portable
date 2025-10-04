@@ -69,10 +69,8 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Redirect authenticated users away from auth pages
-  if (session && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
-  }
+  // Don't auto-redirect from login/signup - let the page handle it
+  // This prevents race conditions with client-side navigation
 
   return response;
 }

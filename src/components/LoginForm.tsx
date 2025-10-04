@@ -38,21 +38,10 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
 
         if (signInError) throw signInError;
 
-        // Fetch user profile from users table
-        const { data: userProfile, error: profileError } = await supabase
-          .from('portable_users')
-          .select('*')
-          .eq('id', data.user?.id)
-          .single();
-
-        if (profileError) throw profileError;
-
-        onSuccess({
-          id: userProfile.id,
-          email: userProfile.email,
-          firstName: userProfile.first_name,
-          lastName: userProfile.last_name,
-        });
+        // Session is now established - redirect immediately
+        // Don't set loading to false, we're leaving the page
+        onSuccess(data.user);
+        return; // Exit early to prevent finally block
       } else {
         // If there's a referral code, validate it first
         let referrerId = null;
@@ -85,13 +74,13 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
         if (signUpError) throw signUpError;
 
         // User created successfully - trigger will handle profile creation
-
         onSuccess({
           id: signUpData.user?.id,
           email: formData.email,
           firstName: formData.firstName,
           lastName: formData.lastName,
         });
+        return; // Exit early to prevent finally block
       }
     } catch (err: any) {
       setError(err.message || 'Authentication failed');
