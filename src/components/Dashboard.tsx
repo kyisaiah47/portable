@@ -241,6 +241,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
                   { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' },
                   { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
+                  { id: 'insights', label: 'Insights', icon: Target, path: '/dashboard/insights' },
+                  { id: 'referrals', label: 'Referrals', icon: Users, path: '/dashboard/referrals' },
                   { id: 'learn', label: 'Learn', icon: BookOpen, path: '/dashboard/learn' }
                 ].map((tab) => (
                   <Link
@@ -2387,6 +2389,38 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* End of tax calculations */}
                 </>
               );
+            })()}
+          </div>
+        )}
+
+        {activeTab === 'insights' && (
+          <div className="space-y-8">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Platform Insights</h1>
+              <p className="text-slate-400">
+                Compare platform performance and get personalized recommendations to maximize earnings
+              </p>
+            </div>
+
+            {(() => {
+              const PlatformInsights = require('./PlatformInsights').default;
+              // Transform transactions to include platform info
+              const transactionsWithPlatform = parsedIncome?.rawTransactions?.map((tx: any) => ({
+                ...tx,
+                platform: tx.platform || 'Other',
+              })) || [];
+
+              return <PlatformInsights transactions={transactionsWithPlatform} />;
+            })()}
+          </div>
+        )}
+
+        {activeTab === 'referrals' && (
+          <div className="space-y-8">
+            {/* Dynamic import for ReferralDashboard */}
+            {(() => {
+              const ReferralDashboard = require('./ReferralDashboard').default;
+              return <ReferralDashboard />;
             })()}
           </div>
         )}

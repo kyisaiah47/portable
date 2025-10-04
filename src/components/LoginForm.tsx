@@ -9,9 +9,10 @@ import { supabase } from '@/lib/supabase';
 interface LoginFormProps {
   isLogin: boolean;
   onSuccess: (user: any) => void;
+  referralCode?: string | null;
 }
 
-export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
+export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFormProps) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -53,6 +54,22 @@ export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
           lastName: userProfile.last_name,
         });
       } else {
+        // If there's a referral code, validate it first
+        let referrerId = null;
+        if (referralCode) {
+          const { data: referrer, error: referrerError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('referral_code', referralCode.toUpperCase())
+            .single();
+
+          if (referrerError || !referrer) {
+            setError('Invalid referral code. Continuing without referral.');
+          } else {
+            referrerId = referrer.id;
+          }
+        }
+
         // Sign up with Supabase Auth
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: formData.email,
@@ -75,11 +92,25 @@ export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
             email: formData.email,
             first_name: formData.firstName,
             last_name: formData.lastName,
+            referred_by: referrerId,
           });
 
         // Ignore duplicate key error (trigger may have already created it)
         if (insertError && !insertError.message.includes('duplicate')) {
           throw insertError;
+        }
+
+        // If there's a valid referrer, create referral record
+        if (referrerId && signUpData.user?.id) {
+          await supabase
+            .from('referrals')
+            .insert({
+              referrer_id: referrerId,
+              referee_id: signUpData.user.id,
+              referral_code: referralCode?.toUpperCase(),
+              referee_email: formData.email,
+              status: 'pending',
+            });
         }
 
         onSuccess({

@@ -205,6 +205,10 @@ ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referred_by UUID REFERENCES pu
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS total_referrals INTEGER DEFAULT 0;
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS referral_earnings NUMERIC(10, 2) DEFAULT 0.00;
 
+-- User settings
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS email_reports_enabled BOOLEAN DEFAULT true;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS savings_goal NUMERIC(10, 2) DEFAULT 5000.00;
+
 -- Function to generate unique referral code
 CREATE OR REPLACE FUNCTION generate_referral_code()
 RETURNS TEXT AS $$

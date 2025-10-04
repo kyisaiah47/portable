@@ -11,6 +11,14 @@
     "PLAID_CLIENT_ID": "@plaid-client-id",
     "PLAID_SECRET": "@plaid-secret",
     "PLAID_ENV": "@plaid-env",
-    "NEXT_PUBLIC_APP_URL": "@app-url"
-  }
+    "NEXT_PUBLIC_APP_URL": "@app-url",
+    "CRON_SECRET": "@cron-secret",
+    "RESEND_API_KEY": "@resend-api-key"
+  },
+  "crons": [
+    {
+      "path": "/api/cron/weekly-reports",
+      "schedule": "0 9 * * 1"
+    }
+  ]
 }

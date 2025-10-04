@@ -1,12 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import LoginForm from '@/components/LoginForm';
 import Link from 'next/link';
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      setReferralCode(refCode);
+    }
+  }, [searchParams]);
 
   const handleSuccess = (user: any) => {
     router.push('/');
@@ -30,9 +39,19 @@ export default function SignupPage() {
             <p className="text-slate-400">
               Start building your safety net
             </p>
+            {referralCode && (
+              <div className="mt-4 bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                <p className="text-green-400 text-sm font-semibold">
+                  You're signing up with a referral code!
+                </p>
+                <p className="text-green-300 text-xs mt-1">
+                  You'll get $10 after completing your profile
+                </p>
+              </div>
+            )}
           </div>
 
-          <LoginForm isLogin={false} onSuccess={handleSuccess} />
+          <LoginForm isLogin={false} onSuccess={handleSuccess} referralCode={referralCode} />
 
           <div className="mt-6 text-center space-y-4">
             <p className="text-slate-400 text-sm">
