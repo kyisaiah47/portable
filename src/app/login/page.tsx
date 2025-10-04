@@ -9,15 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleSuccess = (user: any) => {
-    console.log('handleSuccess called with user:', user);
-    try {
-      console.log('Attempting redirect to /dashboard');
-      // Use router.push instead of window.location
-      router.push('/dashboard');
-      console.log('router.push called');
-    } catch (error) {
-      console.error('Redirect error:', error);
-    }
+    router.push('/dashboard');
   };
 
   return (

@@ -63,7 +63,6 @@ export function useParsedIncome(userId: string | null) {
     const fetchParsedIncome = async () => {
       try {
         setLoading(true);
-        console.log('Fetching parsed income for user:', userId);
 
         const { data: parsedIncome, error: fetchError } = await supabase
           .from('portable_parsed_income')
@@ -73,16 +72,12 @@ export function useParsedIncome(userId: string | null) {
           .limit(1)
           .single();
 
-        console.log('Parsed income result:', { parsedIncome, fetchError });
-
         if (fetchError) {
           if (fetchError.code === 'PGRST116') {
             // No rows found - not an error, just no data yet
-            console.log('No parsed income found for user');
             setData(null);
             setError(null);
           } else {
-            console.error('Parsed income fetch error:', fetchError);
             throw fetchError;
           }
         } else {
@@ -90,10 +85,8 @@ export function useParsedIncome(userId: string | null) {
           setError(null);
         }
       } catch (err) {
-        console.error('Error fetching parsed income:', err);
         setError(err as Error);
       } finally {
-        console.log('Parsed income loading complete');
         setLoading(false);
       }
     };

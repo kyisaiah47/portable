@@ -78,10 +78,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       return null;
     }
 
-    // Extract data from JSONB fields
-    const stabilityData = supabaseParsedIncome.stability as any;
-    const platformData = supabaseParsedIncome.by_platform as any;
-    const incomeData = stabilityData?.incomeData || [];
+    // Extract data from flat database structure
+    const incomeData = supabaseParsedIncome.income_data || [];
+    const platformData = supabaseParsedIncome.platforms || {};
 
     // Transform Supabase format to Dashboard format
     return {
@@ -94,13 +93,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         })),
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
-        byPlatform: new Map(Object.entries(platformData || {})),
+        byPlatform: new Map(Object.entries(platformData)),
       },
       stability: {
-        score: stabilityData?.score || 0,
-        rating: stabilityData?.rating || 'Unknown',
-        weeklyAverage: stabilityData?.weeklyAverage || 0,
-        variability: stabilityData?.variability || 0,
+        score: supabaseParsedIncome.stability_score || 0,
+        rating: supabaseParsedIncome.stability_rating || 'Unknown',
+        weeklyAverage: supabaseParsedIncome.weekly_average || 0,
+        variability: supabaseParsedIncome.variability || 0,
       },
       rawTransactions: transactions.map((tx) => ({
         id: tx.id,

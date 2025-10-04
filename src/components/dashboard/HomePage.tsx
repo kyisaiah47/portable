@@ -54,7 +54,11 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         <div className="bg-gradient-to-br from-blue-900/40 via-blue-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-blue-500/20">
           <div className="flex items-center justify-between mb-2">
             <DollarSign className="w-5 h-5 text-blue-400" />
-            <span className="text-xs text-blue-400 font-semibold">+12%</span>
+            {parsedIncome?.stability.weeklyAverage && (
+              <span className="text-xs text-blue-400 font-semibold">
+                +{((parsedIncome.stability.weeklyAverage * 4 / (parsedIncome.parsed.totalIncome / (parsedIncome.parsed.income.length / 4))) * 100 - 100).toFixed(0)}%
+              </span>
+            )}
           </div>
           <div className="text-3xl font-black text-white font-space-grotesk mb-1">
             ${parsedIncome?.stability.weeklyAverage ? (parsedIncome.stability.weeklyAverage * 4).toFixed(0) : '0'}
@@ -102,7 +106,11 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         <div className="bg-gradient-to-br from-purple-900/40 via-purple-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-purple-500/20">
           <div className="flex items-center justify-between mb-2">
             <Receipt className="w-5 h-5 text-purple-400" />
-            <span className="text-xs text-purple-400 font-semibold">68%</span>
+            {parsedIncome?.stability?.weeklyAverage && (
+              <span className="text-xs text-purple-400 font-semibold">
+                {(((parsedIncome.stability.weeklyAverage * 4) * 0.25) / ((parsedIncome.stability.weeklyAverage * 4) * 0.30) * 100).toFixed(0)}%
+              </span>
+            )}
           </div>
           <div className="text-3xl font-black text-white font-space-grotesk mb-1">
             ${parsedIncome?.stability?.weeklyAverage ? ((parsedIncome.stability.weeklyAverage * 4) * 0.25).toFixed(0) : '0'}
@@ -114,22 +122,41 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         <div className="bg-gradient-to-br from-pink-900/40 via-pink-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-pink-500/20">
           <div className="flex items-center justify-between mb-2">
             <Shield className="w-5 h-5 text-pink-400" />
-            <span className="text-xs text-pink-400 font-semibold">1.2 mo</span>
+            {parsedIncome?.stability?.weeklyAverage && (
+              <span className="text-xs text-pink-400 font-semibold">
+                {((parsedIncome.stability.weeklyAverage * 4 * 0.20) / (parsedIncome.stability.weeklyAverage * 4)).toFixed(1)} mo
+              </span>
+            )}
           </div>
           <div className="text-3xl font-black text-white font-space-grotesk mb-1">
-            $3,200
+            ${parsedIncome?.stability?.weeklyAverage ? ((parsedIncome.stability.weeklyAverage * 4) * 0.20).toFixed(0) : '0'}
           </div>
-          <div className="text-xs text-slate-400">Emergency fund</div>
+          <div className="text-xs text-slate-400">Emergency fund target</div>
         </div>
 
         {/* Next Deadline Card */}
         <div className="bg-gradient-to-br from-orange-900/40 via-orange-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-orange-500/20">
           <div className="flex items-center justify-between mb-2">
             <Calendar className="w-5 h-5 text-orange-400" />
-            <span className="text-xs text-orange-400 font-semibold">2 weeks</span>
+            <span className="text-xs text-orange-400 font-semibold">
+              {(() => {
+                const now = new Date();
+                const currentQuarter = Math.floor(now.getMonth() / 3) + 1;
+                const nextQuarter = currentQuarter === 4 ? 1 : currentQuarter + 1;
+                const year = nextQuarter === 1 ? now.getFullYear() + 1 : now.getFullYear();
+                const deadlineMonth = [3, 6, 9, 0][nextQuarter - 1]; // Q1=Apr, Q2=Jun, Q3=Sep, Q4=Jan
+                const deadlineDate = new Date(year, deadlineMonth, 15);
+                const weeksAway = Math.ceil((deadlineDate.getTime() - now.getTime()) / (7 * 24 * 60 * 60 * 1000));
+                return `${weeksAway} weeks`;
+              })()}
+            </span>
           </div>
           <div className="text-xl font-black text-white font-space-grotesk mb-1">
-            Q3 Taxes
+            Q{(() => {
+              const now = new Date();
+              const currentQuarter = Math.floor(now.getMonth() / 3) + 1;
+              return currentQuarter === 4 ? 1 : currentQuarter + 1;
+            })()} Taxes
           </div>
           <div className="text-xs text-slate-400">Next deadline</div>
         </div>
@@ -332,68 +359,56 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Uber */}
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <div className="text-2xl">🚗</div>
-                <div>
-                  <h3 className="text-base font-bold text-white font-space-grotesk">Uber</h3>
-                  <p className="text-xs text-slate-400">Rideshare</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent font-space-grotesk">$1,890</div>
-                <div className="text-xs text-slate-400">44% of income</div>
-              </div>
-            </div>
-            <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{width: '44%'}}></div>
-            </div>
-            <p className="text-xs text-blue-400"><strong>Your best hours:</strong> 5-9pm weekdays when surge hits</p>
-          </div>
+          {parsedIncome?.parsed?.byPlatform && Array.from(parsedIncome.parsed.byPlatform.entries())
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 6)
+            .map(([platform, amount], index) => {
+              const percentage = ((amount / parsedIncome.parsed.totalIncome) * 100).toFixed(0);
+              const colors = [
+                { from: 'blue-400', to: 'blue-600', bg: 'blue-500' },
+                { from: 'purple-400', to: 'purple-600', bg: 'purple-500' },
+                { from: 'pink-400', to: 'pink-600', bg: 'pink-500' },
+                { from: 'green-400', to: 'green-600', bg: 'green-500' },
+                { from: 'orange-400', to: 'orange-600', bg: 'orange-500' },
+                { from: 'cyan-400', to: 'cyan-600', bg: 'cyan-500' },
+              ];
+              const color = colors[index % colors.length];
+              const emoji = platform.toLowerCase().includes('uber') ? '🚗' :
+                           platform.toLowerCase().includes('door') ? '🍔' :
+                           platform.toLowerCase().includes('lyft') ? '🚕' :
+                           platform.toLowerCase().includes('instacart') ? '🛒' :
+                           platform.toLowerCase().includes('upwork') || platform.toLowerCase().includes('freelance') ? '💼' :
+                           platform.toLowerCase().includes('fiverr') ? '🎨' : '💰';
 
-          {/* DoorDash */}
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <div className="text-2xl">🍔</div>
-                <div>
-                  <h3 className="text-base font-bold text-white font-space-grotesk">DoorDash</h3>
-                  <p className="text-xs text-slate-400">Delivery</p>
+              return (
+                <div key={platform} className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-${color.bg}/50 transition-all`}>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="text-2xl">{emoji}</div>
+                      <div>
+                        <h3 className="text-base font-bold text-white font-space-grotesk">{platform}</h3>
+                        <p className="text-xs text-slate-400">Income source</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-xl font-black bg-gradient-to-r from-${color.from} to-${color.to} bg-clip-text text-transparent font-space-grotesk`}>
+                        ${amount.toFixed(0)}
+                      </div>
+                      <div className="text-xs text-slate-400">{percentage}% of income</div>
+                    </div>
+                  </div>
+                  <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
+                    <div className={`h-full bg-gradient-to-r from-${color.from} to-${color.to} rounded-full`} style={{width: `${percentage}%`}}></div>
+                  </div>
+                  <p className={`text-xs text-${color.from}`}>
+                    {index === 0 && <><strong>Top earner!</strong> Keep up the great work</>}
+                    {index === 1 && <><strong>Strong performer:</strong> Solid contribution to your income</>}
+                    {index === 2 && <><strong>Good progress:</strong> Room to grow this source</>}
+                    {index > 2 && <><strong>Emerging source:</strong> Consider scaling this up</>}
+                  </p>
                 </div>
-              </div>
-              <div className="text-right">
-                <div className="text-xl font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$1,290</div>
-                <div className="text-xs text-slate-400">30% of income</div>
-              </div>
-            </div>
-            <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full" style={{width: '30%'}}></div>
-            </div>
-            <p className="text-xs text-purple-400"><strong>Pro tip:</strong> Downtown & university = stacked orders</p>
-          </div>
-
-          {/* Upwork */}
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <div className="text-2xl">💼</div>
-                <div>
-                  <h3 className="text-base font-bold text-white font-space-grotesk">Upwork</h3>
-                  <p className="text-xs text-slate-400">Freelance</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-xl font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">$1,120</div>
-                <div className="text-xs text-slate-400">26% of income</div>
-              </div>
-            </div>
-            <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full" style={{width: '26%'}}></div>
-            </div>
-            <p className="text-xs text-pink-400"><strong>Real talk:</strong> Bump your rate 15%. You&apos;re undercharging.</p>
-          </div>
+              );
+            })}
         </div>
       </div>
 
@@ -427,26 +442,47 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
           <h3 className="text-lg font-bold text-white mb-3 font-space-grotesk">Financial health</h3>
           <div className="flex items-center space-x-4 mb-3">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-4 border-green-500/30 flex items-center justify-center">
-              <div className="text-xl font-black text-white font-space-grotesk">78</div>
-            </div>
-            <div>
-              <div className="text-base font-bold text-white mb-1">Looking good</div>
-              <div className="text-xs text-slate-400">Better than 65% of gig workers</div>
-            </div>
+            {(() => {
+              const score = parsedIncome?.stability?.score || 0;
+              const healthScore = Math.min(100, Math.max(0, score));
+              const rating = healthScore >= 80 ? 'Excellent' :
+                            healthScore >= 60 ? 'Good' :
+                            healthScore >= 40 ? 'Fair' : 'Needs work';
+              const color = healthScore >= 80 ? 'green' :
+                           healthScore >= 60 ? 'blue' :
+                           healthScore >= 40 ? 'yellow' : 'red';
+
+              return (
+                <>
+                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br from-${color}-500/20 to-${color}-500/20 border-4 border-${color}-500/30 flex items-center justify-center`}>
+                    <div className="text-xl font-black text-white font-space-grotesk">{healthScore}</div>
+                  </div>
+                  <div>
+                    <div className="text-base font-bold text-white mb-1">{rating}</div>
+                    <div className="text-xs text-slate-400">
+                      {healthScore >= 60 ? `Better than ${healthScore}% of gig workers` : 'Room for improvement'}
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Income stability</span>
+              <span className={(parsedIncome?.stability?.score ?? 0) >= 70 ? 'text-green-400 font-semibold' : 'text-yellow-400 font-semibold'}>
+                {(parsedIncome?.stability?.score ?? 0) >= 70 ? '✓ Strong' : '⚠ Variable'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Tax savings</span>
+              <span className={parsedIncome?.stability?.weeklyAverage ? 'text-green-400 font-semibold' : 'text-yellow-400 font-semibold'}>
+                {parsedIncome?.stability?.weeklyAverage ? '✓ On track' : '⚠ Needs setup'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
               <span className="text-slate-400">Emergency fund</span>
-              <span className="text-green-400 font-semibold">✓ On track</span>
-            </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Retirement</span>
-              <span className="text-yellow-400 font-semibold">⚠ Needs work</span>
-            </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Health coverage</span>
-              <span className="text-green-400 font-semibold">✓ Active</span>
+              <span className="text-yellow-400 font-semibold">⚠ Building</span>
             </div>
           </div>
         </div>

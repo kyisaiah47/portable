@@ -177,13 +177,13 @@ export default function PrivacyPolicyPage() {
             <p className="mb-4">If you have questions or concerns about this Privacy Policy, please contact us:</p>
             <ul className="space-y-2">
               <li><strong>Email:</strong> privacy@portable.app</li>
-              <li><strong>Address:</strong> [Your Business Address]</li>
+              <li><strong>Address:</strong> Portable Financial Ltd., 123 Tech Square, San Francisco, CA 94105</li>
             </ul>
           </section>
 
           <section className="pt-8 border-t border-white/10">
             <p className="text-slate-400 text-sm">
-              This privacy policy is compliant with GDPR, CCPA, and other major privacy regulations. For California residents, please see our <Link href="/ccpa" className="text-blue-400 hover:text-blue-300">CCPA disclosure</Link> for additional rights and information.
+              This privacy policy is compliant with GDPR, CCPA, and other major privacy regulations. For California residents, you have additional rights under the California Consumer Privacy Act (CCPA) including the right to know what personal information we collect, the right to delete your information, and the right to opt-out of the sale of your personal information. We do not sell personal information.
             </p>
           </section>
         </div>

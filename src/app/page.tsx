@@ -31,10 +31,9 @@ export default function Home() {
               <span className="text-2xl font-bold text-white font-space-grotesk">Portable</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-sm font-medium text-slate-400 hover:text-white">Personal</a>
-              <a href="#" className="text-sm font-medium text-slate-400 hover:text-white">Business</a>
-              <a href="#" className="text-sm font-medium text-slate-400 hover:text-white">Features</a>
-              <a href="#" className="text-sm font-medium text-slate-400 hover:text-white">About</a>
+              <a href="#features" className="text-sm font-medium text-slate-400 hover:text-white">Features</a>
+              <Link href="/blog" className="text-sm font-medium text-slate-400 hover:text-white">Blog</Link>
+              <a href="#about" className="text-sm font-medium text-slate-400 hover:text-white">About</a>
             </div>
             <div className="flex items-center space-x-4">
               <Link
@@ -244,7 +243,7 @@ export default function Home() {
       </section>
 
       {/* Features grid */}
-      <section className="py-32 px-6">
+      <section id="features" className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white font-space-grotesk">
@@ -325,6 +324,21 @@ export default function Home() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section id="about" className="py-32 px-6 bg-slate-900/30">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 font-space-grotesk">
+            Built by gig workers, for gig workers
+          </h2>
+          <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+            We started Portable because we know what it's like to juggle multiple income streams, worry about taxes, and wish you had the same benefits as traditional employees. The gig economy has 60 million workers in the U.S. alone, and it's time we had financial tools that actually work for us.
+          </p>
+          <p className="text-lg text-slate-400 leading-relaxed">
+            Portable brings together everything independent workers need: health insurance, retirement planning, tax preparation, and income tracking—all in one place. No more spreadsheets, no more guesswork, no more feeling like you're on your own.
+          </p>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-32 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
@@ -341,7 +355,7 @@ export default function Home() {
             href="/signup"
             className="bg-white text-gray-900 px-14 py-5 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors shadow-2xl inline-flex items-center gap-3"
           >
-            Download Portable
+            Get Started Free
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
@@ -350,16 +364,56 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-white/10 py-16 px-6 bg-slate-900/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center space-x-2">
-              <div className="flex -space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="flex -space-x-2">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
+                </div>
+                <span className="text-xl font-bold text-white font-space-grotesk">Portable</span>
               </div>
-              <span className="text-xl font-bold text-white font-space-grotesk">Portable</span>
+              <p className="text-sm text-slate-400">Financial tools built for gig workers and independent contractors.</p>
             </div>
+
+            {/* Product */}
+            <div>
+              <h3 className="text-white font-semibold mb-4">Product</h3>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#features" className="text-slate-400 hover:text-white">Features</a></li>
+                <li><Link href="/blog" className="text-slate-400 hover:text-white">Blog</Link></li>
+                <li><Link href="/signup" className="text-slate-400 hover:text-white">Get Started</Link></li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="text-white font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#about" className="text-slate-400 hover:text-white">About</a></li>
+                <li><Link href="/privacy" className="text-slate-400 hover:text-white">Privacy</Link></li>
+                <li><Link href="/terms" className="text-slate-400 hover:text-white">Terms</Link></li>
+              </ul>
+            </div>
+
+            {/* Connect */}
+            <div>
+              <h3 className="text-white font-semibold mb-4">Connect</h3>
+              <ul className="space-y-2 text-sm">
+                <li><a href="mailto:support@portable.app" className="text-slate-400 hover:text-white">Support</a></li>
+                <li><a href="mailto:hello@portable.app" className="text-slate-400 hover:text-white">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-slate-500">© 2025 Portable Financial Ltd. All rights reserved.</div>
+            <div className="flex items-center gap-6 text-sm text-slate-400">
+              <Link href="/privacy" className="hover:text-white">Privacy</Link>
+              <Link href="/terms" className="hover:text-white">Terms</Link>
+            </div>
           </div>
         </div>
       </footer>
