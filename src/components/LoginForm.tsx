@@ -84,39 +84,7 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
 
         if (signUpError) throw signUpError;
 
-        // Create user profile using service role to bypass RLS
-        if (signUpData.user?.id) {
-          // Use upsert to handle if trigger already created it
-          const { error: upsertError } = await supabase
-            .from('portable_users')
-            .upsert({
-              id: signUpData.user.id,
-              email: formData.email,
-              first_name: formData.firstName,
-              last_name: formData.lastName,
-              referred_by: referrerId,
-            }, {
-              onConflict: 'id'
-            });
-
-          if (upsertError) {
-            console.error('Error creating user profile:', upsertError);
-            throw new Error(`Failed to create user profile: ${upsertError.message}`);
-          }
-        }
-
-        // If there's a valid referrer, create referral record
-        if (referrerId && signUpData.user?.id) {
-          await supabase
-            .from('portable_referrals')
-            .insert({
-              referrer_id: referrerId,
-              referee_id: signUpData.user.id,
-              referral_code: referralCode?.toUpperCase(),
-              referee_email: formData.email,
-              status: 'pending',
-            });
-        }
+        // User created successfully - trigger will handle profile creation
 
         onSuccess({
           id: signUpData.user?.id,

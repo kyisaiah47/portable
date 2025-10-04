@@ -18,7 +18,7 @@ function SignupContent() {
   }, [searchParams]);
 
   const handleSuccess = (user: any) => {
-    router.push('/');
+    router.push('/dashboard');
   };
 
   return (
