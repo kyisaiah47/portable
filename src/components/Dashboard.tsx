@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import BenefitsMarketplace from './BenefitsMarketplace';
 import PlaidLink from './PlaidLink';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown, MoreHorizontal } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
@@ -16,6 +16,7 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -207,25 +208,55 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   { id: 'home', label: 'Home', icon: BarChart3, path: '/dashboard' },
                   { id: 'income', label: 'Income', icon: DollarSign, path: '/dashboard/income' },
                   { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
-                  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' },
                   { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
-                  { id: 'insights', label: 'Insights', icon: Target, path: '/dashboard/insights' },
-                  { id: 'referrals', label: 'Referrals', icon: Users, path: '/dashboard/referrals' },
-                  { id: 'learn', label: 'Learn', icon: BookOpen, path: '/dashboard/learn' }
+                  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' }
                 ].map((tab) => (
                   <Link
                     key={tab.id}
                     href={tab.path}
-                    className={`flex items-center space-x-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                    className={`flex items-center space-x-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
                       activeTab === tab.id
-                        ? 'text-white'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'text-white bg-white/10'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <tab.icon className="w-4 h-4" />
                     <span>{tab.label}</span>
                   </Link>
                 ))}
+
+                {/* More dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger className={`flex items-center space-x-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                    ['insights', 'referrals', 'learn'].includes(activeTab)
+                      ? 'text-white bg-white/10'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}>
+                    <MoreHorizontal className="w-4 h-4" />
+                    <span>More</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-900 border-white/10">
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/insights" className="flex items-center space-x-2 cursor-pointer">
+                        <Target className="w-4 h-4" />
+                        <span>Insights</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/referrals" className="flex items-center space-x-2 cursor-pointer">
+                        <Users className="w-4 h-4" />
+                        <span>Referrals</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/learn" className="flex items-center space-x-2 cursor-pointer">
+                        <BookOpen className="w-4 h-4" />
+                        <span>Learn</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
             <div className="flex items-center space-x-6">
