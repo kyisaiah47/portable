@@ -2,7 +2,9 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Dashboard from '@/components/Dashboard';
+import DashboardLayout from '@/components/DashboardLayout';
+import DashboardDataProvider from '@/components/dashboard/DashboardDataProvider';
+import HomePage from '@/components/dashboard/HomePage';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function DashboardPage() {
@@ -30,5 +32,13 @@ export default function DashboardPage() {
     return null;
   }
 
-  return <Dashboard user={user} onLogout={signOut} />;
+  return (
+    <DashboardLayout user={user} onLogout={signOut}>
+      <DashboardDataProvider user={user}>
+        {(dashboardData, user) => (
+          <HomePage dashboardData={dashboardData} user={user} />
+        )}
+      </DashboardDataProvider>
+    </DashboardLayout>
+  );
 }
