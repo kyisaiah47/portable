@@ -261,10 +261,15 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 You&apos;re crushing it, {user.firstName}
               </h1>
               <p className="text-base md:text-lg text-slate-300">
-                {parsedIncome?.parsed?.totalIncome
-                  ? `$${parsedIncome.parsed.totalIncome.toLocaleString()} earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes.`
-                  : '$4,300 earned this month. Auto-saved $876 for benefits and $1,075 for taxes.'
-                } Most people don&apos;t have their shit this together.
+                {parsedIncome?.parsed?.totalIncome ? (
+                  <>
+                    ${parsedIncome.parsed.totalIncome.toLocaleString()} earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes. Most people don&apos;t have their shit this together.
+                  </>
+                ) : (
+                  <>
+                    Connect your bank to automatically track your earnings across all gig platforms in one place.
+                  </>
+                )}
               </p>
             </div>
 
@@ -1337,182 +1342,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </>
             )}
 
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Unified Income Timeline */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Unified income timeline</h2>
-                <p className="text-xs text-slate-400">See all your earnings in one place, month by month</p>
-              </div>
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                <div className="space-y-4">
-                  {/* June */}
-                  <div className="border-b border-white/10 pb-4 last:border-0 last:pb-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-base font-bold text-white font-space-grotesk">June 2024</h3>
-                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$4,300</div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="text-xs">
-                        <div className="text-slate-400">Uber</div>
-                        <div className="text-white font-semibold">$1,890</div>
-                      </div>
-                      <div className="text-xs">
-                        <div className="text-slate-400">DoorDash</div>
-                        <div className="text-white font-semibold">$1,290</div>
-                      </div>
-                      <div className="text-xs">
-                        <div className="text-slate-400">Upwork</div>
-                        <div className="text-white font-semibold">$1,120</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* May */}
-                  <div className="border-b border-white/10 pb-4 last:border-0 last:pb-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-base font-bold text-white font-space-grotesk">May 2024</h3>
-                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$3,900</div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="text-xs">
-                        <div className="text-slate-400">Uber</div>
-                        <div className="text-white font-semibold">$1,750</div>
-                      </div>
-                      <div className="text-xs">
-                        <div className="text-slate-400">DoorDash</div>
-                        <div className="text-white font-semibold">$1,200</div>
-                      </div>
-                      <div className="text-xs">
-                        <div className="text-slate-400">Upwork</div>
-                        <div className="text-white font-semibold">$950</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* April */}
-                  <div className="border-b border-white/10 pb-4 last:border-0 last:pb-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-base font-bold text-white font-space-grotesk">April 2024</h3>
-                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$4,100</div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="text-xs">
-                        <div className="text-slate-400">Uber</div>
-                        <div className="text-white font-semibold">$1,920</div>
-                      </div>
-                      <div className="text-xs">
-                        <div className="text-slate-400">DoorDash</div>
-                        <div className="text-white font-semibold">$1,350</div>
-                      </div>
-                      <div className="text-xs">
-                        <div className="text-slate-400">Upwork</div>
-                        <div className="text-white font-semibold">$830</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Safe-to-Spend Calculator */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Safe-to-spend calculator</h2>
-                <p className="text-xs text-slate-400">Real talk: Here&apos;s what you actually have to spend this month</p>
-              </div>
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                <div className="space-y-4">
-                  {/* Gross */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk">Gross Income</h3>
-                      <p className="text-xs text-slate-400">All platforms combined</p>
-                    </div>
-                    <div className="text-xl font-black text-white font-space-grotesk">$4,300</div>
-                  </div>
-
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Tax set-aside */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk">Tax Set-Aside (28%)</h3>
-                      <p className="text-xs text-slate-400">Auto-saved for quarterly payments</p>
-                    </div>
-                    <div className="text-xl font-black text-orange-400 font-space-grotesk">-$1,204</div>
-                  </div>
-
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Business expenses */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk">Business Expenses</h3>
-                      <p className="text-xs text-slate-400">Gas, phone, car maintenance</p>
-                    </div>
-                    <div className="text-xl font-black text-red-400 font-space-grotesk">-$540</div>
-                  </div>
-
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Net income */}
-                  <div className="flex items-center justify-between bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 rounded-lg p-4 border border-green-500/30">
-                    <div>
-                      <h3 className="text-lg font-black text-white font-space-grotesk">Safe to Spend</h3>
-                      <p className="text-xs text-green-400">Your actual take-home</p>
-                    </div>
-                    <div className="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent font-space-grotesk">$2,556</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Income stability score */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                <div className="mb-4">
-                  <h2 className="text-lg font-bold text-white font-space-grotesk">Income stability score</h2>
-                  <p className="text-xs text-slate-400">Based on consistency & diversification</p>
-                </div>
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-4 border-blue-500/30 flex items-center justify-center">
-                    <div className="text-2xl font-black text-white font-space-grotesk">78</div>
-                  </div>
-                  <div>
-                    <div className="text-base font-bold text-white mb-1">Strong & steady</div>
-                    <div className="text-xs text-slate-400">Better than 65% of users</div>
-                  </div>
-                </div>
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style={{width: '78%'}}></div>
-                </div>
-              </div>
-
-              {/* Quick tip */}
-              <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-5">
-                <div className="flex items-start space-x-3 mb-3">
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Zap className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-white font-space-grotesk mb-2">Boost your score</h3>
-                    <p className="text-sm text-slate-300">Adding Instacart could add $800/mo and bump your stability score to 85+. Multi-platform workers earn 40% more on average.</p>
-                  </div>
-                </div>
-                <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
-                  Connect Instacart
-                </button>
-              </div>
-            </div>
           </div>
         )}
 

@@ -232,26 +232,33 @@ function generateInsights(data: {
   return insights.slice(0, 3); // Max 3 insights
 }
 
-// Placeholder email sending function
 async function sendEmail(params: {
   to: string;
   subject: string;
   html: string;
   text: string;
 }) {
-  // TODO: Implement with Resend, SendGrid, or other email service
-  // Example with Resend:
-  /*
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  await resend.emails.send({
-    from: 'Portable <reports@getportable.app>',
-    to: params.to,
-    subject: params.subject,
-    html: params.html,
-    text: params.text,
-  });
-  */
+  // Email service is optional - only send if RESEND_API_KEY is configured
+  if (!process.env.RESEND_API_KEY) {
+    console.log(`[EMAIL] Skipping email (no RESEND_API_KEY configured): ${params.subject}`);
+    return;
+  }
 
-  console.log(`[EMAIL] Would send to ${params.to}: ${params.subject}`);
-  return Promise.resolve();
+  try {
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    await resend.emails.send({
+      from: 'Portable <reports@portable.com>',
+      to: params.to,
+      subject: params.subject,
+      html: params.html,
+      text: params.text,
+    });
+
+    console.log(`[EMAIL] Sent to ${params.to}: ${params.subject}`);
+  } catch (error) {
+    console.error(`[EMAIL] Failed to send to ${params.to}:`, error);
+    throw error;
+  }
 }
