@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/lib/supabase';
 
 interface LoginFormProps {
   isLogin: boolean;
@@ -27,28 +28,69 @@ export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
     setError('');
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-      const body = isLogin
-        ? { email: formData.email, password: formData.password }
-        : formData;
+      if (isLogin) {
+        // Login with Supabase Auth
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
+        if (signInError) throw signInError;
 
-      const data = await response.json();
+        // Fetch user profile from users table
+        const { data: userProfile, error: profileError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', data.user?.id)
+          .single();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Authentication failed');
+        if (profileError) throw profileError;
+
+        onSuccess({
+          id: userProfile.id,
+          email: userProfile.email,
+          firstName: userProfile.first_name,
+          lastName: userProfile.last_name,
+        });
+      } else {
+        // Sign up with Supabase Auth
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              first_name: formData.firstName,
+              last_name: formData.lastName,
+            },
+          },
+        });
+
+        if (signUpError) throw signUpError;
+
+        // Create user profile (trigger will auto-create, but we'll explicitly insert)
+        const { error: insertError } = await supabase
+          .from('users')
+          .insert({
+            id: signUpData.user?.id,
+            email: formData.email,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+          });
+
+        // Ignore duplicate key error (trigger may have already created it)
+        if (insertError && !insertError.message.includes('duplicate')) {
+          throw insertError;
+        }
+
+        onSuccess({
+          id: signUpData.user?.id,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+        });
       }
-
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      onSuccess(data.user);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }

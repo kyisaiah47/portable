@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import BenefitsMarketplace from './BenefitsMarketplace';
+import PlaidLink from './PlaidLink';
 import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
 import { calculateTaxes, getQuarterlyDeadlines, projectAnnualTax } from '@/lib/tax-calculator';
 import { getTips, getGuides, type City, type GigType } from '@/lib/content-registry';
+import { useParsedIncome, useTransactions, usePlaidItems } from '@/hooks/useSupabaseData';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -63,45 +65,100 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [incomeTimePeriod, setIncomeTimePeriod] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly');
   const [taxChartView, setTaxChartView] = useState<'quarterly' | 'liability'>('quarterly');
   const [expenseChartView, setExpenseChartView] = useState<'donut' | 'bar' | 'line'>('donut');
-  const [parsedIncome, setParsedIncome] = useState<any>(() => {
-    // Load from localStorage on mount
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('parsedIncome');
-      if (saved) {
-        try {
-          const data = JSON.parse(saved);
-          // Reconstruct Date objects
-          if (data?.parsed?.income) {
-            data.parsed.income = data.parsed.income.map((item: any) => ({
-              ...item,
-              date: new Date(item.date),
-            }));
+
+  // Fetch data from Supabase
+  const { data: supabaseParsedIncome, loading: incomeLoading, error: incomeError } = useParsedIncome(user.id);
+  const { data: transactions, loading: transactionsLoading } = useTransactions(user.id);
+  const { data: plaidItems, loading: plaidItemsLoading } = usePlaidItems(user.id);
+
+  // Transform Supabase data to Dashboard format
+  const parsedIncome = useMemo(() => {
+    if (!supabaseParsedIncome) {
+      // Fallback to localStorage for backward compatibility
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('parsedIncome');
+        if (saved) {
+          try {
+            const data = JSON.parse(saved);
+            if (data?.parsed?.income) {
+              data.parsed.income = data.parsed.income.map((item: any) => ({
+                ...item,
+                date: new Date(item.date),
+              }));
+            }
+            if (data?.parsed?.startDate) {
+              data.parsed.startDate = new Date(data.parsed.startDate);
+            }
+            if (data?.parsed?.endDate) {
+              data.parsed.endDate = new Date(data.parsed.endDate);
+            }
+            if (data?.parsed?.byPlatform) {
+              data.parsed.byPlatform = new Map(Object.entries(data.parsed.byPlatform));
+            }
+            if (data?.rawTransactions) {
+              data.rawTransactions = data.rawTransactions.map((item: any) => ({
+                ...item,
+                date: new Date(item.date),
+              }));
+            }
+            return data;
+          } catch (e) {
+            console.error('Error loading from localStorage:', e);
           }
-          if (data?.parsed?.startDate) {
-            data.parsed.startDate = new Date(data.parsed.startDate);
-          }
-          if (data?.parsed?.endDate) {
-            data.parsed.endDate = new Date(data.parsed.endDate);
-          }
-          // Reconstruct Map object
-          if (data?.parsed?.byPlatform) {
-            data.parsed.byPlatform = new Map(Object.entries(data.parsed.byPlatform));
-          }
-          // Reconstruct Date objects in rawTransactions
-          if (data?.rawTransactions) {
-            data.rawTransactions = data.rawTransactions.map((item: any) => ({
-              ...item,
-              date: new Date(item.date),
-            }));
-          }
-          return data;
-        } catch (e) {
-          console.error('Error loading parsed income from localStorage:', e);
         }
       }
+      return null;
     }
-    return null;
-  });
+
+    // Transform Supabase format to Dashboard format
+    return {
+      parsed: {
+        totalIncome: supabaseParsedIncome.total_income,
+        income: supabaseParsedIncome.income_data.map((item) => ({
+          date: new Date(item.date),
+          amount: item.amount,
+          platform: item.platform,
+        })),
+        startDate: new Date(supabaseParsedIncome.start_date),
+        endDate: new Date(supabaseParsedIncome.end_date),
+        byPlatform: new Map(Object.entries(supabaseParsedIncome.platforms)),
+      },
+      stability: {
+        score: supabaseParsedIncome.stability_score,
+        rating: supabaseParsedIncome.stability_rating,
+        weeklyAverage: supabaseParsedIncome.weekly_average,
+        variability: supabaseParsedIncome.variability,
+      },
+      rawTransactions: transactions.map((tx) => ({
+        id: tx.id,
+        date: new Date(tx.date),
+        description: tx.name,
+        amount: tx.amount,
+        type: tx.amount > 0 ? 'credit' : 'debit' as 'credit' | 'debit',
+      })),
+    };
+  }, [supabaseParsedIncome, transactions]);
+
+  // Loading state
+  const isLoading = incomeLoading || transactionsLoading || plaidItemsLoading;
+
+  // Error handling
+  if (incomeError) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6 max-w-md">
+          <h2 className="text-red-400 font-bold mb-2">Error Loading Data</h2>
+          <p className="text-slate-300 text-sm">{incomeError.message}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 bg-red-500/20 text-red-400 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-500/30 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -140,9 +197,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       const stability = calculateStabilityScore(parsed.income);
       const incomeData = { parsed, stability, rawTransactions: transactions };
 
-      // Save to localStorage
-      setParsedIncome(incomeData);
+      // Save to localStorage (for backward compatibility)
       localStorage.setItem('parsedIncome', JSON.stringify(incomeData));
+
+      // Reload to fetch new data
+      window.location.reload();
     };
 
     reader.readAsText(file);
@@ -150,6 +209,18 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-slate-950 font-inter">
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-slate-900/90 rounded-lg p-8 border border-white/10">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+              <p className="text-white font-semibold">Loading your data...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6">
@@ -777,6 +848,17 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
+                  {/* Plaid Connect Bank Button */}
+                  <div className="flex-shrink-0">
+                    <PlaidLink
+                      userId={user.id}
+                      onSuccess={() => {
+                        // Refresh data after connecting bank
+                        window.location.reload();
+                      }}
+                      variant="button"
+                    />
+                  </div>
                   <a
                     href="/sample-bank-statement.csv"
                     download
@@ -815,6 +897,31 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 Here&apos;s the data: <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">top earners work 3+ platforms simultaneously</span> to maximize income and improve their stability scores. Multi-platform workers earn 40% more on average and have significantly better income stability during slow periods. We&apos;ll show you personalized tips to boost your earnings based on your city, work schedule, and income mix.
               </p>
             </div>
+
+            {/* No Bank Connected CTA */}
+            {plaidItems.length === 0 && !parsedIncome && (
+              <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
+                <div className="max-w-2xl mx-auto">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Wallet className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white mb-4 font-space-grotesk">
+                    Connect your bank to get started
+                  </h2>
+                  <p className="text-slate-300 mb-8 text-lg">
+                    Securely link your bank account with Plaid to automatically track all your income across platforms.
+                    We'll analyze your earnings, calculate your stability score, and help you maximize your income.
+                  </p>
+                  <PlaidLink
+                    userId={user.id}
+                    onSuccess={() => {
+                      window.location.reload();
+                    }}
+                    variant="card"
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Divider */}
             <div className="border-t border-white/10 mt-8"></div>

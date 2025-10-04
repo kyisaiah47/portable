@@ -1,42 +1,34 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Dashboard from '@/components/Dashboard';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function IncomePage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
-
-    if (!token || !userStr) {
+    if (!loading && !user) {
       router.push('/login');
-      return;
     }
+  }, [user, loading, router]);
 
-    try {
-      const userData = JSON.parse(userStr);
-      setUser(userData);
-    } catch {
-      router.push('/login');
-    } finally {
-      setLoading(false);
-    }
-  }, [router]);
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+          <p className="text-white font-semibold">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    router.push('/login');
-  };
-
-  if (loading || !user) {
+  if (!user) {
     return null;
   }
 
-  return <Dashboard user={user} onLogout={handleLogout} />;
+  return <Dashboard user={user} onLogout={signOut} />;
 }
