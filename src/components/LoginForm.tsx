@@ -84,20 +84,15 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
 
         if (signUpError) throw signUpError;
 
-        // Create user profile (trigger will auto-create, but we'll explicitly insert)
-        const { error: insertError } = await supabase
-          .from('portable_users')
-          .insert({
-            id: signUpData.user?.id,
-            email: formData.email,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            referred_by: referrerId,
-          });
+        // Wait a moment for the trigger to create the user
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Ignore duplicate key error (trigger may have already created it)
-        if (insertError && !insertError.message.includes('duplicate')) {
-          throw insertError;
+        // Update user with referral info if provided
+        if (referrerId && signUpData.user?.id) {
+          await supabase
+            .from('portable_users')
+            .update({ referred_by: referrerId })
+            .eq('id', signUpData.user.id);
         }
 
         // If there's a valid referrer, create referral record
@@ -137,7 +132,7 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 px-3 py-2 rounded-md text-sm">
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2 rounded-md text-sm">
           {error}
         </div>
       )}
