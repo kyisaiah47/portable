@@ -79,28 +79,38 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       return null;
     }
 
-    // Extract data from flat database structure
-    const incomeData = supabaseParsedIncome.income_data || [];
-    const platformData = supabaseParsedIncome.platforms || {};
+    // Extract data from JSONB database structure
+    const platformData = supabaseParsedIncome.by_platform || {};
+    const stabilityData = supabaseParsedIncome.stability || {
+      score: 0,
+      rating: 'Unknown',
+      weeklyAverage: 0,
+      variability: 0,
+    };
+
+    // Generate income array from transactions
+    const incomeArray = transactions
+      .filter((tx) => tx.amount > 0) // Only positive amounts are income
+      .map((tx) => ({
+        date: new Date(tx.date),
+        amount: tx.amount,
+        platform: tx.merchant_name || 'Unknown',
+      }));
 
     // Transform Supabase format to Dashboard format
     return {
       parsed: {
         totalIncome: supabaseParsedIncome.total_income,
-        income: incomeData.map((item: any) => ({
-          date: new Date(item.date),
-          amount: item.amount,
-          platform: item.platform,
-        })),
+        income: incomeArray,
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
         byPlatform: new Map(Object.entries(platformData)),
       },
       stability: {
-        score: supabaseParsedIncome.stability_score || 0,
-        rating: supabaseParsedIncome.stability_rating || 'Unknown',
-        weeklyAverage: supabaseParsedIncome.weekly_average || 0,
-        variability: supabaseParsedIncome.variability || 0,
+        score: stabilityData.score || 0,
+        rating: stabilityData.rating || 'Unknown',
+        weeklyAverage: stabilityData.weeklyAverage || 0,
+        variability: stabilityData.variability || 0,
       },
       rawTransactions: transactions.map((tx) => ({
         id: tx.id,
@@ -170,29 +180,28 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       try {
         // Save transactions to database
         const transactionsToInsert = transactions.map((tx) => ({
-          id: tx.id,
           user_id: user.id,
+          plaid_transaction_id: tx.id, // Use this field instead of id
           account_id: 'csv-upload',
-          date: tx.date.toISOString(),
+          date: tx.date.toISOString().split('T')[0], // Format as date only
           name: tx.description,
           amount: tx.type === 'credit' ? tx.amount : -tx.amount,
           category: null,
           pending: false,
-          iso_currency_code: 'USD',
         }));
 
-        await supabase
+        const { error: txError } = await supabase
           .from('portable_transactions')
-          .upsert(transactionsToInsert, { onConflict: 'id' });
+          .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
+
+        if (txError) {
+          console.error('Error saving transactions:', txError);
+          alert('Error uploading transactions: ' + txError.message);
+          return;
+        }
 
         // Save parsed income to database
-        const incomeData = parsed.income.map((item) => ({
-          date: item.date.toISOString(),
-          amount: item.amount,
-          platform: item.platform,
-        }));
-
-        const platforms = Object.fromEntries(
+        const byPlatformData = Object.fromEntries(
           Array.from(parsed.byPlatform.entries()).map(([platform, payments]) => [
             platform,
             (payments as any[]).reduce((sum, p) => sum + p.amount, 0),
@@ -202,20 +211,29 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         const weeklyAverage = parsed.totalIncome / 4;
         const variability = Math.round((1 - stability.score / 100) * 100);
 
-        await supabase
+        const stabilityData = {
+          score: stability.score,
+          rating: stability.rating,
+          weeklyAverage: weeklyAverage,
+          variability: variability,
+        };
+
+        const { error: incomeError } = await supabase
           .from('portable_parsed_income')
           .upsert({
             user_id: user.id,
             total_income: parsed.totalIncome,
-            start_date: parsed.startDate?.toISOString() || new Date().toISOString(),
-            end_date: parsed.endDate?.toISOString() || new Date().toISOString(),
-            platforms,
-            stability_score: stability.score,
-            stability_rating: stability.rating,
-            weekly_average: weeklyAverage,
-            variability: variability,
-            income_data: incomeData,
+            start_date: parsed.startDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+            end_date: parsed.endDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+            by_platform: byPlatformData,
+            stability: stabilityData,
           }, { onConflict: 'user_id' });
+
+        if (incomeError) {
+          console.error('Error saving parsed income:', incomeError);
+          alert('Error uploading income data: ' + incomeError.message);
+          return;
+        }
 
         // Clear all caches so data will be refetched
         clearAllCaches(user.id);
@@ -223,7 +241,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         // Reload to show new data
         window.location.reload();
       } catch (error) {
-        // Silent fail for now
+        console.error('Error uploading CSV:', error);
+        alert('Error uploading CSV: ' + (error as Error).message);
       }
     };
 
@@ -895,42 +914,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     vs last month • Track every dollar across platforms
                   </p>
                 </div>
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  {/* Plaid Connect Bank Button */}
-                  <div className="flex-shrink-0">
-                    <PlaidLink
-                      userId={user.id}
-                      onSuccess={() => {
-                        // Refresh data after connecting bank
-                        window.location.reload();
-                      }}
-                      variant="button"
-                    />
-                  </div>
-                  <a
-                    href="/sample-bank-statement.csv"
-                    download
-                    className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-purple-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]"
-                  >
-                    <Download className="w-5 h-5 text-purple-400 mx-auto mb-1" />
-                    <p className="text-xs font-semibold text-white mb-0.5">Sample CSV</p>
-                    <p className="text-[10px] text-slate-400 leading-tight">Try with mock data</p>
-                  </a>
-                  <label className="cursor-pointer flex-shrink-0">
-                    <input
-                      type="file"
-                      accept=".csv"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
-                    <div className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-blue-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]">
-                      <Upload className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                      <p className="text-xs font-semibold text-white mb-0.5">Upload CSV</p>
-                      <p className="text-[10px] text-slate-400 leading-tight">Parse your bank statement</p>
-                    </div>
-                  </label>
                 </div>
-              </div>
             </div>
 
             {/* Explainer text */}

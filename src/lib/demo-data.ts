@@ -1,15 +1,14 @@
 // Demo data generator for new users
 
 export interface DemoTransaction {
-  id: string;
   user_id: string;
+  plaid_transaction_id: string;
   account_id: string;
   date: string;
   name: string;
   amount: number;
-  category: string | null;
+  category: string[] | null;
   pending: boolean;
-  iso_currency_code: string;
 }
 
 export function generateDemoData(userId: string): {
@@ -28,15 +27,14 @@ export function generateDemoData(userId: string): {
     const weekDate = new Date(thirtyDaysAgo.getTime() + week * 7 * 24 * 60 * 60 * 1000);
     const amount = 450 + Math.random() * 150; // $450-600/week
     transactions.push({
-      id: `demo-uber-${userId}-${week}`,
       user_id: userId,
+      plaid_transaction_id: `demo-uber-${userId}-${week}`,
       account_id: 'demo-account',
-      date: weekDate.toISOString(),
+      date: weekDate.toISOString().split('T')[0],
       name: 'UBER DRIVER PARTNER PAYMENT',
       amount,
-      category: 'income',
+      category: null,
       pending: false,
-      iso_currency_code: 'USD',
     });
     totalIncome += amount;
   }
@@ -46,15 +44,14 @@ export function generateDemoData(userId: string): {
     const weekDate = new Date(thirtyDaysAgo.getTime() + (week * 7 + 2) * 24 * 60 * 60 * 1000);
     const amount = 300 + Math.random() * 100; // $300-400/week
     transactions.push({
-      id: `demo-doordash-${userId}-${week}`,
       user_id: userId,
+      plaid_transaction_id: `demo-doordash-${userId}-${week}`,
       account_id: 'demo-account',
-      date: weekDate.toISOString(),
+      date: weekDate.toISOString().split('T')[0],
       name: 'DOORDASH DASHER PAYMENT',
       amount,
-      category: 'income',
+      category: null,
       pending: false,
-      iso_currency_code: 'USD',
     });
     totalIncome += amount;
   }
@@ -67,15 +64,14 @@ export function generateDemoData(userId: string): {
   upworkDates.forEach((date, i) => {
     const amount = 800 + Math.random() * 400; // $800-1200
     transactions.push({
-      id: `demo-upwork-${userId}-${i}`,
       user_id: userId,
+      plaid_transaction_id: `demo-upwork-${userId}-${i}`,
       account_id: 'demo-account',
-      date: date.toISOString(),
+      date: date.toISOString().split('T')[0],
       name: 'UPWORK FREELANCE PAYMENT',
       amount,
-      category: 'income',
+      category: null,
       pending: false,
-      iso_currency_code: 'USD',
     });
     totalIncome += amount;
   });
@@ -128,14 +124,15 @@ export function generateDemoData(userId: string): {
   const parsedIncome = {
     user_id: userId,
     total_income: totalIncome,
-    start_date: thirtyDaysAgo.toISOString(),
-    end_date: now.toISOString(),
-    platforms,
-    stability_score: Math.round(stabilityScore),
-    stability_rating: stabilityScore >= 75 ? 'Stable' : stabilityScore >= 50 ? 'Moderate' : 'Variable',
-    weekly_average: avgWeekly,
-    variability: Math.round(variability),
-    income_data: incomeData,
+    start_date: thirtyDaysAgo.toISOString().split('T')[0],
+    end_date: now.toISOString().split('T')[0],
+    by_platform: platforms,
+    stability: {
+      score: Math.round(stabilityScore),
+      rating: stabilityScore >= 75 ? 'Stable' : stabilityScore >= 50 ? 'Moderate' : 'Variable',
+      weeklyAverage: avgWeekly,
+      variability: Math.round(variability),
+    },
   };
 
   return {
@@ -151,7 +148,7 @@ export async function seedDemoData(userId: string, supabase: any) {
     // Insert transactions
     const { error: txError } = await supabase
       .from('portable_transactions')
-      .upsert(transactions, { onConflict: 'id' });
+      .upsert(transactions, { onConflict: 'plaid_transaction_id' });
 
     if (txError) throw txError;
 

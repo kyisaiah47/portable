@@ -68,28 +68,38 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
       return null;
     }
 
-    // Extract data from flat database structure
-    const incomeData = supabaseParsedIncome.income_data || [];
-    const platformData = supabaseParsedIncome.platforms || {};
+    // Extract data from JSONB database structure
+    const platformData = supabaseParsedIncome.by_platform || {};
+    const stabilityData = supabaseParsedIncome.stability || {
+      score: 0,
+      rating: 'Unknown',
+      weeklyAverage: 0,
+      variability: 0,
+    };
+
+    // Generate income array from transactions
+    const incomeArray = transactions
+      .filter((tx) => tx.amount > 0) // Only positive amounts are income
+      .map((tx) => ({
+        date: new Date(tx.date),
+        amount: tx.amount,
+        platform: tx.merchant_name || 'Unknown',
+      }));
 
     // Transform Supabase format to Dashboard format
     return {
       parsed: {
         totalIncome: supabaseParsedIncome.total_income,
-        income: incomeData.map((item: any) => ({
-          date: new Date(item.date),
-          amount: item.amount,
-          platform: item.platform,
-        })),
+        income: incomeArray,
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
         byPlatform: new Map(Object.entries(platformData)),
       },
       stability: {
-        score: supabaseParsedIncome.stability_score || 0,
-        rating: supabaseParsedIncome.stability_rating || 'Unknown',
-        weeklyAverage: supabaseParsedIncome.weekly_average || 0,
-        variability: supabaseParsedIncome.variability || 0,
+        score: stabilityData.score || 0,
+        rating: stabilityData.rating || 'Unknown',
+        weeklyAverage: stabilityData.weeklyAverage || 0,
+        variability: stabilityData.variability || 0,
       },
       rawTransactions: transactions.map((tx) => ({
         id: tx.id,

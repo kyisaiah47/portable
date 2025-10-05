@@ -79,31 +79,24 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
 
       // Save transactions to database
       const transactionsToInsert = parsedTransactions.map((tx) => ({
-        id: tx.id,
         user_id: userId,
+        plaid_transaction_id: tx.id, // Use this field instead of id
         account_id: 'csv-upload',
-        date: tx.date.toISOString(),
+        date: tx.date.toISOString().split('T')[0], // Format as date only
         name: tx.description,
         amount: tx.type === 'credit' ? tx.amount : -tx.amount,
         category: null,
         pending: false,
-        iso_currency_code: 'USD',
       }));
 
       const { error: txError } = await supabase
         .from('portable_transactions')
-        .upsert(transactionsToInsert, { onConflict: 'id' });
+        .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
 
       if (txError) throw txError;
 
       // Save parsed income to database
-      const incomeData = parsed.income.map((item) => ({
-        date: item.date.toISOString(),
-        amount: item.amount,
-        platform: item.platform,
-      }));
-
-      const platforms = Object.fromEntries(
+      const byPlatformData = Object.fromEntries(
         Array.from(parsed.byPlatform.entries()).map(([platform, payments]) => [
           platform,
           (payments as any[]).reduce((sum, p) => sum + p.amount, 0),
@@ -114,19 +107,22 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
       const weeklyAverage = parsed.totalIncome / 4; // Assuming 4 weeks
       const variability = Math.round((1 - stability.score / 100) * 100);
 
+      const stabilityData = {
+        score: stability.score,
+        rating: stability.rating,
+        weeklyAverage: weeklyAverage,
+        variability: variability,
+      };
+
       const { error: incomeError } = await supabase
         .from('portable_parsed_income')
         .upsert({
           user_id: userId,
           total_income: parsed.totalIncome,
-          start_date: parsed.startDate?.toISOString() || new Date().toISOString(),
-          end_date: parsed.endDate?.toISOString() || new Date().toISOString(),
-          platforms,
-          stability_score: stability.score,
-          stability_rating: stability.rating,
-          weekly_average: weeklyAverage,
-          variability: variability,
-          income_data: incomeData,
+          start_date: parsed.startDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+          end_date: parsed.endDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+          by_platform: byPlatformData,
+          stability: stabilityData,
         }, { onConflict: 'user_id' });
 
       if (incomeError) throw incomeError;

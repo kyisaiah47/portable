@@ -15,6 +15,9 @@ import { DashboardData } from '@/components/DashboardLayout';
 import { HomePageSkeleton } from '@/components/LoadingSkeleton';
 import CSVUpload from '@/components/CSVUpload';
 import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
+import { clearAllCaches } from '@/hooks/useSupabaseData';
 
 interface User {
   id: string;
@@ -32,6 +35,12 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
   const { parsedIncome, isLoading } = dashboardData;
   const [showUpload, setShowUpload] = useState(!parsedIncome);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
 
   // Show loading skeleton while data is loading
   if (isLoading) {
@@ -84,16 +93,130 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
               <input
                 type="file"
                 accept=".csv"
-                onChange={(e) => {
+                onChange={async (e) => {
                   const file = e.target.files?.[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = async (event) => {
-                      const text = event.target?.result as string;
-                      // Handle file upload - TODO: implement upload logic
-                    };
-                    reader.readAsText(file);
-                  }
+                  if (!file) return;
+
+                  const reader = new FileReader();
+                  reader.onload = async (event) => {
+                    const text = event.target?.result as string;
+                    const lines = text.split('\n');
+                    const transactions: Transaction[] = [];
+
+                    // Skip header
+                    for (let i = 1; i < lines.length; i++) {
+                      const line = lines[i].trim();
+                      if (!line) continue;
+
+                      // Simple CSV parsing (handles basic case without quoted fields)
+                      const parts = line.split(',');
+                      if (parts.length >= 4) {
+                        const date = parts[0].trim();
+                        const description = parts.slice(1, -2).join(',').trim(); // Handle commas in description
+                        const amount = parts[parts.length - 2].trim();
+                        const type = parts[parts.length - 1].trim();
+
+                        if (date && description && amount && type) {
+                          transactions.push({
+                            id: `csv-${user.id}-${i}-${Date.now()}`,
+                            date: new Date(date),
+                            description,
+                            amount: parseFloat(amount),
+                            type: type.trim() as 'credit' | 'debit',
+                          });
+                        }
+                      }
+                    }
+
+                    if (transactions.length === 0) {
+                      showToast('No valid transactions found in CSV', 'error');
+                      return;
+                    }
+
+                    const parsed = parseTransactions(transactions);
+                    const stability = calculateStabilityScore(parsed.income);
+
+                    try {
+                      // Save transactions to database
+                      const transactionsToInsert = transactions.map((tx) => ({
+                        user_id: user.id,
+                        plaid_transaction_id: tx.id, // Use this field instead of id
+                        account_id: 'csv-upload',
+                        date: tx.date.toISOString().split('T')[0], // Format as date only
+                        name: tx.description,
+                        amount: tx.type === 'credit' ? tx.amount : -tx.amount,
+                        category: null,
+                        pending: false,
+                      }));
+
+                      console.log('Uploading', transactionsToInsert.length, 'transactions...');
+
+                      const { error: txError } = await supabase
+                        .from('portable_transactions')
+                        .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
+
+                      if (txError) {
+                        console.error('Error saving transactions:', txError);
+                        const errorMsg = txError.message || txError.hint || JSON.stringify(txError) || 'Unknown error';
+                        showToast('Error uploading transactions: ' + errorMsg, 'error');
+                        return;
+                      }
+
+                      console.log('Transactions saved successfully!');
+
+                      // Save parsed income to database
+                      const byPlatformData = Object.fromEntries(
+                        Array.from(parsed.byPlatform.entries()).map(([platform, payments]) => [
+                          platform,
+                          (payments as any[]).reduce((sum, p) => sum + p.amount, 0),
+                        ])
+                      );
+
+                      const weeklyAverage = parsed.totalIncome / 4;
+                      const variability = Math.round((1 - stability.score / 100) * 100);
+
+                      const stabilityData = {
+                        score: stability.score,
+                        rating: stability.rating,
+                        weeklyAverage: weeklyAverage,
+                        variability: variability,
+                      };
+
+                      const { error: incomeError } = await supabase
+                        .from('portable_parsed_income')
+                        .upsert({
+                          user_id: user.id,
+                          total_income: parsed.totalIncome,
+                          start_date: parsed.startDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+                          end_date: parsed.endDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+                          by_platform: byPlatformData,
+                          stability: stabilityData,
+                        }, { onConflict: 'user_id' });
+
+                      if (incomeError) {
+                        console.error('Error saving parsed income:', incomeError);
+                        const errorMsg = incomeError.message || incomeError.hint || JSON.stringify(incomeError) || 'Unknown error';
+                        showToast('Error uploading income data: ' + errorMsg, 'error');
+                        return;
+                      }
+
+                      console.log('Parsed income saved successfully!');
+
+                      // Clear all caches so data will be refetched
+                      clearAllCaches(user.id);
+
+                      // Show success message
+                      showToast('CSV uploaded successfully! Refreshing...', 'success');
+
+                      // Reload to show new data after a brief delay
+                      setTimeout(() => window.location.reload(), 1000);
+                    } catch (error) {
+                      console.error('Error uploading CSV:', error);
+                      showToast('Error uploading CSV: ' + (error as Error).message, 'error');
+                    }
+                  };
+
+                  reader.readAsText(file);
                 }}
                 className="hidden"
               />
@@ -662,6 +785,34 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-4">
+          <div className={`rounded-lg p-4 shadow-lg backdrop-blur-xl border ${
+            toast.type === 'success'
+              ? 'bg-green-500/20 border-green-500/50 text-green-400'
+              : 'bg-red-500/20 border-red-500/50 text-red-400'
+          }`}>
+            <div className="flex items-center gap-3">
+              {toast.type === 'success' ? (
+                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              ) : (
+                <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+              )}
+              <p className="text-sm font-semibold">{toast.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
