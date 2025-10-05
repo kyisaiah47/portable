@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Dashboard from '@/components/Dashboard';
 import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp, PiggyBank, FileText, BarChart3, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -10,12 +9,6 @@ import Link from 'next/link';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 
 export default function Home() {
-  const [user, setUser] = useState(null);
-
-  if (user) {
-    return <Dashboard user={user} onLogout={() => setUser(null)} />;
-  }
-
   return (
     <div className="min-h-screen bg-slate-950 font-inter">
       {/* Navigation */}

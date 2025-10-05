@@ -1,6 +1,6 @@
 'use client';
 
-import { DollarSign, Receipt, Shield, ArrowRight, Heart, PiggyBank, Briefcase, BarChart3, TrendingDown, Users, BookOpen, Wallet, Target, FileText, Calendar, Upload } from 'lucide-react';
+import { DollarSign, Receipt, Shield, ArrowRight, Heart, PiggyBank, Briefcase, BarChart3, TrendingDown, Users, BookOpen, Wallet, Target, FileText, Calendar, Upload, Download } from 'lucide-react';
 import { getTips } from '@/lib/content-registry';
 import {
   ChartContainer,
@@ -48,38 +48,61 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
     <div className="space-y-8">
       {/* Hero message - SHORT AND PUNCHY */}
       <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-          You&apos;re crushing it, {user.firstName}
-        </h1>
-        <p className="text-base md:text-lg text-slate-300">
-          {parsedIncome?.parsed?.totalIncome ? (
-            <>
-              ${parsedIncome.parsed.totalIncome.toLocaleString()} earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes. Most people don&apos;t have their shit this together.
-            </>
-          ) : (
-            <>
-              Connect your bank to automatically track your earnings across all gig platforms in one place.
-            </>
-          )}
-        </p>
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex-1">
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+              You&apos;re crushing it, {user.firstName}
+            </h1>
+            <p className="text-base md:text-lg text-slate-300">
+              {parsedIncome?.parsed?.totalIncome ? (
+                <>
+                  ${parsedIncome.parsed.totalIncome.toLocaleString()} earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes. Most people don&apos;t have their shit this together.
+                </>
+              ) : (
+                <>
+                  Connect your bank to automatically track your earnings across all gig platforms in one place.
+                </>
+              )}
+            </p>
+          </div>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <a
+              href="/sample-bank-statement.csv"
+              download
+              className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-purple-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]"
+            >
+              <Download className="w-5 h-5 text-purple-400 mx-auto mb-1" />
+              <p className="text-xs font-semibold text-white mb-0.5">Sample CSV</p>
+              <p className="text-[10px] text-slate-400 leading-tight">Try with mock data</p>
+            </a>
+            <label className="cursor-pointer flex-shrink-0">
+              <input
+                type="file"
+                accept=".csv"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                      const text = event.target?.result as string;
+                      // Handle file upload - you'll need to add this logic
+                      console.log('File uploaded:', text);
+                    };
+                    reader.readAsText(file);
+                  }
+                }}
+                className="hidden"
+              />
+              <div className="bg-slate-900/80 backdrop-blur-xl rounded-lg p-3 border border-white/20 hover:border-blue-500/50 hover:bg-slate-800 transition-all text-center max-w-[120px]">
+                <Upload className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                <p className="text-xs font-semibold text-white mb-0.5">Upload CSV</p>
+                <p className="text-[10px] text-slate-400 leading-tight">Parse your bank statement</p>
+              </div>
+            </label>
+          </div>
+        </div>
       </div>
 
-      {/* CSV Upload Section - Show when no data or on demand */}
-      {(!parsedIncome || showUpload) && (
-        <CSVUpload userId={user.id} onUploadComplete={handleUploadComplete} />
-      )}
-
-      {parsedIncome && !showUpload && (
-        <div className="flex justify-end">
-          <button
-            onClick={() => setShowUpload(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition-colors"
-          >
-            <Upload className="w-4 h-4" />
-            Upload More Transactions
-          </button>
-        </div>
-      )}
 
       {/* Dynamic Insights & Key Metrics */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">

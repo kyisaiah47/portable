@@ -128,18 +128,6 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
 
   return (
     <div className="min-h-screen bg-slate-950 font-inter">
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-slate-900/90 rounded-lg p-8 border border-white/10">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
-              <p className="text-white font-semibold">Loading your data...</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Navigation */}
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6">
