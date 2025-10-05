@@ -85,8 +85,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
                     const reader = new FileReader();
                     reader.onload = async (event) => {
                       const text = event.target?.result as string;
-                      // Handle file upload - you'll need to add this logic
-                      console.log('File uploaded:', text);
+                      // Handle file upload - TODO: implement upload logic
                     };
                     reader.readAsText(file);
                   }

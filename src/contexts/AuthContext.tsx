@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Handle token expiration
       if (event === 'TOKEN_REFRESHED') {
-        console.log('Session token refreshed');
+        // Session token refreshed
       }
 
       if (event === 'SIGNED_OUT') {
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         lastName: userProfile.last_name,
       });
     } catch (error) {
-      console.error('Failed to fetch user profile:', error);
+      // Failed to fetch user profile
       setUser(null);
       // If user profile doesn't exist, sign out
       await supabase.auth.signOut();
