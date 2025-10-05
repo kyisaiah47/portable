@@ -11,7 +11,8 @@ import { parseTransactions, calculateStabilityScore, type Transaction } from '@/
 import { parseExpenses } from '@/lib/expense-parser';
 import { calculateTaxes, getQuarterlyDeadlines, projectAnnualTax } from '@/lib/tax-calculator';
 import { getTips, getGuides, type City, type GigType } from '@/lib/content-registry';
-import { useParsedIncome, useTransactions, usePlaidItems } from '@/hooks/useSupabaseData';
+import { useParsedIncome, useTransactions, usePlaidItems, clearAllCaches } from '@/hooks/useSupabaseData';
+import { supabase } from '@/lib/supabase';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -136,12 +137,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     onLogout();
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const text = e.target?.result as string;
       const lines = text.split('\n');
       const transactions: Transaction[] = [];
@@ -154,7 +155,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         const [date, description, amount, type] = line.split(',');
         if (date && description && amount && type) {
           transactions.push({
-            id: `${i}`,
+            id: `csv-${user.id}-${i}`,
             date: new Date(date),
             description,
             amount: parseFloat(amount),
@@ -165,11 +166,65 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
       const parsed = parseTransactions(transactions);
       const stability = calculateStabilityScore(parsed.income);
-      const incomeData = { parsed, stability, rawTransactions: transactions };
 
-      // TODO: Save to Supabase instead of localStorage
-      // For now, just reload to trigger re-fetch
-      window.location.reload();
+      try {
+        // Save transactions to database
+        const transactionsToInsert = transactions.map((tx) => ({
+          id: tx.id,
+          user_id: user.id,
+          account_id: 'csv-upload',
+          date: tx.date.toISOString(),
+          name: tx.description,
+          amount: tx.type === 'credit' ? tx.amount : -tx.amount,
+          category: null,
+          pending: false,
+          iso_currency_code: 'USD',
+        }));
+
+        await supabase
+          .from('portable_transactions')
+          .upsert(transactionsToInsert, { onConflict: 'id' });
+
+        // Save parsed income to database
+        const incomeData = parsed.income.map((item) => ({
+          date: item.date.toISOString(),
+          amount: item.amount,
+          platform: item.platform,
+        }));
+
+        const platforms = Object.fromEntries(
+          Array.from(parsed.byPlatform.entries()).map(([platform, payments]) => [
+            platform,
+            (payments as any[]).reduce((sum, p) => sum + p.amount, 0),
+          ])
+        );
+
+        const weeklyAverage = parsed.totalIncome / 4;
+        const variability = Math.round((1 - stability.score / 100) * 100);
+
+        await supabase
+          .from('portable_parsed_income')
+          .upsert({
+            user_id: user.id,
+            total_income: parsed.totalIncome,
+            start_date: parsed.startDate?.toISOString() || new Date().toISOString(),
+            end_date: parsed.endDate?.toISOString() || new Date().toISOString(),
+            platforms,
+            stability_score: stability.score,
+            stability_rating: stability.rating,
+            weekly_average: weeklyAverage,
+            variability: variability,
+            income_data: incomeData,
+          }, { onConflict: 'user_id' });
+
+        // Clear all caches so data will be refetched
+        clearAllCaches(user.id);
+
+        // Reload to show new data
+        window.location.reload();
+      } catch (error) {
+        // Silent fail for now
+      }
     };
 
     reader.readAsText(file);
@@ -177,18 +232,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-slate-950 font-inter">
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-slate-900/90 rounded-lg p-8 border border-white/10">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
-              <p className="text-white font-semibold">Loading your data...</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Navigation */}
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6">

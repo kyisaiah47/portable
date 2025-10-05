@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Upload, Download, Check, X, Loader2 } from 'lucide-react';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { supabase } from '@/lib/supabase';
+import { clearAllCaches } from '@/hooks/useSupabaseData';
 
 interface CSVUploadProps {
   userId: string;
@@ -129,6 +130,9 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
         }, { onConflict: 'user_id' });
 
       if (incomeError) throw incomeError;
+
+      // Clear all caches so data will be refetched
+      clearAllCaches(userId);
 
       setResults({
         totalIncome: parsed.totalIncome,

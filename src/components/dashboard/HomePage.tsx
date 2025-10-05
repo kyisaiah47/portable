@@ -29,9 +29,14 @@ interface HomePageProps {
 }
 
 export default function HomePage({ dashboardData, user }: HomePageProps) {
-  const { parsedIncome } = dashboardData;
+  const { parsedIncome, isLoading } = dashboardData;
   const [showUpload, setShowUpload] = useState(!parsedIncome);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Show loading skeleton while data is loading
+  if (isLoading) {
+    return <HomePageSkeleton />;
+  }
 
   // Show loading skeleton if no data yet
   if (!parsedIncome && !showUpload) {

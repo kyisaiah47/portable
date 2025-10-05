@@ -23,11 +23,6 @@ export default function Home() {
               </div>
               <span className="text-2xl font-bold text-white font-space-grotesk">Portable</span>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-sm font-medium text-slate-400 hover:text-white">Features</a>
-              <Link href="/blog" className="text-sm font-medium text-slate-400 hover:text-white">Blog</Link>
-              <a href="#about" className="text-sm font-medium text-slate-400 hover:text-white">About</a>
-            </div>
             <div className="flex items-center space-x-4">
               <Link
                 href="/login"
