@@ -18,9 +18,14 @@ interface InsightsPageProps {
 export default function InsightsPage({ dashboardData, user }: InsightsPageProps) {
   const { parsedIncome } = dashboardData;
 
-  const transactionsWithPlatform = parsedIncome?.rawTransactions?.map((tx: any) => ({
-    ...tx,
-    platform: tx.platform || 'Other',
+  // Use parsed income data which has platforms already extracted
+  const transactionsWithPlatform = parsedIncome?.parsed?.income?.map((item: any) => ({
+    id: `${item.platform}-${item.date}-${item.amount}`,
+    date: item.date instanceof Date ? item.date : new Date(item.date),
+    description: item.description,
+    amount: item.amount,
+    type: 'credit' as const,
+    platform: item.platform || 'Other',
   })) || [];
 
   return (

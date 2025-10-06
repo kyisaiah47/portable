@@ -77,43 +77,44 @@ export function generateDemoData(userId: string): {
   });
 
   // Calculate income by platform
-  const platforms = {
-    'Uber': 0,
-    'DoorDash': 0,
-    'Upwork': 0,
-  };
-
-  const incomeData: any[] = [];
+  const platformsMap = new Map<string, any[]>();
 
   transactions.forEach(tx => {
+    let platform = '';
     if (tx.name.includes('UBER')) {
-      platforms['Uber'] += tx.amount;
-      incomeData.push({
-        date: tx.date,
-        amount: tx.amount,
-        platform: 'Uber',
-      });
+      platform = 'Uber';
     } else if (tx.name.includes('DOORDASH')) {
-      platforms['DoorDash'] += tx.amount;
-      incomeData.push({
-        date: tx.date,
-        amount: tx.amount,
-        platform: 'DoorDash',
-      });
+      platform = 'DoorDash';
     } else if (tx.name.includes('UPWORK')) {
-      platforms['Upwork'] += tx.amount;
-      incomeData.push({
+      platform = 'Upwork';
+    }
+
+    if (platform) {
+      if (!platformsMap.has(platform)) {
+        platformsMap.set(platform, []);
+      }
+      platformsMap.get(platform)!.push({
         date: tx.date,
         amount: tx.amount,
-        platform: 'Upwork',
+        description: tx.name,
       });
     }
   });
 
+  // Build by_platform object with full structure
+  const platforms: Record<string, any> = {};
+  platformsMap.forEach((items, platform) => {
+    platforms[platform] = {
+      total: items.reduce((sum, item) => sum + item.amount, 0),
+      count: items.length,
+      items: items,
+    };
+  });
+
   // Calculate stability metrics
   const weeklyAverages = [
-    platforms['Uber'] / 4,
-    platforms['DoorDash'] / 4,
+    platforms['Uber']?.total / 4 || 0,
+    platforms['DoorDash']?.total / 4 || 0,
   ];
   const avgWeekly = weeklyAverages.reduce((a, b) => a + b, 0) / weeklyAverages.length;
   const variance = weeklyAverages.reduce((sum, val) => sum + Math.pow(val - avgWeekly, 2), 0) / weeklyAverages.length;

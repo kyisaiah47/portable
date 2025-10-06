@@ -3,10 +3,17 @@
 import { useAuth } from '@/contexts/AuthContext';
 import Dashboard from '@/components/Dashboard';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function SettingsPage() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [loading, user, router]);
 
   if (loading) {
     return (
@@ -17,7 +24,6 @@ export default function SettingsPage() {
   }
 
   if (!user) {
-    router.push('/login');
     return null;
   }
 

@@ -61,22 +61,41 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
       variability: 0,
     };
 
-    // Generate income array from transactions
-    const incomeArray = transactions
-      .filter((tx) => tx.amount > 0) // Only positive amounts are income
-      .map((tx) => ({
-        date: new Date(tx.date),
-        amount: tx.amount,
-        platform: tx.merchant_name || 'Unknown',
-      }));
+    // Build income array and byPlatform map from stored JSONB data
+    const incomeArray: any[] = [];
+    const byPlatformMap = new Map<string, any>();
+
+    // Convert JSONB platform data to income array and map
+    Object.entries(platformData).forEach(([platform, data]: [string, any]) => {
+      if (data.items && Array.isArray(data.items)) {
+        data.items.forEach((item: any) => {
+          const incomeItem = {
+            date: new Date(item.date),
+            amount: item.amount,
+            platform: platform,
+            description: item.description,
+          };
+          incomeArray.push(incomeItem);
+        });
+
+        byPlatformMap.set(platform, {
+          total: data.total,
+          count: data.count,
+          items: data.items.map((item: any) => ({
+            ...item,
+            date: new Date(item.date),
+          })),
+        });
+      }
+    });
 
     return {
       parsed: {
-        totalIncome: supabaseParsedIncome.total_income,
+        totalIncome: supabaseParsedIncome.total_income || incomeArray.reduce((sum, item) => sum + item.amount, 0),
         income: incomeArray,
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
-        byPlatform: new Map(Object.entries(platformData)),
+        byPlatform: byPlatformMap,
       },
       stability: {
         score: stabilityData.score || 0,
@@ -84,7 +103,7 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
         weeklyAverage: stabilityData.weeklyAverage || 0,
         variability: stabilityData.variability || 0,
       },
-      rawTransactions: transactions.map((tx) => ({
+      rawTransactions: (transactions || []).map((tx) => ({
         id: tx.id,
         date: new Date(tx.date),
         description: tx.name,
@@ -98,7 +117,7 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
 
   const dashboardData: DashboardData = {
     parsedIncome,
-    transactions: transactions.map((tx) => ({
+    transactions: (transactions || []).map((tx) => ({
       id: tx.id,
       date: new Date(tx.date),
       description: tx.name,

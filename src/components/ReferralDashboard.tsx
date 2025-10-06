@@ -42,11 +42,49 @@ export default function ReferralDashboard() {
       if (!user) return;
 
       // Fetch user's referral stats
-      const { data: userData } = await supabase
+      let { data: userData, error: fetchError } = await supabase
         .from('portable_users')
         .select('referral_code, total_referrals, referral_earnings')
         .eq('id', user.id)
         .single();
+
+      // Create user record if doesn't exist or generate code if missing
+      if (!userData || !userData.referral_code) {
+        const newReferralCode = generateReferralCode(user.id);
+
+        if (!userData) {
+          // Create new user record
+          const { data: newData, error: createError } = await supabase
+            .from('portable_users')
+            .insert({
+              id: user.id,
+              email: user.email,
+              referral_code: newReferralCode,
+              total_referrals: 0,
+              referral_earnings: 0,
+            })
+            .select('referral_code, total_referrals, referral_earnings')
+            .single();
+
+          if (newData) {
+            userData = newData;
+          } else {
+            console.error('Error creating user:', createError);
+          }
+        } else {
+          // Update existing record with referral code
+          const { data: updatedData } = await supabase
+            .from('portable_users')
+            .update({ referral_code: newReferralCode })
+            .eq('id', user.id)
+            .select('referral_code, total_referrals, referral_earnings')
+            .single();
+
+          if (updatedData) {
+            userData = updatedData;
+          }
+        }
+      }
 
       // Fetch detailed referrals
       const { data: referralsData } = await supabase
@@ -55,25 +93,43 @@ export default function ReferralDashboard() {
         .eq('referrer_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (userData && referralsData) {
-        const pending = referralsData.filter(r => r.status === 'pending').length;
-        const completed = referralsData.filter(r => r.status === 'completed' || r.status === 'rewarded').length;
+      if (userData) {
+        const pending = (referralsData || []).filter(r => r.status === 'pending').length;
+        const completed = (referralsData || []).filter(r => r.status === 'completed' || r.status === 'rewarded').length;
 
         setStats({
-          referralCode: userData.referral_code,
-          totalReferrals: userData.total_referrals,
-          referralEarnings: parseFloat(userData.referral_earnings),
+          referralCode: userData.referral_code || 'LOADING',
+          totalReferrals: userData.total_referrals || 0,
+          referralEarnings: parseFloat(userData.referral_earnings || '0'),
           pendingReferrals: pending,
           completedReferrals: completed,
         });
 
-        setReferrals(referralsData);
+        setReferrals(referralsData || []);
       }
     } catch (error) {
       console.error('Error fetching referral data:', error);
     } finally {
       setLoading(false);
     }
+  }
+
+  function generateReferralCode(userId: string): string {
+    // Generate a short, memorable referral code based on user ID
+    const hash = userId.split('').reduce((acc, char) => {
+      return acc + char.charCodeAt(0);
+    }, 0);
+
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed ambiguous characters
+    let code = '';
+    let hashValue = hash;
+
+    for (let i = 0; i < 6; i++) {
+      code += chars[hashValue % chars.length];
+      hashValue = Math.floor(hashValue / chars.length) + (i * 17); // Add variation
+    }
+
+    return code;
   }
 
   // Show actual content immediately (data loads in background)

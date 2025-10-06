@@ -92,8 +92,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [savingNotifications, setSavingNotifications] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [clearing, setClearing] = useState(false);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [profileMessage, setProfileMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [notificationsMessage, setNotificationsMessage] = useState('');
@@ -118,40 +116,38 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       variability: 0,
     };
 
-    // Generate income array from transactions
-    // Re-parse to get proper platform detection
-    const rawTxs = transactions.map((tx) => ({
-      id: tx.plaid_transaction_id || tx.id,
-      date: new Date(tx.date),
-      description: tx.name,
-      amount: tx.amount,
-      type: (tx.amount > 0 ? 'credit' : 'debit') as 'credit' | 'debit',
-    }));
-
-    const { income: parsedIncomeItems } = parseTransactions(rawTxs);
-
-    const incomeArray = parsedIncomeItems.map((item) => ({
-      date: item.date,
-      amount: item.amount,
-      platform: item.platform,
-      description: item.description,
-    }));
-
-    // Build byPlatform map from parsed income
+    // Build income array and byPlatform map from stored JSONB data
+    const incomeArray: any[] = [];
     const byPlatformMap = new Map<string, any>();
-    incomeArray.forEach((item) => {
-      const existing = byPlatformMap.get(item.platform) || { total: 0, count: 0, items: [] };
-      byPlatformMap.set(item.platform, {
-        total: existing.total + item.amount,
-        count: existing.count + 1,
-        items: [...existing.items, item],
-      });
+
+    // Convert JSONB platform data to income array and map
+    Object.entries(platformData).forEach(([platform, data]: [string, any]) => {
+      if (data.items && Array.isArray(data.items)) {
+        data.items.forEach((item: any) => {
+          const incomeItem = {
+            date: new Date(item.date),
+            amount: item.amount,
+            platform: platform,
+            description: item.description,
+          };
+          incomeArray.push(incomeItem);
+        });
+
+        byPlatformMap.set(platform, {
+          total: data.total,
+          count: data.count,
+          items: data.items.map((item: any) => ({
+            ...item,
+            date: new Date(item.date),
+          })),
+        });
+      }
     });
 
     // Transform Supabase format to Dashboard format
     return {
       parsed: {
-        totalIncome: incomeArray.reduce((sum, item) => sum + item.amount, 0),
+        totalIncome: supabaseParsedIncome.total_income || incomeArray.reduce((sum, item) => sum + item.amount, 0),
         income: incomeArray,
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
@@ -163,7 +159,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         weeklyAverage: stabilityData.weeklyAverage || 0,
         variability: stabilityData.variability || 0,
       },
-      rawTransactions: transactions.map((tx) => ({
+      rawTransactions: (transactions || []).map((tx) => ({
         id: tx.id,
         date: new Date(tx.date),
         description: tx.name,
@@ -295,64 +291,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     }
   };
 
-  const handleClearAllData = async () => {
-    if (!showClearConfirm) {
-      setShowClearConfirm(true);
-      return;
-    }
-
-    setClearing(true);
-    setSettingsError('');
-
-    try {
-      console.log('🗑️ Clearing all data for user:', user.id);
-
-      // Delete transactions first
-      console.log('Deleting transactions...');
-      const txResult = await supabase
-        .from('portable_transactions')
-        .delete()
-        .eq('user_id', user.id);
-
-      console.log('Transaction delete result:', txResult);
-      if (txResult.error) {
-        console.error('Transaction delete error:', txResult.error);
-        throw txResult.error;
-      }
-
-      // Delete parsed income
-      console.log('Deleting parsed income...');
-      const incomeResult = await supabase
-        .from('portable_parsed_income')
-        .delete()
-        .eq('user_id', user.id);
-
-      console.log('Income delete result:', incomeResult);
-      if (incomeResult.error) {
-        console.error('Income delete error:', incomeResult.error);
-        throw incomeResult.error;
-      }
-
-      // Clear cache
-      console.log('Clearing cache...');
-      clearAllCaches(user.id);
-
-      toast.success('Data cleared! Reloading...');
-      console.log('✅ All data cleared, reloading in 1 second');
-
-      // Reload page after brief delay
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error: any) {
-      console.error('❌ Error clearing data:', error);
-      toast.error('Failed to clear data: ' + (error?.message || 'Unknown error'));
-      setSettingsError(error?.message || 'Failed to clear data');
-      setClearing(false);
-      setShowClearConfirm(false);
-    }
-  };
-
   const handleDeleteAccount = async () => {
     if (!showDeleteConfirm) {
       setShowDeleteConfirm(true);
@@ -472,10 +410,21 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         // Save parsed income to database
         const byPlatformData = Object.fromEntries(
-          Array.from(parsed.byPlatform.entries()).map(([platform, payments]) => [
-            platform,
-            (payments as any[]).reduce((sum, p) => sum + p.amount, 0),
-          ])
+          Array.from(parsed.byPlatform.entries()).map(([platform, payments]) => {
+            const items = payments as any[];
+            return [
+              platform,
+              {
+                total: items.reduce((sum, p) => sum + p.amount, 0),
+                count: items.length,
+                items: items.map(item => ({
+                  date: item.date.toISOString(),
+                  amount: item.amount,
+                  description: item.description,
+                })),
+              },
+            ];
+          })
         );
 
         const weeklyAverage = parsed.totalIncome / 4;
@@ -507,18 +456,16 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         console.log('✅ Income data saved');
 
-        // Show success message
-        toast.success('CSV uploaded successfully! Reloading...', { duration: 3000 });
-
         // Clear all caches so data will be refetched
         clearAllCaches(user.id);
 
-        console.log('🔄 Reloading page in 2 seconds...');
+        // Show success message
+        toast.success('CSV uploaded successfully! Reloading...', { duration: 2000 });
 
-        // Reload to show new data after a brief delay
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        console.log('🔄 Reloading page now...');
+
+        // Immediate reload
+        window.location.reload();
       } catch (error) {
         console.error('❌ Error uploading CSV:', error);
         toast.error('Error uploading CSV: ' + (error as Error).message);
@@ -1695,11 +1642,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <div className="space-y-3">
                     {Array.from(parsedIncome.parsed.byPlatform.entries())
                       .map((entry) => {
-                        const [platform, total] = entry;
+                        const [platform, data] = entry;
                         return {
                           platform,
-                          total: typeof total === 'number' ? total : 0,
-                          count: 1, // Placeholder - would need historical data
+                          total: data.total || 0,
+                          count: data.count || 0,
                           category: 'other', // Placeholder - would need to map platform to category
                         };
                       })
@@ -3108,50 +3055,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <Trash2 className="w-5 h-5 text-red-400" />
                 </div>
                 <h2 className="text-2xl font-bold text-white font-space-grotesk">Danger Zone</h2>
-              </div>
-
-              {/* Clear All Data Section */}
-              <div className="mb-8 pb-8 border-b border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-2">Clear All Data</h3>
-                <p className="text-slate-300 mb-4">
-                  Delete all your uploaded transactions and income data. Your account will remain active.
-                </p>
-
-                {showClearConfirm && (
-                  <div className="mb-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
-                    <p className="text-orange-400 font-semibold mb-2">⚠️ Are you sure?</p>
-                    <p className="text-sm text-slate-300">This will permanently delete all your transactions and income data.</p>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleClearAllData}
-                    disabled={clearing}
-                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50"
-                  >
-                    {clearing ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Clearing...
-                      </>
-                    ) : (
-                      <>
-                        <Trash2 className="w-4 h-4" />
-                        {showClearConfirm ? 'Yes, Clear All Data' : 'Clear All Data'}
-                      </>
-                    )}
-                  </button>
-
-                  {showClearConfirm && (
-                    <button
-                      onClick={() => setShowClearConfirm(false)}
-                      className="text-slate-400 hover:text-white text-sm"
-                    >
-                      Cancel
-                    </button>
-                  )}
-                </div>
               </div>
 
               {/* Delete Account Section */}

@@ -17,8 +17,8 @@ export default function QuarterlyTaxCalculator({
   yearToDateIncome = 0,
   yearToDateExpenses = 0,
 }: QuarterlyTaxCalculatorProps) {
-  const [income, setIncome] = useState(yearToDateIncome);
-  const [expenses, setExpenses] = useState(yearToDateExpenses);
+  const [income, setIncome] = useState(Math.round(yearToDateIncome * 100) / 100);
+  const [expenses, setExpenses] = useState(Math.round(yearToDateExpenses * 100) / 100);
   const [maritalStatus, setMaritalStatus] = useState<'single' | 'married'>('single');
   const [dependents, setDependents] = useState(0);
 

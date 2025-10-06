@@ -9,6 +9,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useParsedIncome, useTransactions } from '@/hooks/useSupabaseData';
 import { Transaction } from '@/lib/income-parser';
@@ -75,23 +77,42 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
       variability: 0,
     };
 
-    // Generate income array from transactions
-    const incomeArray = transactions
-      .filter((tx) => tx.amount > 0) // Only positive amounts are income
-      .map((tx) => ({
-        date: new Date(tx.date),
-        amount: tx.amount,
-        platform: tx.merchant_name || 'Unknown',
-      }));
+    // Build income array and byPlatform map from stored JSONB data
+    const incomeArray: any[] = [];
+    const byPlatformMap = new Map<string, any>();
+
+    // Convert JSONB platform data to income array and map
+    Object.entries(platformData).forEach(([platform, data]: [string, any]) => {
+      if (data.items && Array.isArray(data.items)) {
+        data.items.forEach((item: any) => {
+          const incomeItem = {
+            date: new Date(item.date),
+            amount: item.amount,
+            platform: platform,
+            description: item.description,
+          };
+          incomeArray.push(incomeItem);
+        });
+
+        byPlatformMap.set(platform, {
+          total: data.total,
+          count: data.count,
+          items: data.items.map((item: any) => ({
+            ...item,
+            date: new Date(item.date),
+          })),
+        });
+      }
+    });
 
     // Transform Supabase format to Dashboard format
     return {
       parsed: {
-        totalIncome: supabaseParsedIncome.total_income,
+        totalIncome: supabaseParsedIncome.total_income || incomeArray.reduce((sum, item) => sum + item.amount, 0),
         income: incomeArray,
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
-        byPlatform: new Map(Object.entries(platformData)),
+        byPlatform: byPlatformMap,
       },
       stability: {
         score: stabilityData.score || 0,
@@ -99,7 +120,7 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
         weeklyAverage: stabilityData.weeklyAverage || 0,
         variability: stabilityData.variability || 0,
       },
-      rawTransactions: transactions.map((tx) => ({
+      rawTransactions: (transactions || []).map((tx) => ({
         id: tx.id,
         date: new Date(tx.date),
         description: tx.name,
@@ -206,24 +227,35 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
               </div>
             </div>
             <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-white/10">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white">
-                    {user.firstName}
-                  </p>
-                  <p className="text-xs text-slate-400">{user.email}</p>
-                </div>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors text-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-white/10">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm font-medium text-white">
+                      {user.firstName}
+                    </p>
+                    <p className="text-xs text-slate-400">{user.email}</p>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-slate-900 border-white/10 w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/settings" className="flex items-center cursor-pointer">
+                      <User className="w-4 h-4 mr-2" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="flex items-center cursor-pointer text-red-400 focus:text-red-400"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
