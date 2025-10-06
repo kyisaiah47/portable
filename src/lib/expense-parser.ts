@@ -328,7 +328,7 @@ export const EXPENSE_PATTERNS: ExpensePattern[] = [
  */
 export function parseExpense(transaction: Transaction): ParsedExpense | null {
   // Only parse debit transactions (expenses)
-  if (transaction.type !== 'debit') {
+  if (transaction.type !== 'debit' && transaction.amount >= 0) {
     return null;
   }
 

@@ -369,6 +369,7 @@ export const CONTENT_REGISTRY: ContentItem[] = [
     color: 'blue',
     readTime: '4 min read',
     tags: ['surge', 'uber', 'strategy'],
+    actionLink: '/blog/doordash-vs-uber-eats-which-pays-more',
     content: `# Mastering Uber Surge in NYC
 
 Surge pricing can make or break your earnings as an NYC rideshare driver. Here's how to position yourself for maximum surge multipliers.
@@ -442,6 +443,7 @@ Master these patterns and you'll consistently earn $40-50/hour instead of $25-30
     color: 'green',
     readTime: '5 min read',
     tags: ['strategy', 'multi-app', 'income'],
+    actionLink: '/blog/how-to-track-income-across-multiple-gig-platforms',
     content: `# Multi-App Strategy for Drivers
 
 Running multiple apps simultaneously is how top drivers earn $100K+/year. Here's the proven system that won't get you deactivated.
@@ -575,6 +577,7 @@ Follow this system and you'll earn 40-60% more than single-app drivers.`,
     icon: '📖',
     color: 'orange',
     readTime: '3 min read',
+    actionLink: '/blog/doordash-vs-uber-eats-which-pays-more',
     tags: ['doordash', 'zones', 'tips'],
     content: `# Best DoorDash Zones in San Francisco
 
@@ -672,6 +675,7 @@ Stick to Mission and Marina, avoid Financial District and Outer Sunset, and you'
     icon: '📖',
     color: 'purple',
     readTime: '6 min read',
+    actionLink: '/blog/top-10-tax-deductions-for-uber-drivers',
     tags: ['tax', 'deductions', 'mileage'],
     content: `# Tax Deductions for Delivery Drivers
 
@@ -844,6 +848,7 @@ Track everything, use the standard mileage rate, and don't leave money on the ta
     icon: '📖',
     color: 'green',
     readTime: '5 min read',
+    actionLink: '/blog/building-emergency-fund-as-freelancer',
     tags: ['upwork', 'pricing', 'negotiation'],
     content: `# How to Raise Your Rates on Upwork
 
@@ -1009,6 +1014,7 @@ Raise your rates. You're worth it.`,
     icon: '📖',
     color: 'orange',
     readTime: '7 min read',
+    actionLink: '/blog/quarterly-tax-guide-for-gig-workers',
     tags: ['tax', 'quarterly', 'freelance'],
     content: `# Quarterly Tax Guide for Freelancers
 
@@ -1216,6 +1222,7 @@ Do this and you'll never have a scary tax surprise in April.`,
     icon: '📖',
     color: 'red',
     readTime: '6 min read',
+    actionLink: '/blog/how-to-track-income-across-multiple-gig-platforms',
     tags: ['youtube', 'monetization', 'income'],
     content: `# YouTube Monetization Breakdown
 
@@ -1439,6 +1446,7 @@ Ad revenue is the baseline. The real money comes from sponsorships and community
     icon: '📖',
     color: 'purple',
     readTime: '5 min read',
+    actionLink: '/blog/top-10-tax-deductions-for-uber-drivers',
     tags: ['tax', 'deductions', 'equipment'],
     content: `# Tax Write-offs for Content Creators
 

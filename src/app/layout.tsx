@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Space_Grotesk, Outfit, Sora } from "next/font
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -119,6 +120,7 @@ export default function RootLayout({
             {children}
           </AuthProvider>
         </ErrorBoundary>
+        <Toaster />
       </body>
     </html>
   );

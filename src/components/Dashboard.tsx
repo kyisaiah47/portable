@@ -3,8 +3,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown, MoreHorizontal, Calculator } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown, MoreHorizontal, Calculator, Mail, Lock, Trash2, Save, Loader2, Bell } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
@@ -49,6 +50,9 @@ import {
   RadialBar,
   LineChart,
   Line,
+  LabelList,
+  Tooltip,
+  Legend,
 } from 'recharts';
 
 interface User {
@@ -74,7 +78,24 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [taxChartView, setTaxChartView] = useState<'quarterly' | 'liability'>('quarterly');
   const [expenseChartView, setExpenseChartView] = useState<'donut' | 'bar' | 'line'>('donut');
   const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  // Settings state
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName || '');
+  const [email, setEmail] = useState(user.email);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [weeklyReports, setWeeklyReports] = useState(true);
+  const [taxReminders, setTaxReminders] = useState(true);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [savingNotifications, setSavingNotifications] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [profileMessage, setProfileMessage] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [notificationsMessage, setNotificationsMessage] = useState('');
+  const [settingsError, setSettingsError] = useState('');
 
   // Fetch data from Supabase
   const { data: supabaseParsedIncome, loading: incomeLoading, error: incomeError } = useParsedIncome(user.id);
@@ -96,22 +117,43 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     };
 
     // Generate income array from transactions
-    const incomeArray = transactions
-      .filter((tx) => tx.amount > 0) // Only positive amounts are income
-      .map((tx) => ({
-        date: new Date(tx.date),
-        amount: tx.amount,
-        platform: tx.merchant_name || 'Unknown',
-      }));
+    // Re-parse to get proper platform detection
+    const rawTxs = transactions.map((tx) => ({
+      id: tx.plaid_transaction_id || tx.id,
+      date: new Date(tx.date),
+      description: tx.name,
+      amount: tx.amount,
+      type: (tx.amount > 0 ? 'credit' : 'debit') as 'credit' | 'debit',
+    }));
+
+    const { income: parsedIncomeItems } = parseTransactions(rawTxs);
+
+    const incomeArray = parsedIncomeItems.map((item) => ({
+      date: item.date,
+      amount: item.amount,
+      platform: item.platform,
+      description: item.description,
+    }));
+
+    // Build byPlatform map from parsed income
+    const byPlatformMap = new Map<string, any>();
+    incomeArray.forEach((item) => {
+      const existing = byPlatformMap.get(item.platform) || { total: 0, count: 0, items: [] };
+      byPlatformMap.set(item.platform, {
+        total: existing.total + item.amount,
+        count: existing.count + 1,
+        items: [...existing.items, item],
+      });
+    });
 
     // Transform Supabase format to Dashboard format
     return {
       parsed: {
-        totalIncome: supabaseParsedIncome.total_income,
+        totalIncome: incomeArray.reduce((sum, item) => sum + item.amount, 0),
         income: incomeArray,
         startDate: new Date(supabaseParsedIncome.start_date),
         endDate: new Date(supabaseParsedIncome.end_date),
-        byPlatform: new Map(Object.entries(platformData)),
+        byPlatform: byPlatformMap,
       },
       stability: {
         score: stabilityData.score || 0,
@@ -152,6 +194,178 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
   const handleLogout = () => {
     onLogout();
+  };
+
+  // Settings handlers
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingProfile(true);
+    setProfileMessage('');
+    setSettingsError('');
+
+    try {
+      const { error } = await supabase
+        .from('portable_users')
+        .update({
+          first_name: firstName,
+          last_name: lastName,
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setProfileMessage('✅ Profile updated successfully');
+      setTimeout(() => setProfileMessage(''), 3000);
+    } catch (err) {
+      setSettingsError(err instanceof Error ? err.message : 'Failed to update profile');
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingPassword(true);
+    setPasswordMessage('');
+    setSettingsError('');
+
+    if (newPassword !== confirmPassword) {
+      setSettingsError('Passwords do not match');
+      setSavingPassword(false);
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setSettingsError('Password must be at least 8 characters');
+      setSavingPassword(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) throw error;
+
+      setPasswordMessage('✅ Password updated successfully');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => setPasswordMessage(''), 3000);
+    } catch (err) {
+      setSettingsError(err instanceof Error ? err.message : 'Failed to update password');
+    } finally {
+      setSavingPassword(false);
+    }
+  };
+
+  const handleUpdateNotifications = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingNotifications(true);
+    setNotificationsMessage('');
+    setSettingsError('');
+
+    try {
+      const { error } = await supabase
+        .from('portable_users')
+        .update({
+          email_preferences: {
+            weeklyReports,
+            taxReminders,
+          },
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setNotificationsMessage('✅ Notification preferences updated');
+      setTimeout(() => setNotificationsMessage(''), 3000);
+    } catch (err) {
+      setSettingsError(err instanceof Error ? err.message : 'Failed to update preferences');
+    } finally {
+      setSavingNotifications(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!showDeleteConfirm) {
+      setShowDeleteConfirm(true);
+      return;
+    }
+
+    setDeleting(true);
+    setSettingsError('');
+
+    try {
+      // Delete user data
+      await supabase.from('portable_transactions').delete().eq('user_id', user.id);
+      await supabase.from('portable_parsed_income').delete().eq('user_id', user.id);
+      await supabase.from('portable_plaid_items').delete().eq('user_id', user.id);
+      await supabase.from('portable_users').delete().eq('id', user.id);
+
+      // Delete auth user
+      const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
+      if (authError) throw authError;
+
+      onLogout();
+    } catch (err) {
+      setSettingsError(err instanceof Error ? err.message : 'Failed to delete account');
+      setDeleting(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user && activeTab === 'settings') {
+      // Load notification preferences
+      const loadPreferences = async () => {
+        const { data } = await supabase
+          .from('portable_users')
+          .select('email_preferences')
+          .eq('id', user.id)
+          .single();
+
+        if (data?.email_preferences) {
+          setWeeklyReports(data.email_preferences.weeklyReports ?? true);
+          setTaxReminders(data.email_preferences.taxReminders ?? true);
+        }
+      };
+      loadPreferences();
+    }
+  }, [user, activeTab]);
+
+  const clearUserData = async () => {
+    if (!confirm('Are you sure you want to clear all your uploaded data? This cannot be undone.')) {
+      return;
+    }
+
+    try {
+      // Delete transactions
+      const { error: txError } = await supabase
+        .from('portable_transactions')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (txError) throw txError;
+
+      // Delete parsed income
+      const { error: incomeError } = await supabase
+        .from('portable_parsed_income')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (incomeError) throw incomeError;
+
+      // Clear cache
+      clearAllCaches();
+
+      toast.success('All data cleared successfully');
+
+      // Reload page
+      window.location.reload();
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      toast.error('Failed to clear data');
+    }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -258,19 +472,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-slate-950 font-inter">
-      {/* Toast Notification */}
-      {toast && (
-        <div className="fixed top-4 right-4 z-[100] animate-in slide-in-from-top-5">
-          <div className={`px-4 py-3 rounded-lg shadow-lg border ${
-            toast.type === 'success'
-              ? 'bg-green-500/10 border-green-500/30 text-green-400'
-              : 'bg-red-500/10 border-red-500/30 text-red-400'
-          }`}>
-            <p className="text-sm font-medium">{toast.message}</p>
-          </div>
-        </div>
-      )}
-
       {/* Navigation */}
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6">
@@ -309,7 +510,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 {/* More dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger className={`flex items-center space-x-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
-                    ['insights', 'referrals', 'learn'].includes(activeTab)
+                    ['insights', 'referrals', 'learn', 'settings'].includes(activeTab)
                       ? 'text-white bg-white/10'
                       : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}>
@@ -341,24 +542,38 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </div>
             </div>
             <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-white/10">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white">
-                    {user.firstName}
-                  </p>
-                  <p className="text-xs text-slate-400">{user.email}</p>
-                </div>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors text-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-white/10">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm font-medium text-white">
+                      {user.firstName}
+                    </p>
+                    <p className="text-xs text-slate-400">{user.email}</p>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-slate-900 border-white/10 w-48">
+                  <DropdownMenuLabel className="text-slate-400">My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/settings" className="flex items-center cursor-pointer">
+                      <User className="w-4 h-4 mr-2" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="text-slate-300 focus:bg-slate-800 focus:text-white cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -370,20 +585,51 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           <div className="space-y-8">
             {/* Hero message - SHORT AND PUNCHY */}
             <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                You&apos;re crushing it, {user.firstName}
-              </h1>
-              <p className="text-base md:text-lg text-slate-300">
-                {parsedIncome?.parsed?.totalIncome ? (
-                  <>
-                    ${parsedIncome.parsed.totalIncome.toLocaleString()} earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes. Most people don&apos;t have their shit this together.
-                  </>
-                ) : (
-                  <>
-                    Connect your bank to automatically track your earnings across all gig platforms in one place.
-                  </>
-                )}
-              </p>
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1">
+                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                    You&apos;re crushing it, {user.firstName}
+                  </h1>
+                  <p className="text-base md:text-lg text-slate-300">
+                    {parsedIncome?.parsed?.totalIncome ? (
+                      <>
+                        ${Math.round(parsedIncome.parsed.totalIncome).toLocaleString()} total earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes. Most people don&apos;t have their shit this together.
+                      </>
+                    ) : (
+                      <>
+                        Connect your bank to automatically track your earnings across all gig platforms in one place.
+                      </>
+                    )}
+                  </p>
+                </div>
+
+                {/* Upload/Download Buttons */}
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <input
+                    type="file"
+                    id="csv-upload"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="csv-upload"
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors text-sm font-semibold"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Upload
+                  </label>
+
+                  <a
+                    href="/sample-bank-statement.csv"
+                    download
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors text-sm font-semibold"
+                  >
+                    <Download className="w-4 h-4" />
+                    Sample
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Dynamic Insights & Key Metrics */}
@@ -572,10 +818,25 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         yellow: 'border-yellow-500/50 hover:border-yellow-500',
                       };
 
+                      const handleTipClick = () => {
+                        const actionMap: Record<string, () => void> = {
+                          'View tax calendar': () => router.push('/dashboard/taxes'),
+                          'Add a platform': () => toast.success('Platform connections coming soon!'),
+                          'Connect DoorDash': () => toast.success('Platform connections coming soon!'),
+                          'Browse plans': () => router.push('/dashboard/benefits'),
+                          'Set up tracking': () => toast.success('Mileage tracking coming soon!'),
+                        };
+
+                        if (tip.action && actionMap[tip.action]) {
+                          actionMap[tip.action]();
+                        }
+                      };
+
                       return (
-                        <div
+                        <button
                           key={tip.id}
-                          className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colorClasses[tip.color as keyof typeof colorClasses]} transition-all cursor-pointer group`}
+                          onClick={handleTipClick}
+                          className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colorClasses[tip.color as keyof typeof colorClasses]} transition-all cursor-pointer group text-left w-full`}
                         >
                           <div className="flex items-start space-x-3 mb-3">
                             <div className="text-2xl flex-shrink-0">{tip.icon}</div>
@@ -590,7 +851,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               <ArrowRight className={`w-3 h-3 text-${tip.color}-400 group-hover:translate-x-1 transition-transform`} />
                             </div>
                           )}
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -643,10 +904,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </Link>
 
                 <button
-                  onClick={() => {
-                    setToast({ message: 'Platform connections coming soon!', type: 'success' });
-                    setTimeout(() => setToast(null), 3000);
-                  }}
+                  onClick={() => toast.success('Platform connections coming soon!')}
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group text-left"
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -663,10 +921,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </button>
 
                 <button
-                  onClick={() => {
-                    setToast({ message: 'Deduction tracker coming soon!', type: 'success' });
-                    setTimeout(() => setToast(null), 3000);
-                  }}
+                  onClick={() => toast.success('Deduction tracker coming soon!')}
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group text-left"
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -770,10 +1025,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <h3 className="text-lg font-bold text-white mb-3 font-space-grotesk">Quick actions</h3>
                 <div className="space-y-2">
                   <button
-                    onClick={() => {
-                      setToast({ message: 'Platform connections coming soon!', type: 'success' });
-                      setTimeout(() => setToast(null), 3000);
-                    }}
+                    onClick={() => toast.success('Platform connections coming soon!')}
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg text-left hover:opacity-90 transition-opacity flex items-center justify-between"
                   >
                     <div>
@@ -835,7 +1087,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 <Link
-                  href="/dashboard/learn"
+                  href="/blog/doordash-vs-uber-eats-which-pays-more"
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group"
                 >
                   <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
@@ -850,7 +1102,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </Link>
 
                 <Link
-                  href="/dashboard/learn"
+                  href="/blog/health-insurance-options-for-gig-workers"
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group"
                 >
                   <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
@@ -865,7 +1117,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </Link>
 
                 <Link
-                  href="/dashboard/learn"
+                  href="/blog/top-10-tax-deductions-for-uber-drivers"
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group"
                 >
                   <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
@@ -880,7 +1132,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </Link>
 
                 <Link
-                  href="/dashboard/learn"
+                  href="/blog/building-emergency-fund-as-freelancer"
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group"
                 >
                   <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
@@ -895,7 +1147,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </Link>
 
                 <Link
-                  href="/dashboard/learn"
+                  href="/blog/quarterly-tax-guide-for-gig-workers"
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-orange-500/50 transition-all cursor-pointer group"
                 >
                   <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
@@ -910,7 +1162,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </Link>
 
                 <Link
-                  href="/dashboard/learn"
+                  href="/blog/how-to-track-income-across-multiple-gig-platforms"
                   className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group"
                 >
                   <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
@@ -1152,9 +1404,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             className="h-full w-full"
                           >
                             <PieChart>
-                              <ChartTooltip
-                                content={<ChartTooltipContent />}
-                              />
+                              <ChartTooltip content={<ChartTooltipContent />} />
                               <Pie
                                 data={pieData}
                                 cx="50%"
@@ -1199,11 +1449,17 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         groupedData[key] = { period: key };
                       }
 
-                      const platform = item.platform || 'Other';
+                      const platform = item.platform || 'Unknown';
                       groupedData[key][platform] = (groupedData[key][platform] || 0) + item.amount;
                     });
 
-                    const barData = Object.values(groupedData);
+                    const barData = Object.values(groupedData).map((item: any) => {
+                      // Calculate total for this period
+                      const total = Object.keys(item)
+                        .filter(key => key !== 'period')
+                        .reduce((sum, key) => sum + (item[key] || 0), 0);
+                      return { ...item, total };
+                    });
 
                     return (
                       <div className="h-80">
@@ -1226,11 +1482,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             <YAxis
                               stroke="#64748b"
                               style={{ fontSize: '12px' }}
-                              tickFormatter={(value) => `$${value}`}
+                              tickFormatter={(value) => `$${value.toLocaleString()}`}
                             />
-                            <ChartTooltip
-                              content={<ChartTooltipContent />}
-                            />
+                            <ChartTooltip content={<ChartTooltipContent />} />
                             <ChartLegend content={<ChartLegendContent />} />
                             {platforms.map(([platform]) => (
                               <Bar
@@ -2246,20 +2500,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               </div>
                               {deadline.isPast ? (
                                 <button
-                                  onClick={() => {
-                                    setToast({ message: 'IRS payment portal integration coming soon!', type: 'success' });
-                                    setTimeout(() => setToast(null), 3000);
-                                  }}
+                                  onClick={() => toast.success('IRS payment portal integration coming soon!')}
                                   className="w-full bg-white/10 backdrop-blur-sm text-white py-2 px-3 rounded-lg text-xs font-bold border border-white/20 hover:bg-white/20 transition-colors"
                                 >
                                   Overdue - Pay Now
                                 </button>
                               ) : (
                                 <button
-                                  onClick={() => {
-                                    setToast({ message: 'Tax reminders coming soon!', type: 'success' });
-                                    setTimeout(() => setToast(null), 3000);
-                                  }}
+                                  onClick={() => toast.success('Tax reminders coming soon!')}
                                   className="w-full bg-white/10 backdrop-blur-sm text-white py-2 px-3 rounded-lg text-xs font-bold border border-white/20 hover:bg-white/20 transition-colors"
                                 >
                                   Set Reminder
@@ -2335,16 +2583,21 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
               return (
                 <Dialog open={isCalculatorModalOpen} onOpenChange={setIsCalculatorModalOpen}>
-                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-bold text-white font-space-grotesk">
-                        Quarterly Tax Calculator
-                      </DialogTitle>
-                      <DialogDescription>
-                        Calculate and track your quarterly estimated tax payments
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="mt-4">
+                  <DialogContent className="max-w-7xl w-[95vw] p-0 max-h-[90vh] overflow-hidden">
+                    <div className="p-6 border-b border-white/10">
+                      <DialogHeader>
+                        <DialogTitle className="text-xl font-bold text-white font-space-grotesk">
+                          Quarterly Tax Calculator
+                        </DialogTitle>
+                        <DialogDescription className="text-sm">
+                          Calculate and track your quarterly estimated tax payments
+                        </DialogDescription>
+                      </DialogHeader>
+                    </div>
+                    <div className="overflow-y-auto max-h-[calc(90vh-120px)] px-6 pb-6" style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#475569 #1e293b'
+                    }}>
                       <QuarterlyTaxCalculator
                         yearToDateIncome={parsedIncome.parsed.totalIncome}
                         yearToDateExpenses={expenseResults.totalDeductions}
@@ -2572,6 +2825,274 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </div>
               );
             })()}
+          </div>
+        )}
+
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            {/* Profile Settings */}
+            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                  <User className="w-5 h-5 text-blue-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white font-space-grotesk">Profile Information</h2>
+              </div>
+
+              <form onSubmit={handleUpdateProfile} className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">First Name</label>
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500/50"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Last Name</label>
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500/50"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    disabled
+                    className="w-full bg-slate-800/30 border border-white/5 rounded-lg px-4 py-3 text-slate-500 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Email cannot be changed</p>
+                </div>
+
+                {profileMessage && (
+                  <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                    {profileMessage}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={savingProfile}
+                  className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {savingProfile ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      Save Changes
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* Email Notifications */}
+            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                  <Bell className="w-5 h-5 text-green-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white font-space-grotesk">Email Notifications</h2>
+              </div>
+
+              <form onSubmit={handleUpdateNotifications} className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-lg border border-white/5">
+                    <input
+                      type="checkbox"
+                      id="weeklyReports"
+                      checked={weeklyReports}
+                      onChange={(e) => setWeeklyReports(e.target.checked)}
+                      className="mt-1 w-5 h-5 rounded border-white/20 bg-slate-800 text-blue-500 focus:ring-2 focus:ring-blue-500/50"
+                    />
+                    <div className="flex-1">
+                      <label htmlFor="weeklyReports" className="block text-white font-semibold mb-1 cursor-pointer">
+                        Weekly Earnings Reports
+                      </label>
+                      <p className="text-sm text-slate-400">
+                        Get a summary of your weekly income, platform breakdown, and personalized insights every Monday morning.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-lg border border-white/5">
+                    <input
+                      type="checkbox"
+                      id="taxReminders"
+                      checked={taxReminders}
+                      onChange={(e) => setTaxReminders(e.target.checked)}
+                      className="mt-1 w-5 h-5 rounded border-white/20 bg-slate-800 text-blue-500 focus:ring-2 focus:ring-blue-500/50"
+                    />
+                    <div className="flex-1">
+                      <label htmlFor="taxReminders" className="block text-white font-semibold mb-1 cursor-pointer">
+                        Quarterly Tax Reminders
+                      </label>
+                      <p className="text-sm text-slate-400">
+                        Receive reminders before quarterly tax deadlines (April 15, June 15, September 15, January 15) with estimated payment amounts.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {notificationsMessage && (
+                  <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                    {notificationsMessage}
+                  </div>
+                )}
+
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                  <p className="text-sm text-slate-300">
+                    <strong className="text-blue-400">Note:</strong> Email notifications require your Supabase project to have SMTP configured.
+                    Until then, these preferences are saved but emails won't be sent.
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={savingNotifications}
+                  className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {savingNotifications ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      Save Preferences
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* Password Settings */}
+            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-purple-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white font-space-grotesk">Change Password</h2>
+              </div>
+
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">New Password</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500/50"
+                    placeholder="At least 8 characters"
+                    minLength={8}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500/50"
+                    placeholder="Repeat password"
+                  />
+                </div>
+
+                {passwordMessage && (
+                  <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                    {passwordMessage}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={savingPassword || !newPassword || !confirmPassword}
+                  className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {savingPassword ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-4 h-4" />
+                      Update Password
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* Danger Zone */}
+            <div className="bg-red-500/5 backdrop-blur-xl rounded-2xl p-8 border border-red-500/20">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
+                  <Trash2 className="w-5 h-5 text-red-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white font-space-grotesk">Danger Zone</h2>
+              </div>
+
+              <p className="text-slate-300 mb-4">
+                Once you delete your account, there is no going back. All your data will be permanently deleted.
+              </p>
+
+              {showDeleteConfirm && (
+                <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                  <p className="text-red-400 font-semibold mb-2">⚠️ Are you absolutely sure?</p>
+                  <p className="text-sm text-slate-300">This will permanently delete all your transactions, income data, and account settings.</p>
+                </div>
+              )}
+
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50"
+              >
+                {deleting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    {showDeleteConfirm ? 'Yes, Delete My Account' : 'Delete Account'}
+                  </>
+                )}
+              </button>
+
+              {showDeleteConfirm && (
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="ml-3 text-slate-400 hover:text-white text-sm"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+
+            {settingsError && (
+              <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+                {settingsError}
+              </div>
+            )}
           </div>
         )}
       </div>

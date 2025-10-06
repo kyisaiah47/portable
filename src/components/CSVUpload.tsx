@@ -78,13 +78,14 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
       const stability = calculateStabilityScore(parsed.income);
 
       // Save transactions to database
+      // Database expects: positive for income, negative for expenses
       const transactionsToInsert = parsedTransactions.map((tx) => ({
         user_id: userId,
         plaid_transaction_id: tx.id, // Use this field instead of id
         account_id: 'csv-upload',
         date: tx.date.toISOString().split('T')[0], // Format as date only
         name: tx.description,
-        amount: tx.type === 'credit' ? tx.amount : -tx.amount,
+        amount: tx.type === 'credit' ? Math.abs(tx.amount) : -Math.abs(tx.amount),
         category: null,
         pending: false,
       }));

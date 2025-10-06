@@ -26,7 +26,7 @@ export default function BlogPost() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Portable</Link>
           <div className="flex items-center gap-4">
-            <Link href="/blog" className="text-slate-300 hover:text-white text-sm">← Back to Blog</Link>
+            <Link href="/dashboard" className="text-slate-300 hover:text-white text-sm">Dashboard</Link>
             <Link href="/signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Get Started</Link>
           </div>
         </div>
