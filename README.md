@@ -1,117 +1,84 @@
 # Portable
 
-**Your safety net, untethered.**
+**Financial clarity for gig workers.**
 
-A comprehensive financial platform designed specifically for the 60M+ independent workers in the gig economy. Built for HackNomics 2025.
+A comprehensive financial platform designed specifically for the 70M+ gig workers in America. No more spreadsheets, surprise tax bills, or financial chaos.
 
-## 🎥 Demo Video
-[**► Watch the full demo on YouTube**](#) (Coming soon)
+## 🎥 Demo
 
-> 🚀 **Live Demo**: Try it at [portable-buwubjqtb-kyisaiah47s-projects.vercel.app](https://portable-buwubjqtb-kyisaiah47s-projects.vercel.app)
+**Live App**: [portable-buwubjqtb-kyisaiah47s-projects.vercel.app](https://portable-buwubjqtb-kyisaiah47s-projects.vercel.app)
 
----
+**Demo Credentials**:
+- Email: `sarah.driver@email.com`
+- Password: `demo123`
 
-## ✅ Production Status
-
-**Version**: 1.0 Beta
-**Status**: ✅ **Ready for Beta Testing** (79% feature complete)
-**Last Updated**: 2025-01-04
-
-### What's Working
-- ✅ Income tracking across 10+ gig platforms
-- ✅ Automatic transaction parsing and categorization
-- ✅ Real-time income stability scoring
-- ✅ IRS-compliant quarterly tax calculations
-- ✅ User authentication and profile management
-- ✅ CSV bank statement upload
-- ✅ Demo data for instant testing
-- ✅ Email notification system (requires SMTP setup)
-- ✅ Performance tested with 10,000+ transactions
-
-### Documentation
-- 📖 [Production Readiness Checklist](./PRODUCTION_READINESS.md)
-- 🔒 [Security Audit Report](./SECURITY_AUDIT.md)
-- ⚡ [Performance Optimization Guide](./PERFORMANCE_OPTIMIZATION.md)
-- 📧 [Email Notifications Setup](./EMAIL_NOTIFICATIONS.md)
-- 📝 [Session Summary](./SESSION_SUMMARY.md)
+**Or**: Upload the included sample CSV (`public/sample-bank-statement.csv`) to see your own data
 
 ---
 
-## 🌟 What is Portable?
+## 💡 The Problem
 
-Over **60 million independent workers** across the US are building careers on their own terms—driving for Uber, delivering with DoorDash, creating on YouTube and TikTok, streaming on Twitch, designing on Upwork, renting on Airbnb. The freedom is incredible. But there's a catch: **no employer means no benefits**.
+70 million Americans work in the gig economy. Most have no idea how much they're actually making.
 
-**Portable** bridges this gap by providing gig workers with:
-- 🏥 **Health Insurance** - Affordable medical, dental, and vision plans (no employer required)
-- 💰 **Retirement Plans** - Portable 401(k) and SEP IRA that follow you from gig to gig
-- 📊 **Income Tracking** - Connect all your platforms and see total earnings in one place
-- 📝 **Tax Assistance** - Quarterly estimates, deduction tracking, and 1099 management
-- ⚡ **Emergency Fund** - Build a safety net for slow months and unexpected expenses
-- 💬 **Expert Guidance** - Financial advisors who understand the gig economy
+- You work for Uber, DoorDash, Upwork, Fiverr, YouTube
+- 5 different apps. 5 different payment schedules. Zero clarity.
+- Tax season hits and you're scrambling through bank statements
+- The IRS wants quarterly payments. You're guessing.
+- Average gig worker misses $3,000-$5,000 in deductions every year
 
----
-
-## 🚀 Key Features
-
-### For Gig Workers
-- **Multi-Platform Income Tracking**: Sync earnings from 100+ gig platforms automatically
-- **Affordable Health Coverage**: Access group rates typically reserved for traditional employees
-- **Portable Retirement Accounts**: Solo 401(k) and SEP IRA options with easy management
-- **Smart Tax Tools**: Track deductions, estimate quarterly taxes, manage 1099s
-- **Emergency Savings**: Automated savings features to build financial resilience
-- **Financial Advisor Access**: Chat with experts who specialize in gig economy challenges
-
-### For Content Creators
-We support creators across all platforms:
-- 📹 YouTube ad revenue and sponsorships
-- 🎵 TikTok Creator Fund and brand deals
-- 🎮 Twitch subscriptions and donations
-- 📸 Instagram creator earnings
-- 🎨 Patreon recurring revenue
+**There's no financial platform built for how gig workers actually work.**
 
 ---
 
-## 🎨 Design & Branding
+## ✨ The Solution
 
-**Portable** features a modern, gradient-rich aesthetic inspired by Revolut:
-- **Brand Colors**: Blue (#3B82F6) → Purple (#A855F7) → Pink (#EC4899) gradient palette
-- **Typography**: Space Grotesk for headings, Inter for body text
-- **Visual Style**: Floating gradient cards, animated mesh backgrounds, glassmorphism effects
-- **Brand Identity**: Three overlapping gradient circles representing portability and connection
+**Portable** - The first financial platform designed from the ground up for gig workers.
+
+Upload your bank statement once. That's it. Portable does everything else.
+
+### Core Features
+
+**📊 Automatic Income Tracking**
+- Recognizes income from 50+ platforms (Uber, Lyft, DoorDash, Instacart, Upwork, Fiverr, YouTube, Patreon, etc.)
+- See exactly what you made, broken down by platform, week, and month
+- No more spreadsheets. No more guessing.
+
+**💰 Smart Expense Tracking**
+- Automatically categorizes business expenses
+- Gas stations? Deductible for rideshare/delivery. Phone bills? 80% deductible. Adobe subscription? Fully deductible for creators.
+- Every transaction analyzed, categorized, and calculated for tax deduction
+- Stop leaving thousands on the table
+
+**📝 Real-Time Tax Calculations**
+- Exact quarterly tax liability calculated in real-time
+- Self-employment tax, federal income tax, state estimates
+- Know exactly what you owe, when you owe it
+- No more panic in April. No more underpayment penalties.
+
+**📈 Income Stability Score**
+- Are you earning consistently or all over the place?
+- Matters for apartments, loans, credit cards
+- Traditional credit systems don't understand variable income. We're fixing that.
+
+**🎓 Personalized Content**
+- Hyper-relevant guides based on your platforms and location
+- How to maximize earnings during surge in your city
+- Best zones for delivery. Tax strategies for creators.
+- Not generic advice. Built for you.
 
 ---
 
 ## 🏗️ Tech Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
-- **UI Components**: Shadcn UI (Avatar, forms, etc.)
-- **Icons**: Lucide React
-- **Fonts**: Space Grotesk, Inter (Google Fonts)
-- **Animations**: tw-animate-css for gradient and blob animations
-- **Backend**: Next.js API routes, Prisma ORM
-- **Database**: SQLite (easily deployable, can migrate to PostgreSQL)
-- **Authentication**: JWT with bcrypt password hashing
-- **Charts**: Recharts for earnings visualization
-
----
-
-## 🎯 Demo Story
-
-**Meet Sarah Johnson**: An Uber driver and DoorDash courier who earned $47K last year but had no access to benefits.
-
-Through Portable, Sarah:
-1. ✅ Connected her Uber and DoorDash accounts automatically
-2. ✅ Enrolled in affordable health insurance ($150/mo)
-3. ✅ Set up a portable Solo 401(k) for retirement
-4. ✅ Built a $2,400 emergency fund with automatic savings
-5. ✅ Tracked deductions and managed quarterly tax payments
-6. ✅ Got advice from financial advisors familiar with gig work
-
-**Demo Credentials:**
-- Email: `sarah.driver@email.com`
-- Password: `demo123`
+- **Database**: Supabase (PostgreSQL + Auth + Realtime)
+- **UI Components**: Shadcn UI + Radix
+- **Charts**: Recharts
+- **Icons**: Lucide React + React Icons
+- **Notifications**: Sonner (toast)
+- **Fonts**: Space Grotesk, Inter, Outfit, Sora
 
 ---
 
@@ -119,14 +86,14 @@ Through Portable, Sarah:
 
 ### Prerequisites
 - Node.js 18+
-- npm or yarn
+- Supabase account (free tier works)
 
 ### Installation
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/kyisaiah47/gig-benefits-platform.git
-   cd gig-benefits-platform
+   git clone https://github.com/yourusername/portable.git
+   cd portable
    ```
 
 2. **Install dependencies**:
@@ -134,134 +101,150 @@ Through Portable, Sarah:
    npm install
    ```
 
-3. **Setup database**:
+3. **Setup environment variables**:
    ```bash
-   npx prisma migrate dev --name init
-   npx tsx src/lib/seed.ts
+   cp .env.example .env.local
+   # Add your Supabase URL and anon key
    ```
 
-4. **Start development server**:
+4. **Run database migrations**:
+   ```bash
+   # Execute the SQL in database/supabase-migration-portable.sql in your Supabase SQL editor
+   ```
+
+5. **Start development server**:
    ```bash
    npm run dev
    ```
 
-5. **Access the app**:
+6. **Access the app**:
    - Visit: `http://localhost:3000`
-   - Try the demo: `sarah.driver@email.com` / `demo123`
-
----
-
-## 📊 Key Statistics
-
-- **Target Market**: 60M+ independent workers in the US
-- **Growth Rate**: Gig economy growing 15% annually
-- **Benefits Gap**: 87% of gig workers have no employer-sponsored benefits
-- **Average Income**: $47K annually across multiple platforms
-- **Platforms Supported**: 100+ including rideshare, delivery, freelance, content creation
-
----
-
-## 🏆 HackNomics 2025 Alignment
-
-This project directly addresses the **economic inequality** facing America's rapidly growing gig workforce:
-
-- ✅ **Real-World Impact**: Tackles the benefits gap affecting 60M+ workers
-- ✅ **Financial Innovation**: Portable benefits system that moves between gigs
-- ✅ **Economic Data**: Built on BLS data showing gig economy growth trends
-- ✅ **Technical Execution**: Full-stack working prototype with modern UX
-- ✅ **Social Good**: Democratizes access to benefits traditionally tied to employment
-- ✅ **Scalability**: Designed to integrate with 100+ gig platforms via APIs
-
----
-
-## 💡 Why "Portable"?
-
-Traditional benefits are **tied to employers**. When you change jobs or work multiple gigs, you lose access.
-
-**Portable** changes this by creating benefits that:
-- Follow you from gig to gig
-- Work across multiple platforms simultaneously
-- Don't require a single employer
-- Are designed for independent workers
-
-**Your work is already portable. Your benefits should be too.**
-
----
-
-## 🎨 Pages & Routes
-
-- `/` - Landing page with hero, story section, features, and CTA
-- `/fonts` - Font preview page (Space Grotesk variations)
-- `/body-fonts` - Body font comparison page
-- `/styles/1` through `/styles/4` - Alternative landing page designs
-- Login/Signup - Traditional auth flow (modal-based)
-- Dashboard - Main app interface (protected route)
+   - Sign up or use demo: `sarah.driver@email.com` / `demo123`
 
 ---
 
 ## 📁 Project Structure
 
 ```
-gig-benefits-platform/
+portable/
 ├── src/
-│   ├── app/
-│   │   ├── page.tsx           # Main landing page
-│   │   ├── layout.tsx         # Root layout with fonts
-│   │   ├── globals.css        # Tailwind + theme config
-│   │   ├── fonts/             # Font preview pages
-│   │   ├── body-fonts/        # Body font comparison
-│   │   └── styles/            # Alternative designs
+│   ├── app/                    # Next.js app router pages
+│   │   ├── dashboard/          # Protected dashboard routes
+│   │   ├── login/              # Auth pages
+│   │   └── globals.css         # Global styles
 │   ├── components/
-│   │   ├── Dashboard.tsx      # Main dashboard UI
-│   │   ├── LoginForm.tsx      # Auth component
-│   │   └── ui/                # Shadcn components
-│   └── lib/
-│       ├── seed.ts            # Database seeding
-│       └── utils.ts           # Utility functions
-├── prisma/
-│   └── schema.prisma          # Database schema
-└── public/
-    └── logo.svg               # Brand logo
+│   │   ├── Dashboard.tsx       # Main dashboard component
+│   │   ├── ui/                 # Shadcn UI components
+│   │   └── ...
+│   ├── lib/
+│   │   ├── income-parser.ts    # Income detection logic
+│   │   ├── expense-parser.ts   # Expense categorization
+│   │   ├── tax-calculator.ts   # Tax calculations
+│   │   └── supabase.ts         # Supabase client
+│   ├── hooks/
+│   │   └── useSupabaseData.ts  # Data fetching hooks
+│   └── contexts/
+│       └── AuthContext.tsx     # Auth state management
+├── public/
+│   ├── sample-bank-statement.csv  # Demo data
+│   └── logo.svg
+├── database/                   # SQL migration files
+├── docs/                       # Project documentation
+├── DEMO_NARRATION.txt         # Final demo script (for ElevenLabs)
+└── DEMO_SCRIPT_V2.md          # Demo script with context
 ```
 
 ---
 
-## 🎯 Roadmap
+## 🎯 Key Innovation
 
-**Phase 1: MVP** (Current)
-- ✅ Landing page with branding
-- ✅ Demo user flow
-- ✅ Basic income tracking
-- ✅ Benefits marketplace UI
+**Most financial apps treat gig workers as an afterthought.** QuickBooks is built for traditional businesses. Mint doesn't understand gig work. Your tax software only helps once a year.
 
-**Phase 2: Core Features**
-- [ ] Real API integrations (Plaid, Stripe Connect)
-- [ ] Actual insurance provider partnerships
-- [ ] Live retirement account setup
-- [ ] Tax filing integration (TurboTax API)
+**Portable is different:**
+- ✅ Built from scratch for gig workers
+- ✅ Understands variable income
+- ✅ Knows which expenses are deductible for which gig types
+- ✅ Real-time tax calculations, not year-end surprises
+- ✅ Income stability scoring for credit decisions
 
-**Phase 3: Scale**
-- [ ] Mobile apps (iOS/Android)
-- [ ] AI-powered financial guidance
-- [ ] Community features and networking
-- [ ] Expanded platform support (200+)
+**The gig economy is 40% of the American workforce. We're building the financial infrastructure they actually need.**
+
+---
+
+## 📊 Current Status
+
+**Working Features**:
+- ✅ CSV bank statement upload
+- ✅ Automatic income detection (50+ platforms)
+- ✅ Expense categorization with deduction rates
+- ✅ Real-time tax calculations (quarterly + annual)
+- ✅ Income stability scoring
+- ✅ Multi-page dashboard (Income, Expenses, Taxes, Benefits, Learn)
+- ✅ User authentication and profiles
+- ✅ Settings and data management
+- ✅ Demo data generation
+- ✅ Responsive design
+
+**Future Enhancements**:
+- [ ] Plaid integration for automatic bank sync
+- [ ] Actual benefit provider partnerships
+- [ ] AI-powered financial insights
+- [ ] Mobile app (iOS/Android)
+- [ ] Export tax documents (1099, Schedule C)
+
+---
+
+## 🧪 Testing
+
+**Try it yourself**:
+1. Sign up with any email
+2. Upload `public/sample-bank-statement.csv`
+3. Explore the dashboard and see how it automatically:
+   - Detects income from Uber, DoorDash, Lyft, Upwork, etc.
+   - Categorizes expenses (gas, insurance, phone bills, etc.)
+   - Calculates quarterly tax liability
+   - Generates stability scores
+
+---
+
+## 🎨 Design Philosophy
+
+**Modern, gradient-rich aesthetic** inspired by fintech leaders like Revolut:
+- Clean, dark mode interface
+- Blue → Purple → Pink gradient palette
+- Floating cards with glassmorphism
+- Smooth animations and micro-interactions
+- Data visualization that's actually useful
+
+**Every design choice serves the user**: Clear hierarchy, readable typography, actionable insights.
+
+---
+
+## 📄 Documentation
+
+See `/docs/` for additional documentation:
+- Design specifications
+- Implementation guides
+- Security audit
+- Performance optimization
+- Deployment instructions
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! This project is built for the social good of gig workers everywhere.
+This project is built for the social good of gig workers everywhere. Contributions welcome!
 
 ---
 
 ## 📄 License
 
-MIT License - feel free to use this for good!
+MIT License - Use this for good!
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Built For
 
-Built with ❤️ for the 60M+ independent workers building the future of work.
+The 70 million Americans building careers on their own terms. The drivers, deliverers, creators, and freelancers who deserve financial tools that actually work for them.
 
-**HackNomics 2025** - Leveraging technology and economics to solve real-world problems.
+**Your work is portable. Your financial platform should be too.**
