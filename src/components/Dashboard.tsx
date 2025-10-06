@@ -2473,7 +2473,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     {guides.map((guide) => {
                       const colors = colorClasses[guide.color as keyof typeof colorClasses];
                       return (
-                        <div key={guide.id} className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colors.border} transition-all cursor-pointer group`}>
+                        <Link
+                          key={guide.id}
+                          href={guide.actionLink || '#'}
+                          className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colors.border} transition-all cursor-pointer group block`}
+                        >
                           <div className={`w-8 h-8 ${colors.bg} rounded-lg flex items-center justify-center mb-3`}>
                             <BookOpen className={`w-4 h-4 ${colors.text}`} />
                           </div>
@@ -2490,7 +2494,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             <span className={`text-xs ${colors.text}`}>{guide.readTime}</span>
                             <ArrowRight className={`w-3 h-3 text-slate-400 ${colors.hover} transition-colors`} />
                           </div>
-                        </div>
+                        </Link>
                       );
                     })}
                   </div>
