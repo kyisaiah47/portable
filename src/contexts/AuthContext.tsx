@@ -27,9 +27,22 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Initialize from localStorage cache
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('auth_user');
+        if (cached) {
+          return JSON.parse(cached);
+        }
+      } catch {
+        // Invalid cache, ignore
+      }
+    }
+    return null;
+  });
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Start as false since we load from cache
   const router = useRouter();
 
   useEffect(() => {
@@ -40,6 +53,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         fetchUserProfile(session.user.id);
       } else {
         setLoading(false);
+        setUser(null);
+        // Clear cached user if no session
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth_user');
+        }
       }
     });
 
@@ -57,6 +75,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setLoading(false);
+        // Clear cached user
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth_user');
+        }
         router.push('/login');
         return;
       }
@@ -84,15 +106,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) throw error;
 
-      setUser({
+      const userData = {
         id: userProfile.id,
         email: userProfile.email,
         firstName: userProfile.first_name,
         lastName: userProfile.last_name,
-      });
+      };
+
+      setUser(userData);
+
+      // Cache user in localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_user', JSON.stringify(userData));
+      }
     } catch (error) {
       // Failed to fetch user profile
       setUser(null);
+      // Clear cache
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_user');
+      }
       // If user profile doesn't exist, sign out
       await supabase.auth.signOut();
       router.push('/login');
@@ -106,6 +139,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
+      // Clear cached user
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_user');
+      }
       router.push('/login');
     } catch (error) {
       // Silent fail

@@ -53,13 +53,8 @@ function getCachedData<T>(key: string): T | null {
     const cached = localStorage.getItem(key);
     if (!cached) return null;
     const parsed = JSON.parse(cached);
-    // Check if cache is less than 5 minutes old
-    if (Date.now() - parsed.timestamp < 5 * 60 * 1000) {
-      return parsed.data;
-    }
-    // Cache expired, remove it
-    localStorage.removeItem(key);
-    return null;
+    // Return cached data (infinite cache - only cleared on new upload)
+    return parsed.data;
   } catch {
     return null;
   }
