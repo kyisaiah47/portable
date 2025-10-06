@@ -12,6 +12,13 @@ import {
   RadialBar,
   PolarAngleAxis,
 } from 'recharts';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface Benefit {
   id: number;
@@ -30,6 +37,8 @@ export default function BenefitsMarketplace() {
   const [monthlyContribution, setMonthlyContribution] = useState<number>(500);
   const [currentAge, setCurrentAge] = useState<number>(30);
   const [retirementAge, setRetirementAge] = useState<number>(65);
+  const [isHealthCalcModalOpen, setIsHealthCalcModalOpen] = useState(false);
+  const [isRetirementCalcModalOpen, setIsRetirementCalcModalOpen] = useState(false);
 
   const benefits: Benefit[] = [
     {
@@ -150,12 +159,32 @@ export default function BenefitsMarketplace() {
     <div className="space-y-8">
       {/* Hero message */}
       <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-          Build your safety net
-        </h1>
-        <p className="text-base md:text-lg text-slate-300">
-          Health coverage, retirement savings, and emergency funds designed for gig workers. No employer required.
-        </p>
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex-1">
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+              Build your safety net
+            </h1>
+            <p className="text-base md:text-lg text-slate-300">
+              Health coverage, retirement savings, and emergency funds designed for gig workers. No employer required.
+            </p>
+          </div>
+          <div className="flex gap-3 flex-shrink-0">
+            <button
+              onClick={() => setIsHealthCalcModalOpen(true)}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              <Heart className="w-4 h-4" />
+              <span>Health Calc</span>
+            </button>
+            <button
+              onClick={() => setIsRetirementCalcModalOpen(true)}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              <Building2 className="w-4 h-4" />
+              <span>Retirement Calc</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Progress Rings - Benefits Coverage */}
@@ -312,187 +341,6 @@ export default function BenefitsMarketplace() {
       {/* Divider */}
       <div className="border-t border-white/10 mt-8"></div>
 
-      {/* Calculators */}
-      <div>
-        <div className="mb-4">
-          <h2 className="text-xl font-bold text-white font-space-grotesk">Financial calculators</h2>
-          <p className="text-xs text-slate-400">Plan your benefits budget</p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Health Insurance Premium Calculator */}
-          <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-6 border border-red-500/20">
-            <div className="flex items-center space-x-2 mb-4">
-              <Heart className="w-5 h-5 text-red-400" />
-              <h3 className="text-lg font-bold text-white font-space-grotesk">Health Insurance Calculator</h3>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-slate-300 mb-2 block">Annual Income</label>
-                <input
-                  type="number"
-                  value={annualIncome}
-                  onChange={(e) => setAnnualIncome(Number(e.target.value))}
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
-                />
-              </div>
-
-              {(() => {
-                // ACA subsidy calculation (simplified)
-                const fpl = 14580; // 2024 Federal Poverty Level for 1 person
-                const incomeAsPercentOfFPL = annualIncome / fpl;
-                const isEligibleForSubsidy = incomeAsPercentOfFPL >= 1.0 && incomeAsPercentOfFPL <= 4.0;
-
-                let maxPremiumPercent = 0;
-                if (incomeAsPercentOfFPL <= 1.5) maxPremiumPercent = 0.02;
-                else if (incomeAsPercentOfFPL <= 2.0) maxPremiumPercent = 0.04;
-                else if (incomeAsPercentOfFPL <= 2.5) maxPremiumPercent = 0.06;
-                else if (incomeAsPercentOfFPL <= 3.0) maxPremiumPercent = 0.08;
-                else if (incomeAsPercentOfFPL <= 4.0) maxPremiumPercent = 0.085;
-
-                const maxMonthlyPremium = (annualIncome * maxPremiumPercent) / 12;
-                const avgMarketplacePremium = 450; // Average premium
-                const monthlySubsidy = isEligibleForSubsidy ? Math.max(0, avgMarketplacePremium - maxMonthlyPremium) : 0;
-                const finalMonthlyPremium = avgMarketplacePremium - monthlySubsidy;
-
-                return (
-                  <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-400">Marketplace Premium</span>
-                        <span className="text-sm font-bold text-white">${avgMarketplacePremium}/mo</span>
-                      </div>
-                      {isEligibleForSubsidy ? (
-                        <>
-                          <div className="flex items-center justify-between text-green-400">
-                            <span className="text-sm">ACA Subsidy</span>
-                            <span className="text-sm font-bold">-${Math.round(monthlySubsidy)}/mo</span>
-                          </div>
-                          <div className="border-t border-white/10 pt-2 mt-2">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">Your Cost</span>
-                              <span className="text-lg font-black text-green-400 font-space-grotesk">
-                                ${Math.round(finalMonthlyPremium)}/mo
-                              </span>
-                            </div>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-2">
-                            ✅ You qualify for subsidies! Your max premium is {(maxPremiumPercent * 100).toFixed(1)}% of income.
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <div className="border-t border-white/10 pt-2 mt-2">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">Your Cost</span>
-                              <span className="text-lg font-black text-white font-space-grotesk">${avgMarketplacePremium}/mo</span>
-                            </div>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-2">
-                            {incomeAsPercentOfFPL < 1.0
-                              ? '⚠️ Income too low for ACA subsidies. Check Medicaid eligibility in your state.'
-                              : '⚠️ Income above 400% FPL. No subsidies available, but you can still enroll.'}
-                          </p>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-
-          {/* Retirement Calculator */}
-          <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl rounded-lg p-6 border border-blue-500/20">
-            <div className="flex items-center space-x-2 mb-4">
-              <Building2 className="w-5 h-5 text-blue-400" />
-              <h3 className="text-lg font-bold text-white font-space-grotesk">Retirement Calculator</h3>
-            </div>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-sm text-slate-300 mb-2 block">Current Age</label>
-                  <input
-                    type="number"
-                    value={currentAge}
-                    onChange={(e) => setCurrentAge(Number(e.target.value))}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-slate-300 mb-2 block">Retirement Age</label>
-                  <input
-                    type="number"
-                    value={retirementAge}
-                    onChange={(e) => setRetirementAge(Number(e.target.value))}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm text-slate-300 mb-2 block">Monthly Contribution</label>
-                <input
-                  type="number"
-                  value={monthlyContribution}
-                  onChange={(e) => setMonthlyContribution(Number(e.target.value))}
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
-                />
-              </div>
-
-              {(() => {
-                const yearsToRetirement = Math.max(1, retirementAge - currentAge);
-                const monthsToRetirement = yearsToRetirement * 12;
-                const annualReturn = 0.07; // 7% average annual return
-                const monthlyReturn = Math.pow(1 + annualReturn, 1 / 12) - 1;
-
-                // Future value of annuity formula
-                const futureValue =
-                  monthlyContribution * ((Math.pow(1 + monthlyReturn, monthsToRetirement) - 1) / monthlyReturn);
-
-                const totalContributions = monthlyContribution * monthsToRetirement;
-                const investmentGains = futureValue - totalContributions;
-
-                return (
-                  <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-400">Years to Retirement</span>
-                        <span className="text-sm font-bold text-white">{yearsToRetirement} years</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-400">Total Contributions</span>
-                        <span className="text-sm font-bold text-white">${totalContributions.toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-green-400">
-                        <span className="text-sm">Investment Gains (7%)</span>
-                        <span className="text-sm font-bold">+${Math.round(investmentGains).toLocaleString()}</span>
-                      </div>
-                      <div className="border-t border-white/10 pt-2 mt-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-white">Projected Balance</span>
-                          <span className="text-lg font-black text-green-400 font-space-grotesk">
-                            ${Math.round(futureValue).toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
-                      <p className="text-xs text-slate-400 mt-2">
-                        💡 At ${monthlyContribution}/mo, you'll have ${Math.round(futureValue / 12 / 30).toLocaleString()}/mo in retirement
-                        (assuming 30-year withdrawal).
-                      </p>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="border-t border-white/10"></div>
 
       {/* Retirement Account Comparison */}
       <div>
@@ -781,6 +629,187 @@ export default function BenefitsMarketplace() {
           </div>
         )}
       </div>
+
+      {/* Health Insurance Calculator Modal */}
+      <Dialog open={isHealthCalcModalOpen} onOpenChange={setIsHealthCalcModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-white font-space-grotesk flex items-center gap-2">
+              <Heart className="w-6 h-6 text-red-400" />
+              Health Insurance Calculator
+            </DialogTitle>
+            <DialogDescription>
+              Calculate your ACA marketplace premium with subsidies
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 space-y-4">
+            <div>
+              <label className="text-sm text-slate-300 mb-2 block">Annual Income</label>
+              <input
+                type="number"
+                value={annualIncome}
+                onChange={(e) => setAnnualIncome(Number(e.target.value))}
+                className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
+
+            {(() => {
+              // ACA subsidy calculation (simplified)
+              const fpl = 14580; // 2024 Federal Poverty Level for 1 person
+              const incomeAsPercentOfFPL = annualIncome / fpl;
+              const isEligibleForSubsidy = incomeAsPercentOfFPL >= 1.0 && incomeAsPercentOfFPL <= 4.0;
+
+              let maxPremiumPercent = 0;
+              if (incomeAsPercentOfFPL <= 1.5) maxPremiumPercent = 0.02;
+              else if (incomeAsPercentOfFPL <= 2.0) maxPremiumPercent = 0.04;
+              else if (incomeAsPercentOfFPL <= 2.5) maxPremiumPercent = 0.06;
+              else if (incomeAsPercentOfFPL <= 3.0) maxPremiumPercent = 0.08;
+              else if (incomeAsPercentOfFPL <= 4.0) maxPremiumPercent = 0.085;
+
+              const maxMonthlyPremium = (annualIncome * maxPremiumPercent) / 12;
+              const avgMarketplacePremium = 450; // Average premium
+              const monthlySubsidy = isEligibleForSubsidy ? Math.max(0, avgMarketplacePremium - maxMonthlyPremium) : 0;
+              const finalMonthlyPremium = avgMarketplacePremium - monthlySubsidy;
+
+              return (
+                <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-400">Marketplace Premium</span>
+                      <span className="text-sm font-bold text-white">${avgMarketplacePremium}/mo</span>
+                    </div>
+                    {isEligibleForSubsidy ? (
+                      <>
+                        <div className="flex items-center justify-between text-green-400">
+                          <span className="text-sm">ACA Subsidy</span>
+                          <span className="text-sm font-bold">-${Math.round(monthlySubsidy)}/mo</span>
+                        </div>
+                        <div className="border-t border-white/10 pt-2 mt-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-bold text-white">Your Cost</span>
+                            <span className="text-lg font-black text-green-400 font-space-grotesk">
+                              ${Math.round(finalMonthlyPremium)}/mo
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-2">
+                          ✅ You qualify for subsidies! Your max premium is {(maxPremiumPercent * 100).toFixed(1)}% of income.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <div className="border-t border-white/10 pt-2 mt-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-bold text-white">Your Cost</span>
+                            <span className="text-lg font-black text-white font-space-grotesk">${avgMarketplacePremium}/mo</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-2">
+                          {incomeAsPercentOfFPL < 1.0
+                            ? '⚠️ Income too low for ACA subsidies. Check Medicaid eligibility in your state.'
+                            : '⚠️ Income above 400% FPL. No subsidies available, but you can still enroll.'}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Retirement Calculator Modal */}
+      <Dialog open={isRetirementCalcModalOpen} onOpenChange={setIsRetirementCalcModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-white font-space-grotesk flex items-center gap-2">
+              <Building2 className="w-6 h-6 text-blue-400" />
+              Retirement Calculator
+            </DialogTitle>
+            <DialogDescription>
+              Project your retirement savings growth over time
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm text-slate-300 mb-2 block">Current Age</label>
+                <input
+                  type="number"
+                  value={currentAge}
+                  onChange={(e) => setCurrentAge(Number(e.target.value))}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-slate-300 mb-2 block">Retirement Age</label>
+                <input
+                  type="number"
+                  value={retirementAge}
+                  onChange={(e) => setRetirementAge(Number(e.target.value))}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm text-slate-300 mb-2 block">Monthly Contribution</label>
+              <input
+                type="number"
+                value={monthlyContribution}
+                onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+                className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
+
+            {(() => {
+              const yearsToRetirement = Math.max(1, retirementAge - currentAge);
+              const monthsToRetirement = yearsToRetirement * 12;
+              const annualReturn = 0.07; // 7% average annual return
+              const monthlyReturn = Math.pow(1 + annualReturn, 1 / 12) - 1;
+
+              // Future value of annuity formula
+              const futureValue =
+                monthlyContribution * ((Math.pow(1 + monthlyReturn, monthsToRetirement) - 1) / monthlyReturn);
+
+              const totalContributions = monthlyContribution * monthsToRetirement;
+              const investmentGains = futureValue - totalContributions;
+
+              return (
+                <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-400">Years to Retirement</span>
+                      <span className="text-sm font-bold text-white">{yearsToRetirement} years</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-400">Total Contributions</span>
+                      <span className="text-sm font-bold text-white">${totalContributions.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-green-400">
+                      <span className="text-sm">Investment Gains (7%)</span>
+                      <span className="text-sm font-bold">+${Math.round(investmentGains).toLocaleString()}</span>
+                    </div>
+                    <div className="border-t border-white/10 pt-2 mt-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold text-white">Projected Balance</span>
+                        <span className="text-lg font-black text-green-400 font-space-grotesk">
+                          ${Math.round(futureValue).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-2">
+                      💡 At ${monthlyContribution}/mo, you'll have ${Math.round(futureValue / 12 / 30).toLocaleString()}/mo in retirement
+                      (assuming 30-year withdrawal).
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
