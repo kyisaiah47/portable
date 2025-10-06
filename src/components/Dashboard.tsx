@@ -192,8 +192,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     );
   }
 
-  const handleLogout = () => {
-    onLogout();
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      localStorage.removeItem('auth_user');
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   // Settings handlers
@@ -566,8 +572,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-white/10" />
                   <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="text-slate-300 focus:bg-slate-800 focus:text-white cursor-pointer"
+                    onSelect={handleLogout}
+                    className="text-slate-300 focus:bg-slate-800 focus:text-white cursor-pointer flex items-center"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Logout

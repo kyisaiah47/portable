@@ -1,0 +1,75 @@
+Welcome to Portable - the financial platform built specifically for gig workers. Whether you're driving for Uber, delivering with DoorDash, or freelancing on Upwork, managing your finances shouldn't be complicated.
+
+Portable automatically tracks your income across all platforms, calculates your taxes, and helps you build financial stability. Let's see how it works.
+
+First, we'll log into Sarah's account. Sarah is a gig worker who uses multiple platforms to earn income.
+
+Perfect. Now we're in.
+
+This is the Portable dashboard - your financial command center. Right at the top, we can see Sarah has earned over thirty thousand dollars total, and Portable has automatically calculated that she should set aside nine thousand for taxes.
+
+Below, we have four key metric cards. The first shows her monthly earnings - fifteen thousand this month. The sparkline chart gives a quick visual of her income trend over the past six weeks.
+
+Next, we see her tax readiness - nearly four thousand dollars set aside. Then her income stability score of sixty-eight percent, which tells her how consistent her earnings are. And finally, her emergency fund progress.
+
+Notice the personalized tips section - Portable gives Sarah actionable advice based on her actual financial data. These aren't generic tips - they're specific to her situation.
+
+Let's click over to the Income tab. Here's where things get really powerful.
+
+This chart shows Sarah's income broken down by platform. She can toggle between bar chart and pie chart views. The bar chart shows her weekly earnings, stacked by platform - you can see income from Uber, DoorDash, Lyft, and her freelance work on Upwork and Fiverr.
+
+The pie chart gives an instant visual of her income diversification. We can see DoorDash is her biggest earner, followed by Uber and her freelance work.
+
+Below the chart, Portable shows detailed platform breakdowns with exact amounts and percentages. This visibility is crucial for gig workers juggling multiple income streams.
+
+Moving to Expenses - this is where Portable really saves money at tax time.
+
+Portable automatically categorizes business expenses from your bank transactions. Gas, car maintenance, phone bills, software subscriptions - all tracked automatically.
+
+The donut chart shows Sarah's expense breakdown by category. Vehicle expenses are her biggest category, which makes sense for rideshare and delivery work.
+
+Each expense is listed with the deduction rate - some expenses are one hundred percent deductible, others are partial. Portable calculates the exact deductible amount for you.
+
+The Taxes tab is where Portable really shines.
+
+At the top, we see Sarah's total tax liability - two thousand one hundred thirty dollars. This includes self-employment tax and federal income tax, calculated based on her actual earnings.
+
+The quarterly breakdown shows exactly when payments are due. Q1 is April fifteenth, Q2 is June fifteenth, and so on. No more guessing or scrambling at tax time.
+
+Below, we have the annual projection chart comparing what she's set aside versus what she'll owe. Portable recommends setting aside thirty percent of income, which keeps Sarah ahead of her tax obligations.
+
+She can also open the full tax calculator to see a detailed breakdown - self-employment tax, federal income tax, state tax estimates, and quarterly payment schedules. Everything is calculated automatically.
+
+The Benefits tab connects Sarah with services designed for gig workers.
+
+Health insurance options from providers who understand variable income. Retirement accounts like SEP IRAs perfect for self-employed workers. And financial tools to help manage irregular income.
+
+These aren't random affiliate links - these are carefully vetted services that actually work for the gig economy.
+
+In the Learn section, Portable provides educational content tailored to Sarah's situation.
+
+Since she does rideshare and delivery, Portable shows her guides like "Mastering Uber Surge in NYC" and "Best DoorDash Zones in San Francisco."
+
+There are also tax guides, strategy articles, and financial planning resources. Each piece of content is relevant to her specific work situation.
+
+Let's click into one article to see what it looks like.
+
+Here's a detailed guide on maximizing earnings with DoorDash versus Uber Eats. The article is well-formatted, easy to read, and includes practical tips Sarah can use immediately.
+
+Notice the navigation at the top - she can easily get back to the dashboard or explore other articles. The content is professional and genuinely helpful, not just SEO filler.
+
+Let's check out Settings. Click the user dropdown in the top right, then Settings.
+
+Here Sarah can update her profile information - first name, last name. Her email is locked for security.
+
+She can manage email notification preferences - weekly earnings reports and quarterly tax reminders. These help her stay on top of her finances without being overwhelming.
+
+There's also password management and a danger zone for account deletion. Everything is clearly organized and easy to access.
+
+And finally, logging out is simple - just click the user dropdown and select Logout.
+
+That's Portable - the financial platform that finally understands gig workers. No more spreadsheets, no more surprise tax bills, no more financial anxiety.
+
+Portable tracks everything automatically, calculates your taxes, and helps you build real financial stability. Whether you're driving, delivering, freelancing, or creating content - Portable has your back.
+
+Start for free at portable dot app.
