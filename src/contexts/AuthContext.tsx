@@ -27,25 +27,25 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    // Initialize from localStorage cache
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check localStorage cache first (client-side only)
     if (typeof window !== 'undefined') {
       try {
         const cached = localStorage.getItem('auth_user');
         if (cached) {
-          return JSON.parse(cached);
+          setUser(JSON.parse(cached));
+          setLoading(false);
         }
       } catch {
         // Invalid cache, ignore
       }
     }
-    return null;
-  });
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(false); // Start as false since we load from cache
-  const router = useRouter();
 
-  useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);

@@ -35,17 +35,6 @@ export interface Transaction {
   created_at: string;
 }
 
-export interface PlaidItem {
-  id: string;
-  user_id: string;
-  plaid_item_id: string;
-  plaid_access_token: string;
-  institution_name: string | null;
-  cursor: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
 // Helper functions for localStorage cache
 function getCachedData<T>(key: string): T | null {
   if (typeof window === 'undefined') return null;
@@ -84,14 +73,8 @@ function clearCachedData(key: string): void {
 export function useParsedIncome(userId: string | null) {
   const cacheKey = `parsed_income_${userId}`;
 
-  const [data, setData] = useState<ParsedIncome | null>(() => {
-    // Initialize with cached data if available
-    return userId ? getCachedData<ParsedIncome>(cacheKey) : null;
-  });
-  const [loading, setLoading] = useState(() => {
-    // Only load if we don't have cached data
-    return userId ? !getCachedData<ParsedIncome>(cacheKey) : false;
-  });
+  const [data, setData] = useState<ParsedIncome | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -100,7 +83,7 @@ export function useParsedIncome(userId: string | null) {
       return;
     }
 
-    // If we have cached data, use it immediately
+    // Check for cached data
     const cached = getCachedData<ParsedIncome>(cacheKey);
     if (cached) {
       setData(cached);
@@ -185,14 +168,8 @@ export function clearParsedIncomeCache(userId: string) {
 export function useTransactions(userId: string | null) {
   const cacheKey = `transactions_${userId}`;
 
-  const [data, setData] = useState<Transaction[]>(() => {
-    // Initialize with cached data if available
-    return userId ? getCachedData<Transaction[]>(cacheKey) || [] : [];
-  });
-  const [loading, setLoading] = useState(() => {
-    // Only load if we don't have cached data
-    return userId ? !getCachedData<Transaction[]>(cacheKey) : false;
-  });
+  const [data, setData] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -201,7 +178,7 @@ export function useTransactions(userId: string | null) {
       return;
     }
 
-    // If we have cached data, use it immediately
+    // Check for cached data
     const cached = getCachedData<Transaction[]>(cacheKey);
     if (cached) {
       setData(cached);
@@ -283,110 +260,8 @@ export function clearTransactionsCache(userId: string) {
   clearCachedData(`transactions_${userId}`);
 }
 
-export function usePlaidItems(userId: string | null) {
-  const cacheKey = `plaid_items_${userId}`;
-
-  const [data, setData] = useState<PlaidItem[]>(() => {
-    // Initialize with cached data if available
-    return userId ? getCachedData<PlaidItem[]>(cacheKey) || [] : [];
-  });
-  const [loading, setLoading] = useState(() => {
-    // Only load if we don't have cached data
-    return userId ? !getCachedData<PlaidItem[]>(cacheKey) : false;
-  });
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
-
-    // If we have cached data, use it immediately
-    const cached = getCachedData<PlaidItem[]>(cacheKey);
-    if (cached) {
-      setData(cached);
-      setLoading(false);
-      return;
-    }
-
-    const fetchPlaidItems = async () => {
-      try {
-        setLoading(true);
-        const { data: items, error: fetchError } = await supabase
-          .from('portable_plaid_items')
-          .select('*')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false });
-
-        if (fetchError) throw fetchError;
-
-        const itemsData = items || [];
-        setData(itemsData);
-        setCachedData(cacheKey, itemsData);
-        setError(null);
-      } catch (err) {
-        setError(err as Error);
-        setData([]);
-        setCachedData(cacheKey, []);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPlaidItems();
-
-    // Set up real-time subscription
-    const channel = supabase
-      .channel('plaid_items_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'portable_plaid_items',
-          filter: `user_id=eq.${userId}`,
-        },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            setData((prevData) => {
-              const newData = [payload.new as PlaidItem, ...prevData];
-              setCachedData(cacheKey, newData);
-              return newData;
-            });
-          } else if (payload.eventType === 'UPDATE') {
-            setData((prevData) => {
-              const newData = prevData.map((item) => (item.id === payload.new.id ? (payload.new as PlaidItem) : item));
-              setCachedData(cacheKey, newData);
-              return newData;
-            });
-          } else if (payload.eventType === 'DELETE') {
-            setData((prevData) => {
-              const newData = prevData.filter((item) => item.id !== payload.old.id);
-              setCachedData(cacheKey, newData);
-              return newData;
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [userId, cacheKey]);
-
-  return { data, loading, error };
-}
-
-// Function to clear cache when user uploads new CSV
-export function clearPlaidItemsCache(userId: string) {
-  clearCachedData(`plaid_items_${userId}`);
-}
-
 // Function to clear all caches for a user (use when uploading new CSV)
 export function clearAllCaches(userId: string) {
   clearParsedIncomeCache(userId);
   clearTransactionsCache(userId);
-  clearPlaidItemsCache(userId);
 }

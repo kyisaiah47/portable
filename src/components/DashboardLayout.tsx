@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useParsedIncome, useTransactions, usePlaidItems } from '@/hooks/useSupabaseData';
+import { useParsedIncome, useTransactions } from '@/hooks/useSupabaseData';
 import { Transaction } from '@/lib/income-parser';
 
 interface User {
@@ -48,7 +48,6 @@ export interface DashboardData {
     rawTransactions: Transaction[];
   } | null;
   transactions: Transaction[];
-  plaidItems: any[];
   isLoading: boolean;
 }
 
@@ -60,7 +59,6 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
   // Fetch data from Supabase
   const { data: supabaseParsedIncome, loading: incomeLoading, error: incomeError } = useParsedIncome(user.id);
   const { data: transactions, loading: transactionsLoading } = useTransactions(user.id);
-  const { data: plaidItems, loading: plaidItemsLoading } = usePlaidItems(user.id);
 
   // Transform Supabase data to Dashboard format
   const parsedIncome = useMemo(() => {
@@ -112,7 +110,7 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
   }, [supabaseParsedIncome, transactions]);
 
   // Loading state
-  const isLoading = incomeLoading || transactionsLoading || plaidItemsLoading;
+  const isLoading = incomeLoading || transactionsLoading;
 
   // Error handling
   if (incomeError) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode, useMemo } from 'react';
-import { useParsedIncome, useTransactions, usePlaidItems } from '@/hooks/useSupabaseData';
+import { useParsedIncome, useTransactions } from '@/hooks/useSupabaseData';
 import { Transaction } from '@/lib/income-parser';
 
 export interface DashboardData {
@@ -26,7 +26,6 @@ export interface DashboardData {
     rawTransactions: Transaction[];
   } | null;
   transactions: Transaction[];
-  plaidItems: any[];
   isLoading: boolean;
 }
 
@@ -46,7 +45,6 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
   // Fetch data from Supabase
   const { data: supabaseParsedIncome, loading: incomeLoading } = useParsedIncome(user.id);
   const { data: transactions, loading: transactionsLoading } = useTransactions(user.id);
-  const { data: plaidItems, loading: plaidItemsLoading } = usePlaidItems(user.id);
 
   // Transform Supabase data to Dashboard format
   const parsedIncome = useMemo(() => {
@@ -96,7 +94,7 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
     };
   }, [supabaseParsedIncome, transactions]);
 
-  const isLoading = incomeLoading || transactionsLoading || plaidItemsLoading;
+  const isLoading = incomeLoading || transactionsLoading;
 
   const dashboardData: DashboardData = {
     parsedIncome,
@@ -107,7 +105,6 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
       amount: tx.amount,
       type: tx.amount > 0 ? 'credit' : 'debit' as 'credit' | 'debit',
     })),
-    plaidItems,
     isLoading,
   };
 

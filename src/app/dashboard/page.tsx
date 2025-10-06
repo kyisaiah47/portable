@@ -2,9 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardLayout from '@/components/DashboardLayout';
-import DashboardDataProvider from '@/components/dashboard/DashboardDataProvider';
-import HomePage from '@/components/dashboard/HomePage';
+import Dashboard from '@/components/Dashboard';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function DashboardPage() {
@@ -12,22 +10,15 @@ export default function DashboardPage() {
   const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       router.push('/login');
     }
-  }, [user, router]);
+  }, [loading, user, router]);
 
-  if (!user) {
+  // Show nothing while loading or no user (prevents hydration mismatch)
+  if (loading || !user) {
     return null;
   }
 
-  return (
-    <DashboardLayout user={user} onLogout={signOut}>
-      <DashboardDataProvider user={user}>
-        {(dashboardData, user) => (
-          <HomePage dashboardData={dashboardData} user={user} />
-        )}
-      </DashboardDataProvider>
-    </DashboardLayout>
-  );
+  return <Dashboard user={user} onLogout={signOut} />;
 }
