@@ -163,4 +163,14 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #64748b;
   }
+
+  /* Toast notifications */
+  [data-sonner-toaster] {
+    z-index: 9999 !important;
+  }
+
+  [data-sonner-toast] {
+    font-size: 14px !important;
+    padding: 16px !important;
+  }
 }

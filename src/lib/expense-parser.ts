@@ -327,8 +327,8 @@ export const EXPENSE_PATTERNS: ExpensePattern[] = [
  * Parse a transaction and classify it as a business expense
  */
 export function parseExpense(transaction: Transaction): ParsedExpense | null {
-  // Only parse debit transactions (expenses)
-  if (transaction.type !== 'debit' && transaction.amount >= 0) {
+  // Only parse debit transactions (expenses) - skip credits OR positive amounts
+  if (transaction.type !== 'debit' || transaction.amount >= 0) {
     return null;
   }
 

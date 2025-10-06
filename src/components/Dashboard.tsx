@@ -92,6 +92,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [savingNotifications, setSavingNotifications] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [clearing, setClearing] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [profileMessage, setProfileMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [notificationsMessage, setNotificationsMessage] = useState('');
@@ -293,6 +295,64 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     }
   };
 
+  const handleClearAllData = async () => {
+    if (!showClearConfirm) {
+      setShowClearConfirm(true);
+      return;
+    }
+
+    setClearing(true);
+    setSettingsError('');
+
+    try {
+      console.log('🗑️ Clearing all data for user:', user.id);
+
+      // Delete transactions first
+      console.log('Deleting transactions...');
+      const txResult = await supabase
+        .from('portable_transactions')
+        .delete()
+        .eq('user_id', user.id);
+
+      console.log('Transaction delete result:', txResult);
+      if (txResult.error) {
+        console.error('Transaction delete error:', txResult.error);
+        throw txResult.error;
+      }
+
+      // Delete parsed income
+      console.log('Deleting parsed income...');
+      const incomeResult = await supabase
+        .from('portable_parsed_income')
+        .delete()
+        .eq('user_id', user.id);
+
+      console.log('Income delete result:', incomeResult);
+      if (incomeResult.error) {
+        console.error('Income delete error:', incomeResult.error);
+        throw incomeResult.error;
+      }
+
+      // Clear cache
+      console.log('Clearing cache...');
+      clearAllCaches(user.id);
+
+      toast.success('Data cleared! Reloading...');
+      console.log('✅ All data cleared, reloading in 1 second');
+
+      // Reload page after brief delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error: any) {
+      console.error('❌ Error clearing data:', error);
+      toast.error('Failed to clear data: ' + (error?.message || 'Unknown error'));
+      setSettingsError(error?.message || 'Failed to clear data');
+      setClearing(false);
+      setShowClearConfirm(false);
+    }
+  };
+
   const handleDeleteAccount = async () => {
     if (!showDeleteConfirm) {
       setShowDeleteConfirm(true);
@@ -339,72 +399,53 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     }
   }, [user, activeTab]);
 
-  const clearUserData = async () => {
-    if (!confirm('Are you sure you want to clear all your uploaded data? This cannot be undone.')) {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      console.log('⚠️ No file selected');
       return;
     }
 
-    try {
-      // Delete transactions
-      const { error: txError } = await supabase
-        .from('portable_transactions')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (txError) throw txError;
-
-      // Delete parsed income
-      const { error: incomeError } = await supabase
-        .from('portable_parsed_income')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (incomeError) throw incomeError;
-
-      // Clear cache
-      clearAllCaches();
-
-      toast.success('All data cleared successfully');
-
-      // Reload page
-      window.location.reload();
-    } catch (error) {
-      console.error('Error clearing data:', error);
-      toast.error('Failed to clear data');
-    }
-  };
-
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    console.log('📤 Starting CSV upload:', file.name);
+    toast.info('Uploading CSV...', { duration: 2000 });
 
     const reader = new FileReader();
+    reader.onerror = (error) => {
+      console.error('❌ File reader error:', error);
+      toast.error('Failed to read file');
+    };
+
     reader.onload = async (e) => {
-      const text = e.target?.result as string;
-      const lines = text.split('\n');
-      const transactions: Transaction[] = [];
-
-      // Skip header
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-
-        const [date, description, amount, type] = line.split(',');
-        if (date && description && amount && type) {
-          transactions.push({
-            id: `csv-${user.id}-${i}`,
-            date: new Date(date),
-            description,
-            amount: parseFloat(amount),
-            type: type.trim() as 'credit' | 'debit',
-          });
-        }
-      }
-
-      const parsed = parseTransactions(transactions);
-      const stability = calculateStabilityScore(parsed.income);
-
       try {
+        console.log('📖 File loaded, parsing...');
+        const text = e.target?.result as string;
+        const lines = text.split('\n');
+        const transactions: Transaction[] = [];
+
+        // Skip header
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+
+          const [date, description, amount, type] = line.split(',');
+          if (date && description && amount && type) {
+            transactions.push({
+              id: `csv-${user.id}-${i}`,
+              date: new Date(date),
+              description,
+              amount: parseFloat(amount),
+              type: type.trim() as 'credit' | 'debit',
+            });
+          }
+        }
+
+        console.log(`✅ Parsed ${transactions.length} transactions`);
+
+        const parsed = parseTransactions(transactions);
+        const stability = calculateStabilityScore(parsed.income);
+
+        console.log('💾 Saving to database...');
+
         // Save transactions to database
         const transactionsToInsert = transactions.map((tx) => ({
           user_id: user.id,
@@ -412,7 +453,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           account_id: 'csv-upload',
           date: tx.date.toISOString().split('T')[0], // Format as date only
           name: tx.description,
-          amount: tx.type === 'credit' ? tx.amount : -tx.amount,
+          amount: tx.amount, // CSV already has correct sign: positive for credits, negative for debits
           category: null,
           pending: false,
         }));
@@ -422,10 +463,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
 
         if (txError) {
-          console.error('Error saving transactions:', txError);
-          alert('Error uploading transactions: ' + txError.message);
+          console.error('❌ Error saving transactions:', txError);
+          toast.error('Error uploading transactions: ' + txError.message);
           return;
         }
+
+        console.log('✅ Transactions saved');
 
         // Save parsed income to database
         const byPlatformData = Object.fromEntries(
@@ -457,19 +500,31 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           }, { onConflict: 'user_id' });
 
         if (incomeError) {
-          console.error('Error saving parsed income:', incomeError);
-          alert('Error uploading income data: ' + incomeError.message);
+          console.error('❌ Error saving parsed income:', incomeError);
+          toast.error('Error uploading income data: ' + incomeError.message);
           return;
         }
+
+        console.log('✅ Income data saved');
+
+        // Show success message
+        toast.success('CSV uploaded successfully! Reloading...', { duration: 3000 });
 
         // Clear all caches so data will be refetched
         clearAllCaches(user.id);
 
-        // Reload to show new data
-        window.location.reload();
+        console.log('🔄 Reloading page in 2 seconds...');
+
+        // Reload to show new data after a brief delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } catch (error) {
-        console.error('Error uploading CSV:', error);
-        alert('Error uploading CSV: ' + (error as Error).message);
+        console.error('❌ Error uploading CSV:', error);
+        toast.error('Error uploading CSV: ' + (error as Error).message);
+      } finally {
+        // Reset the input so the same file can be uploaded again
+        event.target.value = '';
       }
     };
 
@@ -3055,43 +3110,93 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <h2 className="text-2xl font-bold text-white font-space-grotesk">Danger Zone</h2>
               </div>
 
-              <p className="text-slate-300 mb-4">
-                Once you delete your account, there is no going back. All your data will be permanently deleted.
-              </p>
+              {/* Clear All Data Section */}
+              <div className="mb-8 pb-8 border-b border-white/10">
+                <h3 className="text-lg font-semibold text-white mb-2">Clear All Data</h3>
+                <p className="text-slate-300 mb-4">
+                  Delete all your uploaded transactions and income data. Your account will remain active.
+                </p>
 
-              {showDeleteConfirm && (
-                <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-                  <p className="text-red-400 font-semibold mb-2">⚠️ Are you absolutely sure?</p>
-                  <p className="text-sm text-slate-300">This will permanently delete all your transactions, income data, and account settings.</p>
-                </div>
-              )}
-
-              <button
-                onClick={handleDeleteAccount}
-                disabled={deleting}
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50"
-              >
-                {deleting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Deleting...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-4 h-4" />
-                    {showDeleteConfirm ? 'Yes, Delete My Account' : 'Delete Account'}
-                  </>
+                {showClearConfirm && (
+                  <div className="mb-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                    <p className="text-orange-400 font-semibold mb-2">⚠️ Are you sure?</p>
+                    <p className="text-sm text-slate-300">This will permanently delete all your transactions and income data.</p>
+                  </div>
                 )}
-              </button>
 
-              {showDeleteConfirm && (
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="ml-3 text-slate-400 hover:text-white text-sm"
-                >
-                  Cancel
-                </button>
-              )}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleClearAllData}
+                    disabled={clearing}
+                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                  >
+                    {clearing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Clearing...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="w-4 h-4" />
+                        {showClearConfirm ? 'Yes, Clear All Data' : 'Clear All Data'}
+                      </>
+                    )}
+                  </button>
+
+                  {showClearConfirm && (
+                    <button
+                      onClick={() => setShowClearConfirm(false)}
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Delete Account Section */}
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">Delete Account</h3>
+                <p className="text-slate-300 mb-4">
+                  Once you delete your account, there is no going back. All your data will be permanently deleted.
+                </p>
+
+                {showDeleteConfirm && (
+                  <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <p className="text-red-400 font-semibold mb-2">⚠️ Are you absolutely sure?</p>
+                    <p className="text-sm text-slate-300">This will permanently delete all your transactions, income data, and account settings.</p>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleDeleteAccount}
+                    disabled={deleting}
+                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                  >
+                    {deleting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="w-4 h-4" />
+                        {showDeleteConfirm ? 'Yes, Delete My Account' : 'Delete Account'}
+                      </>
+                    )}
+                  </button>
+
+                  {showDeleteConfirm && (
+                    <button
+                      onClick={() => setShowDeleteConfirm(false)}
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             {settingsError && (
