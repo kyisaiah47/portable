@@ -76,8 +76,17 @@ export default function ReferralDashboard() {
     }
   }
 
+  // Show actual content immediately (data loads in background)
+  const displayStats = stats || {
+    referralCode: 'LOADING',
+    totalReferrals: 0,
+    referralEarnings: 0,
+    pendingReferrals: 0,
+    completedReferrals: 0,
+  };
+
   function copyReferralLink() {
-    const referralUrl = `${window.location.origin}/signup?ref=${stats?.referralCode}`;
+    const referralUrl = `${window.location.origin}/signup?ref=${displayStats.referralCode}`;
     navigator.clipboard.writeText(referralUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -86,14 +95,14 @@ export default function ReferralDashboard() {
   function shareViaEmail() {
     const subject = encodeURIComponent('Get $10 on Portable - Financial Platform for Gig Workers');
     const body = encodeURIComponent(
-      `Hey! I've been using Portable to track my income from Uber, DoorDash, and other gig platforms - it's been a game changer.\n\nSign up with my link and we both get $10:\n${window.location.origin}/signup?ref=${stats?.referralCode}\n\nIt's free to start and automatically tracks all your income in one place.`
+      `Hey! I've been using Portable to track my income from Uber, DoorDash, and other gig platforms - it's been a game changer.\n\nSign up with my link and we both get $10:\n${window.location.origin}/signup?ref=${displayStats.referralCode}\n\nIt's free to start and automatically tracks all your income in one place.`
     );
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   }
 
   function shareViaText() {
     const message = encodeURIComponent(
-      `Get $10 on Portable (financial tracking for gig workers): ${window.location.origin}/signup?ref=${stats?.referralCode}`
+      `Get $10 on Portable (financial tracking for gig workers): ${window.location.origin}/signup?ref=${displayStats.referralCode}`
     );
     window.location.href = `sms:?body=${message}`;
   }
@@ -102,7 +111,7 @@ export default function ReferralDashboard() {
     const text = encodeURIComponent(
       `Track your gig income automatically with Portable. Sign up and we both get $10!`
     );
-    const url = encodeURIComponent(`${window.location.origin}/signup?ref=${stats?.referralCode}`);
+    const url = encodeURIComponent(`${window.location.origin}/signup?ref=${displayStats.referralCode}`);
     window.open(
       `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
       '_blank',
@@ -110,26 +119,7 @@ export default function ReferralDashboard() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="h-32 bg-slate-800/50 rounded-lg animate-pulse"></div>
-        <div className="h-48 bg-slate-800/50 rounded-lg animate-pulse"></div>
-      </div>
-    );
-  }
-
-  if (!stats) {
-    return (
-      <Card className="bg-slate-900/50 border-white/10">
-        <CardContent className="p-6">
-          <p className="text-slate-400">Unable to load referral data.</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const referralUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/signup?ref=${stats.referralCode}`;
+  const referralUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/signup?ref=${displayStats.referralCode}`;
 
   return (
     <div className="space-y-6">
@@ -139,21 +129,21 @@ export default function ReferralDashboard() {
           <CardHeader className="pb-3">
             <CardDescription className="text-slate-400">Total Earnings</CardDescription>
             <CardTitle className="text-3xl font-bold text-white">
-              ${stats.referralEarnings.toFixed(2)}
+              ${displayStats.referralEarnings.toFixed(2)}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-slate-400">From {stats.completedReferrals} completed referrals</p>
+            <p className="text-xs text-slate-400">From {displayStats.completedReferrals} completed referrals</p>
           </CardContent>
         </Card>
 
         <Card className="bg-slate-900/50 border-white/10">
           <CardHeader className="pb-3">
             <CardDescription className="text-slate-400">Total Referrals</CardDescription>
-            <CardTitle className="text-3xl font-bold text-white">{stats.totalReferrals}</CardTitle>
+            <CardTitle className="text-3xl font-bold text-white">{displayStats.totalReferrals}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-slate-400">{stats.pendingReferrals} pending</p>
+            <p className="text-xs text-slate-400">{displayStats.pendingReferrals} pending</p>
           </CardContent>
         </Card>
 
@@ -236,7 +226,7 @@ export default function ReferralDashboard() {
             <p className="text-sm text-slate-400 mb-2">Your unique referral code:</p>
             <div className="bg-slate-800 border border-white/10 rounded-lg px-4 py-3">
               <code className="text-2xl font-mono font-bold text-blue-400 tracking-wider">
-                {stats.referralCode}
+                {displayStats.referralCode}
               </code>
             </div>
           </div>
