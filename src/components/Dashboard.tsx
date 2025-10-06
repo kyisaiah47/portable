@@ -4,14 +4,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import PlaidLink from './PlaidLink';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown, MoreHorizontal } from 'lucide-react';
+import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown, MoreHorizontal, Calculator } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { parseExpenses } from '@/lib/expense-parser';
 import { calculateTaxes, getQuarterlyDeadlines, projectAnnualTax } from '@/lib/tax-calculator';
 import { getTips, getGuides, type City, type GigType } from '@/lib/content-registry';
-import { useParsedIncome, useTransactions, usePlaidItems, clearAllCaches } from '@/hooks/useSupabaseData';
+import { useParsedIncome, useTransactions, clearAllCaches } from '@/hooks/useSupabaseData';
 import { supabase } from '@/lib/supabase';
 import {
   DropdownMenu,
@@ -22,6 +21,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   ChartContainer,
   ChartTooltip,
@@ -67,11 +73,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [incomeTimePeriod, setIncomeTimePeriod] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly');
   const [taxChartView, setTaxChartView] = useState<'quarterly' | 'liability'>('quarterly');
   const [expenseChartView, setExpenseChartView] = useState<'donut' | 'bar' | 'line'>('donut');
+  const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
 
   // Fetch data from Supabase
   const { data: supabaseParsedIncome, loading: incomeLoading, error: incomeError } = useParsedIncome(user.id);
   const { data: transactions, loading: transactionsLoading } = useTransactions(user.id);
-  const { data: plaidItems, loading: plaidItemsLoading } = usePlaidItems(user.id);
 
   // Transform Supabase data to Dashboard format
   const parsedIncome = useMemo(() => {
@@ -123,7 +129,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   }, [supabaseParsedIncome, transactions]);
 
   // Loading state
-  const isLoading = incomeLoading || transactionsLoading || plaidItemsLoading;
+  const isLoading = incomeLoading || transactionsLoading;
 
   // Error handling
   if (incomeError) {
@@ -931,26 +937,22 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </div>
 
             {/* No Bank Connected CTA */}
-            {plaidItems.length === 0 && !parsedIncome && (
+            {!parsedIncome && (
               <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
                 <div className="max-w-2xl mx-auto">
                   <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Wallet className="w-10 h-10 text-white" />
                   </div>
                   <h2 className="text-3xl font-bold text-white mb-4 font-space-grotesk">
-                    Connect your bank to get started
+                    Upload your bank statement to get started
                   </h2>
                   <p className="text-slate-300 mb-8 text-lg">
-                    Securely link your bank account with Plaid to automatically track all your income across platforms.
+                    Upload a CSV file of your bank transactions to automatically track all your income across platforms.
                     We'll analyze your earnings, calculate your stability score, and help you maximize your income.
                   </p>
-                  <PlaidLink
-                    userId={user.id}
-                    onSuccess={() => {
-                      window.location.reload();
-                    }}
-                    variant="card"
-                  />
+                  <p className="text-slate-400 text-sm">
+                    Click "Upload Statement" button above to get started
+                  </p>
                 </div>
               </div>
             )}
@@ -1812,12 +1814,23 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           <div className="space-y-8">
             {/* Hero message */}
             <div className="bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                Stay ahead of tax season
-              </h1>
-              <p className="text-base md:text-lg text-slate-300">
-                Set aside the right amount each month. Track every deduction. Never get caught off guard.
-              </p>
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1">
+                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+                    Stay ahead of tax season
+                  </h1>
+                  <p className="text-base md:text-lg text-slate-300">
+                    Set aside the right amount each month. Track every deduction. Never get caught off guard.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsCalculatorModalOpen(true)}
+                  className="flex items-center space-x-2 px-6 py-3 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity flex-shrink-0"
+                >
+                  <Calculator className="w-4 h-4" />
+                  <span>Tax Calculator</span>
+                </button>
+              </div>
             </div>
 
             {!parsedIncome ? (
@@ -2239,32 +2252,35 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     )}
                   </div>
 
-                  {/* Divider */}
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Quarterly Tax Calculator */}
-                  {(() => {
-                    const QuarterlyTaxCalculator = require('./QuarterlyTaxCalculator').default;
-                    return (
-                      <div>
-                        <div className="mb-6">
-                          <h2 className="text-2xl font-bold text-white font-space-grotesk">
-                            Quarterly Tax Calculator
-                          </h2>
-                          <p className="text-slate-400 text-sm mt-1">
-                            Calculate and track your quarterly estimated tax payments
-                          </p>
-                        </div>
-                        <QuarterlyTaxCalculator
-                          yearToDateIncome={parsedIncome.parsed.totalIncome}
-                          yearToDateExpenses={expenseResults.totalDeductions}
-                        />
-                      </div>
-                    );
-                  })()}
-
                   {/* End of tax calculations */}
                 </>
+              );
+            })()}
+
+            {/* Tax Calculator Modal */}
+            {parsedIncome && (() => {
+              const QuarterlyTaxCalculator = require('./QuarterlyTaxCalculator').default;
+              const expenseResults = parseExpenses(parsedIncome.rawTransactions || []);
+
+              return (
+                <Dialog open={isCalculatorModalOpen} onOpenChange={setIsCalculatorModalOpen}>
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold text-white font-space-grotesk">
+                        Quarterly Tax Calculator
+                      </DialogTitle>
+                      <DialogDescription>
+                        Calculate and track your quarterly estimated tax payments
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="mt-4">
+                      <QuarterlyTaxCalculator
+                        yearToDateIncome={parsedIncome.parsed.totalIncome}
+                        yearToDateExpenses={expenseResults.totalDeductions}
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
               );
             })()}
           </div>

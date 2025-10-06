@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import CSVUpload from '@/components/CSVUpload';
-import PlaidLink from '@/components/PlaidLink';
-import { ArrowRight, Check, Upload, Link as LinkIcon, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Check, Upload, Sparkles, Zap } from 'lucide-react';
 import { seedDemoData } from '@/lib/demo-data';
 import { supabase } from '@/lib/supabase';
 
@@ -13,7 +12,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [step, setStep] = useState(1);
-  const [method, setMethod] = useState<'plaid' | 'csv' | 'demo' | null>(null);
+  const [method, setMethod] = useState<'csv' | 'demo' | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -36,7 +35,7 @@ export default function OnboardingPage() {
     return null;
   }
 
-  const handleMethodSelect = (selectedMethod: 'plaid' | 'csv' | 'demo') => {
+  const handleMethodSelect = (selectedMethod: 'csv' | 'demo') => {
     setMethod(selectedMethod);
     if (selectedMethod === 'demo') {
       handleDemoData();
@@ -89,39 +88,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Method Selection */}
-            <div className="grid md:grid-cols-3 gap-6">
-              {/* Plaid Option */}
-              <button
-                onClick={() => handleMethodSelect('plaid')}
-                className="group bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl rounded-2xl p-8 border border-blue-500/20 hover:border-blue-500/50 transition-all text-left"
-              >
-                <div className="w-16 h-16 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <LinkIcon className="w-8 h-8 text-blue-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-2 font-space-grotesk">Connect Your Bank</h3>
-                <p className="text-slate-300 mb-4">
-                  Automatically sync transactions from your checking account. Most secure and easiest option.
-                </p>
-                <div className="flex items-center gap-2 text-blue-400 font-semibold">
-                  <span>Recommended</span>
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Automatic updates</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Bank-level security</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>All platforms detected</span>
-                  </div>
-                </div>
-              </button>
-
+            <div className="grid md:grid-cols-2 gap-6">
               {/* CSV Option */}
               <button
                 onClick={() => handleMethodSelect('csv')}
@@ -203,25 +170,12 @@ export default function OnboardingPage() {
           <div className="space-y-8">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-white mb-2 font-space-grotesk">
-                {method === 'plaid' ? 'Connect Your Bank' : 'Upload Bank Statement'}
+                Upload Bank Statement
               </h2>
               <p className="text-slate-300">
-                {method === 'plaid'
-                  ? 'Securely connect your bank account to automatically track income'
-                  : 'Upload a CSV file of your recent transactions'}
+                Upload a CSV file of your recent transactions
               </p>
             </div>
-
-            {method === 'plaid' && (
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
-                <PlaidLink
-                  userId={user.id}
-                  onSuccess={() => {
-                    setTimeout(handleComplete, 2000);
-                  }}
-                />
-              </div>
-            )}
 
             {method === 'csv' && (
               <CSVUpload userId={user.id} onUploadComplete={handleComplete} />
