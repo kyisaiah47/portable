@@ -1,6 +1,6 @@
 <div align="center">
 
-<!-- BANNER_PLACEHOLDER -->
+<img src="assets/banner.png" alt="banner" width="100%" />
 
 # 🎒 Portable
 
