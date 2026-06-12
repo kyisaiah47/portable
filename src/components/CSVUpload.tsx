@@ -18,24 +18,9 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
   const [error, setError] = useState<string | null>(null);
 
   // Generate sample CSV
-  const generateSampleCSV = () => {
-    const csv = `Date,Description,Amount,Type
-2024-06-01,UBER DRIVER PARTNER PAYMENT,450.25,credit
-2024-06-08,UBER BV WEEKLY EARNINGS,520.50,credit
-2024-06-15,Uber Technologies Inc,480.75,credit
-2024-06-22,UBER TRIP EARNINGS WEEKLY,495.00,credit
-2024-06-03,DOORDASH DASHER PAYMENT,320.50,credit
-2024-06-10,DoorDash Weekly Payment,285.75,credit
-2024-06-17,DD DRIVER WEEKLY DEPOSIT,310.00,credit
-2024-06-24,DOORDASH INC PAYMENT,295.50,credit
-2024-06-05,UPWORK FREELANCE PAYMENT,850.00,credit
-2024-06-19,Upwork Project Payment,1200.00,credit
-2024-06-12,FIVERR INC WITHDRAWAL,450.00,credit
-2024-06-21,GOOGLE ADSENSE PAYMENT,680.50,credit
-2024-06-07,AIRBNB PAYOUT,750.00,credit
-2024-06-20,Air BnB Host Payment,820.00,credit`;
-
-    const blob = new Blob([csv], { type: 'text/csv' });
+  const generateSampleCSV = async () => {
+    const res = await fetch('/sample-bank-statement.csv');
+    const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
