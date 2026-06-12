@@ -174,7 +174,7 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 					{c.momentum.map((m) => (
 						<Card key={m.platform} className="bg-slate-900 border-white/10">
-							<CardContent className="pt-5">
+							<CardContent>
 								<div className="flex items-start justify-between mb-3">
 									{(() => {
 										const I = PLATFORM_ICONS[m.platform];

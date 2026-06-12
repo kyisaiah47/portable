@@ -128,7 +128,7 @@ export default function AIAnalysisPanel({ parsedIncome }: { parsedIncome: any })
 	return (
 		<Card className="relative overflow-hidden border-purple-400/25 bg-slate-900">
 			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
-			<CardContent className="pt-5">
+			<CardContent>
 				<div className="flex items-start justify-between gap-4 mb-1">
 					<div className="flex items-center gap-2.5">
 						<span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600">

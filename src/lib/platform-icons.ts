@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, CSSProperties } from 'react';
 import {
 	SiUber,
 	SiLyft,
@@ -24,7 +24,7 @@ import {
 	SiCashapp,
 } from 'react-icons/si';
 
-export const PLATFORM_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+export const PLATFORM_ICONS: Record<string, ComponentType<{ className?: string; style?: CSSProperties }>> = {
 	Uber: SiUber,
 	Lyft: SiLyft,
 	DoorDash: SiDoordash,
