@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ShiftMark } from '@/components/Logo';
+import AuthModal from '@/components/AuthModal';
 import {
 	SiUber,
 	SiLyft,
@@ -40,30 +42,31 @@ function Circles({ size = 'w-6 h-6' }: { size?: string }) {
 }
 
 export default function Home() {
+	const [auth, setAuth] = useState<'login' | 'signup' | null>(null);
 	return (
 		<div className="min-h-screen bg-slate-950 font-inter text-white">
 			{/* Navigation */}
 			<nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
 				<div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 					<div className="flex items-center space-x-2.5">
-						<ShiftMark className="h-5 w-auto text-white" />
+						<ShiftMark className="h-5 w-auto" />
 						<span className="text-lg font-bold text-white font-space-grotesk">
 							Stub
 						</span>
 					</div>
 					<div className="flex items-center space-x-4">
-						<Link
-							href="/login"
+						<button
+							onClick={() => setAuth('login')}
 							className="text-sm font-semibold text-slate-400 hover:text-white transition-colors"
 						>
 							Log in
-						</Link>
-						<Link
-							href="/signup"
+						</button>
+						<button
+							onClick={() => setAuth('signup')}
 							className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-opacity"
 						>
 							Get started
-						</Link>
+						</button>
 					</div>
 				</div>
 			</nav>
@@ -100,13 +103,13 @@ export default function Home() {
 						</p>
 
 						<div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
-							<Link
-								href="/signup"
+							<button
+								onClick={() => setAuth('signup')}
 								className="group bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-7 py-3 rounded-full text-sm font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-2"
 							>
 								<span>Get Stub — free</span>
 								<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-							</Link>
+							</button>
 							<p className="text-xs text-slate-500">
 								No bank login. No card. One CSV.
 							</p>
@@ -248,13 +251,13 @@ export default function Home() {
 					<p className="text-base text-slate-400 mb-8 max-w-xl mx-auto">
 						One statement is all it takes to see what you&apos;ve been missing.
 					</p>
-					<Link
-						href="/signup"
+					<button
+						onClick={() => setAuth('signup')}
 						className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-7 py-3 rounded-full text-sm font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50"
 					>
 						Get Stub — free
 						<ArrowRight className="w-4 h-4" />
-					</Link>
+					</button>
 				</div>
 			</section>
 
@@ -262,7 +265,7 @@ export default function Home() {
 			<footer className="border-t border-white/10 px-6 py-8">
 				<div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
 					<div className="flex items-center gap-2">
-						<ShiftMark className="h-4 w-auto text-slate-400" />
+						<ShiftMark className="h-4 w-auto" />
 						<span>© {new Date().getFullYear()} Stub</span>
 					</div>
 					<div className="flex items-center gap-5">
@@ -278,6 +281,8 @@ export default function Home() {
 					</div>
 				</div>
 			</footer>
+
+			{auth && <AuthModal initialMode={auth} onClose={() => setAuth(null)} />}
 		</div>
 	);
 }
