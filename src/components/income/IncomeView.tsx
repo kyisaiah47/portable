@@ -96,16 +96,16 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 					return t > a && t <= b;
 				})
 				.reduce((s, i) => s + i.amount, 0);
-		const momentum = platforms
-			.map(({ platform }) => {
-				const recent = sumIn(platform, maxT - 4 * wk, maxT);
-				const prior = sumIn(platform, maxT - 8 * wk, maxT - 4 * wk);
-				const delta = prior > 0 ? ((recent - prior) / prior) * 100 : null;
-				return { platform, recent, prior, delta };
-			})
-			.filter((m) => m.delta !== null && Math.abs(m.delta!) >= 10)
-			.sort((a, b) => Math.abs(b.delta!) - Math.abs(a.delta!))
-			.slice(0, 3);
+		const momentum = new Map<string, number>(
+			platforms
+				.map(({ platform }) => {
+					const recent = sumIn(platform, maxT - 4 * wk, maxT);
+					const prior = sumIn(platform, maxT - 8 * wk, maxT - 4 * wk);
+					const delta = prior > 0 ? ((recent - prior) / prior) * 100 : null;
+					return [platform, delta] as const;
+				})
+				.filter(([, d]) => d !== null && Math.abs(d!) >= 10) as [string, number][]
+		);
 
 		const stability = parsedIncome.stability || {};
 
@@ -152,58 +152,6 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 					sub={<>{money(c.stability.weeklyAverage ?? 0)}/week average · {c.stability.variability}% variability — the number landlords understand</>}
 				/>
 			</div>
-
-			{/* Momentum callouts */}
-			{c.momentum.length > 0 && (
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-					{c.momentum.map((m) => (
-						<GlowCard key={m.platform}>
-							<CardContent>
-								<div className="flex items-start justify-between mb-3">
-									{(() => {
-										const I = PLATFORM_ICONS[m.platform];
-										return (
-											<span
-												className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10"
-												style={{ background: `${colorFor(m.platform)}1f` }}
-											>
-												{I ? (
-													<I className="h-5 w-5" style={{ color: colorFor(m.platform) } as React.CSSProperties} />
-												) : (
-													<span
-														className="h-3 w-3 rounded-full"
-														style={{ background: colorFor(m.platform) }}
-													/>
-												)}
-											</span>
-										);
-									})()}
-									<Badge
-										variant="outline"
-										className={
-											m.delta! >= 0
-												? 'border-emerald-400/40 text-emerald-300'
-												: 'border-red-400/40 text-red-300'
-										}
-									>
-										{m.delta! >= 0 ? (
-											<TrendingUp className="w-3 h-3" />
-										) : (
-											<TrendingDown className="w-3 h-3" />
-										)}
-										{m.delta! >= 0 ? '+' : ''}
-										{m.delta!.toFixed(0)}%
-									</Badge>
-								</div>
-								<p className="text-sm font-semibold text-white">{m.platform}</p>
-								<p className="text-xs text-slate-300 mt-1">
-									{money(m.recent)} last 4 weeks vs {money(m.prior)} the 4 before
-								</p>
-							</CardContent>
-						</GlowCard>
-					))}
-				</div>
-			)}
 
 			{/* Weekly stacked chart */}
 			<GlowCard>
@@ -259,7 +207,25 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 									{p.platform}
 									<span className="text-xs text-slate-500">{p.count} payments</span>
 								</span>
-								<span className="text-sm tabular-nums text-slate-300">
+								<span className="flex items-center gap-2 text-sm tabular-nums text-slate-300">
+									{c.momentum.has(p.platform) && (
+										<Badge
+											variant="outline"
+											className={
+												c.momentum.get(p.platform)! >= 0
+													? 'border-emerald-400/40 text-emerald-300'
+													: 'border-red-400/40 text-red-300'
+											}
+										>
+											{c.momentum.get(p.platform)! >= 0 ? (
+												<TrendingUp className="w-3 h-3" />
+											) : (
+												<TrendingDown className="w-3 h-3" />
+											)}
+											{c.momentum.get(p.platform)! >= 0 ? '+' : ''}
+											{c.momentum.get(p.platform)!.toFixed(0)}%
+										</Badge>
+									)}
 									{money(p.total)}{' '}
 									<span className="text-slate-500">· {p.share.toFixed(1)}%</span>
 								</span>

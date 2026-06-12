@@ -3,8 +3,6 @@
 import * as React from 'react';
 import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { CardContent } from '@/components/ui/card';
-import { AICard } from '@/components/ui/glow-card';
 
 /* The "what did the AI actually do" card. Makes Claude's work legible:
    how many rows rules handled, how many needed judgment, and the money
@@ -36,18 +34,14 @@ export default function AIReviewCard({ transactions }: { transactions: any[] }) 
 	if (stats.ai === 0) return null;
 
 	return (
-		<AICard>
-			<CardContent>
-				<div className="flex flex-wrap items-start justify-between gap-4">
-					<div className="flex items-start gap-3 min-w-0">
-						<span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600">
-							<Sparkles className="h-4 w-4 text-white" />
-						</span>
-						<div className="min-w-0">
-							<p className="text-sm font-semibold text-white">
-								Claude reviewed this statement
-							</p>
-							<p className="text-sm text-slate-400 mt-0.5">
+		<div>
+			<div className="flex flex-wrap items-start justify-between gap-4">
+				<div className="flex items-start gap-3 min-w-0">
+					<span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600">
+						<Sparkles className="h-3.5 w-3.5 text-white" />
+					</span>
+					<div className="min-w-0">
+						<p className="text-sm text-slate-300">
 								{stats.regex} of {stats.total} transactions matched known patterns
 								instantly. <span className="text-slate-200 font-medium">{stats.ai} needed
 								judgment</span> — ambiguous merchants, transfers, mixed-use bills.
@@ -72,10 +66,10 @@ export default function AIReviewCard({ transactions }: { transactions: any[] }) 
 					>
 						{open ? 'Hide decisions' : `See the ${stats.ai} decisions`}
 						{open ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-					</button>
-				</div>
+				</button>
+			</div>
 
-				{open && (
+			{open && (
 					<div className="mt-4 divide-y divide-white/5 rounded-lg border border-white/10">
 						{stats.decisions.map((t: any, i: number) => {
 							const c = t.classification;
@@ -114,7 +108,6 @@ export default function AIReviewCard({ transactions }: { transactions: any[] }) 
 						})}
 					</div>
 				)}
-			</CardContent>
-		</AICard>
+		</div>
 	);
 }
