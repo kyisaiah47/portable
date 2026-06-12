@@ -11,7 +11,7 @@ import {
 
 /* The one card surface used across the app: slate with an indigo wash. */
 export const GLOW_SURFACE =
-	'relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900';
+	'relative overflow-hidden border border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900';
 
 export function GlowCard({
 	className,

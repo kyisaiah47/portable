@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Car, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { GLOW_SURFACE } from '@/components/ui/glow-card';
+import { GLOW_SURFACE, StatCard } from '@/components/ui/glow-card';
 
 // IRS standard mileage rate (2025: $0.70/mi). Update yearly.
 export const IRS_MILEAGE_RATE = 0.7;
@@ -74,30 +74,16 @@ export default function MileageTracker({ userId }: { userId: string }) {
 		<div className="space-y-6">
 			{/* Totals */}
 			<div className="grid sm:grid-cols-3 gap-4">
-				<div className={`${GLOW_SURFACE} rounded-lg p-5`}>
-					<p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-						Miles logged
-					</p>
-					<p className="text-2xl font-bold text-white tabular-nums font-space-grotesk">
-						{totalMiles.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-					</p>
-				</div>
-				<div className={`${GLOW_SURFACE} rounded-lg p-5`}>
-					<p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-						IRS rate
-					</p>
-					<p className="text-2xl font-bold text-white tabular-nums font-space-grotesk">
-						${IRS_MILEAGE_RATE.toFixed(2)}/mi
-					</p>
-				</div>
-				<div className={`${GLOW_SURFACE} rounded-lg p-5`}>
-					<p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-						Deduction
-					</p>
-					<p className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent tabular-nums font-space-grotesk">
-						${deduction.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-					</p>
-				</div>
+				<StatCard
+					label="Miles logged"
+					value={totalMiles.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+				/>
+				<StatCard label="IRS rate" value={`$${IRS_MILEAGE_RATE.toFixed(2)}/mi`} />
+				<StatCard
+					label="Deduction"
+					gradientValue
+					value={`$${deduction.toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
+				/>
 			</div>
 
 			{/* Add trip */}
