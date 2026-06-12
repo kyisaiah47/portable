@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import FirstRunWizard from '@/components/FirstRunWizard';
+import WelcomeWizard from '@/components/WelcomeWizard';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -411,6 +411,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   // Loading state
   const isLoading = incomeLoading || transactionsLoading;
 
+  // First-run wizard: opens once data has resolved and there's nothing yet.
+  const [showWizard, setShowWizard] = useState(false);
+  const [wizardDismissed, setWizardDismissed] = useState(false);
+  useEffect(() => {
+    if (!isLoading && !parsedIncome && !wizardDismissed) setShowWizard(true);
+  }, [isLoading, parsedIncome, wizardDismissed]);
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -788,10 +795,19 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             />
 
             {!parsedIncome ? (
-              <FirstRunWizard
-                userId={user.id}
-                firstName={user.firstName}
-                onUploadComplete={() => window.location.reload()}
+              <EmptyState
+                icon={BarChart3}
+                title="No income data yet"
+                body="Upload a CSV bank statement and Stub will classify every payout by platform, flag deductible expenses, and estimate your quarterly taxes."
+                action={
+                  <button
+                    onClick={() => setShowWizard(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    Open setup guide
+                  </button>
+                }
               />
             ) : (
               <>
@@ -2606,6 +2622,16 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </div>
         )}
         </>
+      )}
+      {showWizard && (
+        <WelcomeWizard
+          userId={user.id}
+          onClose={() => {
+            setShowWizard(false);
+            setWizardDismissed(true);
+          }}
+          onUploadComplete={() => window.location.reload()}
+        />
       )}
     </AppShell>
   );

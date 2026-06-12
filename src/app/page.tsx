@@ -32,16 +32,6 @@ const PLATFORMS = [
 	{ icon: SiAirbnb, name: 'Airbnb' },
 ];
 
-function Circles({ size = 'w-6 h-6' }: { size?: string }) {
-	return (
-		<div className="flex -space-x-2">
-			<div className={`${size} rounded-full bg-gradient-to-br from-blue-500 to-blue-600`} />
-			<div className={`${size} rounded-full bg-gradient-to-br from-purple-500 to-purple-600`} />
-			<div className={`${size} rounded-full bg-gradient-to-br from-pink-500 to-pink-600`} />
-		</div>
-	);
-}
-
 function Home() {
 	const [auth, setAuth] = useState<'login' | 'signup' | null>(null);
 	const searchParams = useSearchParams();
@@ -90,7 +80,7 @@ function Home() {
 				<div className="max-w-6xl mx-auto relative z-10">
 					<div className="text-center max-w-3xl mx-auto">
 						<div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-full border border-white/10 mb-6">
-							<Circles size="w-4 h-4" />
+							<ShiftMark className="h-3.5 w-auto" />
 							<span className="text-xs font-semibold text-white">
 								Built for 60M+ independent workers
 							</span>
