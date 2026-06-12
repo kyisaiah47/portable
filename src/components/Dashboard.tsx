@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import WelcomeWizard from '@/components/WelcomeWizard';
 import MileageTracker from '@/components/MileageTracker';
 import HomeOverview from '@/components/home/HomeOverview';
+import ExpensesView from '@/components/expenses/ExpensesView';
 import { buildAccountantCsv, downloadAccountantCsv } from '@/lib/accountant-export';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -1215,340 +1216,30 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         )}
         {activeTab === 'expenses' && (
           <div className="space-y-10">
-            {(() => {
-              const expenseResults = parsedIncome
-                ? buildExpensesFromTransactions(parsedIncome.rawTransactions || [])
-                : null;
-
-              return (
-                <>
-                  <PageHeader
-                    eyebrow="Expenses"
-                    title={expenseResults ? money(expenseResults.totalDeductions) : '$0'}
-                    subtitle={
-                      expenseResults && expenseResults.expenses.length > 0
-                        ? `Qualified deductions from ${expenseResults.expenses.length} business expense${expenseResults.expenses.length === 1 ? '' : 's'}`
-                        : 'Deductible business expenses, detected automatically from your statement.'
-                    }
-                    actions={uploadActions}
-                  />
-
-                  {!parsedIncome ? (
-                    <EmptyState
-                      icon={Receipt}
-                      title="No expenses tracked yet"
-                      body="Upload your bank statement on the Income tab to automatically detect deductible business expenses — gas, equipment, software, phone bills, and more."
-                      action={
-                        <Link
-                          href="/dashboard/income"
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors"
-                        >
-                          <Upload className="w-3.5 h-3.5" />
-                          Go to Income
-                        </Link>
-                      }
-                    />
-                  ) : (() => {
-                    const { expenses, byCategory, totalExpenses, totalDeductions, potentialTaxSavings } = expenseResults!;
-
-                    if (expenses.length === 0) {
-                      return (
-                        <EmptyState
-                          icon={Receipt}
-                          title="No deductible expenses detected"
-                          body="We didn't find recognizable business expenses in your uploaded transactions. Try a statement that includes gas, maintenance, equipment, or software purchases."
-                        />
-                      );
-                    }
-
-                    return (
-                      <div className="space-y-10">
-                        <StatGrid
-                          stats={[
-                            {
-                              label: 'Total expenses',
-                              value: money2(totalExpenses),
-                              sub: `${expenses.length} deductible transactions`,
-                            },
-                            {
-                              label: 'Tax deductions',
-                              value: money2(totalDeductions),
-                              sub: 'Qualified business deductions',
-                            },
-                            {
-                              label: 'Estimated savings',
-                              value: money2(potentialTaxSavings),
-                              sub: 'At a 30% tax rate',
-                            },
-                          ]}
-                        />
-
-                        {/* Expense chart */}
-                        <section className="rounded-lg border border-white/10 p-5">
-                          <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-                            <div>
-                              <h2 className="text-sm font-semibold text-white">Expenses overview</h2>
-                              <p className="text-xs text-slate-500 mt-0.5">
-                                {expenseChartView === 'donut' && 'Breakdown by category'}
-                                {expenseChartView === 'bar' && 'Category trends over time'}
-                                {expenseChartView === 'line' && 'Cumulative expenses year-to-date'}
-                              </p>
-                            </div>
-                            <SegmentedControl
-                              options={[
-                                { value: 'donut' as const, label: 'Breakdown' },
-                                { value: 'bar' as const, label: 'Trend' },
-                                { value: 'line' as const, label: 'YTD' },
-                              ]}
-                              value={expenseChartView}
-                              onChange={setExpenseChartView}
-                            />
-                          </div>
-
-                          {(() => {
-                            // Prepare category data
-                            const categories = Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
-                              return {
-                                category,
-                                displayName: category.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-                                expenses: categoryExpenses,
-                                color: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other,
-                              };
-                            });
-
-                            // Empty state check
-                            if (!categories.length || expenses.length === 0) {
-                              return (
-                                <ChartEmptyState
-                                  icon={Receipt}
-                                  title="No expense data yet"
-                                  hint="Upload transactions to track deductible business expenses"
-                                />
-                              );
-                            }
-
-                            if (expenseChartView === 'donut') {
-                              // Donut chart - current month snapshot
-                              const donutData = categories.map(cat => ({
-                                name: cat.displayName,
-                                value: cat.expenses.reduce((sum, e) => sum + e.deductibleAmount, 0),
-                                fill: cat.color,
-                              }));
-
-                              return (
-                                <div className="h-72">
-                                  <ChartContainer
-                                    config={Object.fromEntries(
-                                      donutData.map((item) => [item.name, { label: item.name, color: item.fill }])
-                                    )}
-                                    className="h-full w-full"
-                                  >
-                                    <PieChart>
-                                      <ChartTooltip content={<ChartTooltipContent />} />
-                                      <Pie
-                                        data={donutData}
-                                        cx="50%"
-                                        cy="50%"
-                                        labelLine={false}
-                                        label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                                        outerRadius={105}
-                                        innerRadius={62}
-                                        dataKey="value"
-                                        stroke="#fff"
-                                      >
-                                        {donutData.map((entry, index) => (
-                                          <Cell key={`cell-${index}`} fill={entry.fill} />
-                                        ))}
-                                      </Pie>
-                                      <ChartLegend content={(<ChartLegendContent />) as never} />
-                                    </PieChart>
-                                  </ChartContainer>
-                                </div>
-                              );
-                            }
-
-                            if (expenseChartView === 'bar') {
-                              // Stacked bar - monthly trend
-                              // Group expenses by month
-                              const monthlyData: Record<string, any> = {};
-
-                              categories.forEach(cat => {
-                                cat.expenses.forEach(exp => {
-                                  const monthKey = exp.date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-                                  if (!monthlyData[monthKey]) {
-                                    monthlyData[monthKey] = { month: monthKey };
-                                  }
-                                  monthlyData[monthKey][cat.displayName] = (monthlyData[monthKey][cat.displayName] || 0) + exp.deductibleAmount;
-                                });
-                              });
-
-                              const barData = Object.values(monthlyData);
-
-                              return (
-                                <div className="h-72">
-                                  <ChartContainer
-                                    config={Object.fromEntries(
-                                      categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
-                                    )}
-                                    className="h-full w-full"
-                                  >
-                                    <BarChart data={barData}>
-                                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                                      <XAxis dataKey="month" stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} />
-                                      <YAxis stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
-                                      <ChartTooltip content={<ChartTooltipContent />} />
-                                      <ChartLegend content={(<ChartLegendContent />) as never} />
-                                      {categories.map(cat => (
-                                        <Bar key={cat.category} dataKey={cat.displayName} stackId="a" fill={cat.color} />
-                                      ))}
-                                    </BarChart>
-                                  </ChartContainer>
-                                </div>
-                              );
-                            }
-
-                            // Line chart - cumulative YTD
-                            // Sort all expenses by date and calculate running totals per category
-                            const allExpenses = categories.flatMap(cat =>
-                              cat.expenses.map(exp => ({
-                                ...exp,
-                                category: cat.displayName,
-                                color: cat.color,
-                              }))
-                            ).sort((a, b) => a.date.getTime() - b.date.getTime());
-
-                            const cumulativeData: Record<string, any>[] = [];
-                            const runningTotals: Record<string, number> = {};
-
-                            allExpenses.forEach(exp => {
-                              runningTotals[exp.category] = (runningTotals[exp.category] || 0) + exp.deductibleAmount;
-                              cumulativeData.push({
-                                date: exp.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-                                ...runningTotals,
-                              });
-                            });
-
-                            return (
-                              <div className="h-72">
-                                <ChartContainer
-                                  config={Object.fromEntries(
-                                    categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
-                                  )}
-                                  className="h-full w-full"
-                                >
-                                  <LineChart data={cumulativeData}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                                    <XAxis dataKey="date" stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} />
-                                    <YAxis stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <ChartLegend content={(<ChartLegendContent />) as never} />
-                                    {categories.map(cat => (
-                                      <Line key={cat.category} type="monotone" dataKey={cat.displayName} stroke={cat.color} strokeWidth={2} dot={false} />
-                                    ))}
-                                  </LineChart>
-                                </ChartContainer>
-                              </div>
-                            );
-                          })()}
-                        </section>
-
-                        {/* Expenses by Category */}
-                        <section>
-                          <SectionHeader
-                            title="Expenses by category"
-                            hint="Detected deductible business expenses"
-                          />
-                          <div className="rounded-lg border border-white/10 overflow-hidden">
-                            <table className="w-full text-sm">
-                              <thead>
-                                <tr className="bg-slate-950/60 border-b border-white/10">
-                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Description</th>
-                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden md:table-cell">Date</th>
-                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Type</th>
-                                  <th className="px-4 py-2.5"></th>
-                                  <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Deductible</th>
-                                </tr>
-                              </thead>
-                              {Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
-                                const categoryTotal = categoryExpenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
-                                const displayName = category.replace('-', ' ');
-
-                                return (
-                                  <tbody key={category}>
-                                    <tr className="bg-slate-950/60 border-y border-white/10 first:border-t-0">
-                                      <td colSpan={4} className="px-4 py-2">
-                                        <span className="inline-flex items-center gap-2">
-                                          <span
-                                            className="w-2 h-2 rounded-full"
-                                            style={{ background: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other }}
-                                          />
-                                          <span className="text-xs font-semibold text-slate-300 capitalize">{displayName}</span>
-                                          <span className="text-xs text-slate-500">{categoryExpenses.length} transactions</span>
-                                        </span>
-                                      </td>
-                                      <td className="px-4 py-2 text-right text-xs font-semibold text-slate-300">
-                                        {money2(categoryTotal)}
-                                      </td>
-                                    </tr>
-                                    {categoryExpenses.slice(0, 5).map((expense, idx) => (
-                                      <tr key={idx} className="border-b border-white/5 hover:bg-slate-800/60 transition-colors">
-                                        <td className="px-4 py-2.5 text-white max-w-[260px] truncate">
-                                          {expense.description}
-                                          {expense.source === 'ai' && (
-                                            <span className="ml-2 inline-flex items-center rounded px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-indigo-500/10 text-indigo-300">
-                                              AI
-                                            </span>
-                                          )}
-                                        </td>
-                                        <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap hidden md:table-cell">
-                                          {expense.date.toLocaleDateString()}
-                                        </td>
-                                        <td className="px-4 py-2.5 text-slate-400 hidden sm:table-cell" title={expense.rationale}>
-                                          {expense.subcategory}
-                                        </td>
-                                        <td className="px-4 py-2.5 text-right">
-                                          <DeductionCheckDialog
-                                            description={expense.description}
-                                            amount={expense.amount}
-                                            date={expense.date}
-                                            gigTypes={Array.from(parsedIncome.parsed.byPlatform.keys())}
-                                          />
-                                        </td>
-                                        <td className="px-4 py-2.5 text-right">
-                                          <span className="font-medium text-white">{money2(expense.deductibleAmount)}</span>
-                                          {expense.deductionRate < 100 && (
-                                            <span className="block text-[11px] text-slate-500">
-                                              {expense.deductionRate}% deductible
-                                            </span>
-                                          )}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                    {categoryExpenses.length > 5 && (
-                                      <tr className="border-b border-white/5">
-                                        <td colSpan={5} className="px-4 py-2 text-center text-xs text-slate-500">
-                                          + {categoryExpenses.length - 5} more expenses
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </tbody>
-                                );
-                              })}
-                            </table>
-                          </div>
-                        </section>
-
-                        {/* Tip */}
-                        <p className="text-xs text-slate-500 leading-relaxed border-t border-white/10 pt-4">
-                          Keep receipts for expenses over $75 — the IRS may require documentation during
-                          an audit. Photograph them and store digitally.
-                        </p>
-                      </div>
-                    );
-                  })()}
-                </>
-              );
-            })()}
+            <PageHeader
+              eyebrow="Expenses"
+              title="Write-offs"
+              subtitle="Deductible business expenses, detected and explained automatically."
+              actions={uploadActions}
+            />
+            {!parsedIncome ? (
+              <EmptyState
+                icon={Receipt}
+                title="No expenses tracked yet"
+                body="Upload your bank statement and Stub will detect deductible business expenses — gas, equipment, software, phone bills — and write down the reason for each."
+                action={
+                  <button
+                    onClick={() => setShowWizard(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    Open setup guide
+                  </button>
+                }
+              />
+            ) : (
+              <ExpensesView parsedIncome={parsedIncome} />
+            )}
           </div>
         )}
 
