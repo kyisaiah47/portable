@@ -29,6 +29,7 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { buildExpensesFromTransactions } from '@/lib/hybrid-classifier';
+import AIReviewCard from '@/components/home/AIReviewCard';
 import { calculateTaxes, getQuarterlyDeadlines, projectAnnualTax } from '@/lib/tax-calculator';
 
 const money = (n: number) =>
@@ -126,6 +127,8 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 
 	return (
 		<div className="space-y-6">
+			<AIReviewCard transactions={parsedIncome.rawTransactions || []} />
+
 			{/* Stat cards — dashboard-01 style */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 				<Card className="bg-slate-900 border-white/10">
