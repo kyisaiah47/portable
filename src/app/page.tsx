@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { ShiftMark } from '@/components/Logo';
 import {
 	SiUber,
 	SiLyft,
@@ -44,8 +45,8 @@ export default function Home() {
 			{/* Navigation */}
 			<nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
 				<div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-					<div className="flex items-center space-x-2">
-						<Circles />
+					<div className="flex items-center space-x-2.5">
+						<ShiftMark className="h-5 w-auto text-white" />
 						<span className="text-lg font-bold text-white font-space-grotesk">
 							Stub
 						</span>
@@ -261,7 +262,7 @@ export default function Home() {
 			<footer className="border-t border-white/10 px-6 py-8">
 				<div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
 					<div className="flex items-center gap-2">
-						<Circles size="w-4 h-4" />
+						<ShiftMark className="h-4 w-auto text-slate-400" />
 						<span>© {new Date().getFullYear()} Stub</span>
 					</div>
 					<div className="flex items-center gap-5">
