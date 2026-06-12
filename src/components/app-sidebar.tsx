@@ -12,7 +12,6 @@ import {
   IconSettings,
   IconSparkles,
   IconBook2,
-  IconFlask,
   type Icon,
 } from "@tabler/icons-react"
 
@@ -43,7 +42,6 @@ const NAV_MAIN = [
 const NAV_WORKSPACE: { title: string; url: string; icon: Icon }[] = [
   { title: "AI Insights", url: "/dashboard/insights", icon: IconSparkles },
   { title: "Learn", url: "/dashboard/learn", icon: IconBook2 },
-  { title: "Demo", url: "/demo", icon: IconFlask },
 ]
 
 const NAV_SECONDARY = [
@@ -69,8 +67,10 @@ export function AppSidebar({
               className="data-[slot=sidebar-menu-button]:!p-1.5"
               render={<Link href="/dashboard" />}
             >
-              <ShiftMark className="h-7 w-auto" />
-              <span className="text-lg font-bold font-space-grotesk tracking-tight">
+              <span className="flex items-center">
+                <ShiftMark className="!h-8 !w-auto" />
+              </span>
+              <span className="text-xl font-bold font-space-grotesk tracking-tight">
                 Stub
               </span>
             </SidebarMenuButton>

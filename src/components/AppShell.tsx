@@ -19,7 +19,7 @@ interface AppShellProps {
 /* The dashboard-01 shell (same block remi uses), themed dark. */
 export default function AppShell({ user, onLogout, children }: AppShellProps) {
 	return (
-		<div className="dark bg-background text-foreground">
+		<div className="bg-background text-foreground">
 			<SidebarProvider
 				style={
 					{
