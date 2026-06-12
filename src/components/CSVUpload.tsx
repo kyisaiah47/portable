@@ -29,33 +29,45 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
     window.URL.revokeObjectURL(url);
   };
 
-  // Parse and save CSV
+  // Stable content hash so the same statement line always maps to the same
+  // row — uploads accumulate and dedupe instead of overwriting each other.
+  const contentId = (date: string, description: string, amount: string, type: string) => {
+    const str = `${date}|${description}|${amount}|${type}`;
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+    return `csv-${userId}-${(h >>> 0).toString(36)}`;
+  };
+
+  // Parse and save CSV — supports selecting multiple statements at once.
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(event.target.files ?? []);
+    if (files.length === 0) return;
 
     setUploading(true);
     setError(null);
 
     try {
-      const text = await file.text();
-      const lines = text.split('\n');
       const parsedTransactions: Transaction[] = [];
-
-      // Parse CSV (skip header)
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-
-        const [date, description, amount, type] = line.split(',');
-        if (date && description && amount && type) {
-          parsedTransactions.push({
-            id: `csv-${userId}-${i}`,
-            date: new Date(date),
-            description,
-            amount: parseFloat(amount),
-            type: type.trim() as 'credit' | 'debit',
-          });
+      const seen = new Set<string>();
+      for (const file of files) {
+        const text = await file.text();
+        const lines = text.split('\n');
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+          const [date, description, amount, type] = line.split(',');
+          if (date && description && amount && type) {
+            const id = contentId(date, description, amount, type.trim());
+            if (seen.has(id)) continue;
+            seen.add(id);
+            parsedTransactions.push({
+              id,
+              date: new Date(date),
+              description,
+              amount: parseFloat(amount),
+              type: type.trim() as 'credit' | 'debit',
+            });
+          }
         }
       }
 
@@ -87,21 +99,48 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
 
       if (txError) throw txError;
 
-      // Save parsed income to database
+      // Rebuild the summary from EVERY transaction this user has — statements
+      // accumulate; the dashboard always reflects the union.
+      const { data: allRows, error: allError } = await supabase
+        .from('stub_transactions')
+        .select('plaid_transaction_id, date, name, amount, classification')
+        .eq('user_id', userId);
+      if (allError) throw allError;
+
+      const unionTx: Transaction[] = (allRows ?? []).map((r: any) => ({
+        id: r.plaid_transaction_id,
+        date: new Date(r.date),
+        description: r.name,
+        amount: Math.abs(r.amount),
+        type: r.amount >= 0 ? ('credit' as const) : ('debit' as const),
+      }));
+      const unionCls = new Map(
+        (allRows ?? [])
+          .filter((r: any) => r.classification)
+          .map((r: any) => [r.plaid_transaction_id, r.classification])
+      );
+      const parsedAll = buildIncomeResults(unionTx, unionCls as any);
+      const stabilityAll = calculateStabilityScore(parsedAll.income);
+
       const byPlatformData = Object.fromEntries(
-        Array.from(parsed.byPlatform.entries()).map(([platform, payments]) => [
+        Array.from(parsedAll.byPlatform.entries()).map(([platform, payments]) => [
           platform,
           (payments as any[]).reduce((sum, p) => sum + p.amount, 0),
         ])
       );
 
-      // Calculate weekly average and variability
-      const weeklyAverage = parsed.totalIncome / 4; // Assuming 4 weeks
-      const variability = Math.round((1 - stability.score / 100) * 100);
+      // Weekly average over the real covered period (min 1 week)
+      const spanMs =
+        parsedAll.startDate && parsedAll.endDate
+          ? parsedAll.endDate.getTime() - parsedAll.startDate.getTime()
+          : 0;
+      const weeks = Math.max(1, spanMs / (7 * 86_400_000));
+      const weeklyAverage = parsedAll.totalIncome / weeks;
+      const variability = Math.round((1 - stabilityAll.score / 100) * 100);
 
       const stabilityData = {
-        score: stability.score,
-        rating: stability.rating,
+        score: stabilityAll.score,
+        rating: stabilityAll.rating,
         weeklyAverage: weeklyAverage,
         variability: variability,
       };
@@ -110,24 +149,28 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
         .from('stub_parsed_income')
         .upsert({
           user_id: userId,
-          total_income: parsed.totalIncome,
-          start_date: parsed.startDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
-          end_date: parsed.endDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+          total_income: parsedAll.totalIncome,
+          start_date: parsedAll.startDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+          end_date: parsedAll.endDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
           by_platform: byPlatformData,
           stability: stabilityData,
         }, { onConflict: 'user_id' });
 
       if (incomeError) throw incomeError;
 
+      // Results reflect the union, not just this upload
+      const parsedForResults = parsedAll;
+      const stabilityForResults = stabilityAll;
+
       // Clear all caches so data will be refetched
       clearAllCaches(userId);
 
       setResults({
-        totalIncome: parsed.totalIncome,
-        platforms: parsed.byPlatform.size,
-        transactions: parsedTransactions.length,
-        stabilityScore: stability.score,
-        stabilityRating: stability.rating,
+        totalIncome: parsedForResults.totalIncome,
+        platforms: parsedForResults.byPlatform.size,
+        transactions: unionTx.length,
+        stabilityScore: stabilityForResults.score,
+        stabilityRating: stabilityForResults.rating,
       });
 
       // Notify parent component
@@ -164,6 +207,7 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
           <input
             type="file"
             accept=".csv"
+            multiple
             onChange={handleFileUpload}
             disabled={uploading}
             className="hidden"
@@ -181,7 +225,7 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
             ) : (
               <>
                 <Upload className="w-8 h-8 text-slate-500 mx-auto mb-3" />
-                <p className="text-sm font-medium text-white mb-1">Drop a CSV here or click to browse</p>
+                <p className="text-sm font-medium text-white mb-1">Drop one or more CSVs here, or click to browse</p>
                 <p className="text-sm text-slate-400">Supports standard bank export formats</p>
               </>
             )}
