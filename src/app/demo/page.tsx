@@ -59,7 +59,7 @@ export default function TestParserPage() {
         const [date, description, amount, type] = line.split(',');
         if (date && description && amount && type) {
           parsedTransactions.push({
-            id: `test-parser-${i}`,
+            id: `demo-${i}`,
             date: new Date(date),
             description,
             amount: parseFloat(amount),

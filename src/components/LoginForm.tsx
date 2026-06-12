@@ -9,10 +9,9 @@ import { supabase } from '@/lib/supabase';
 interface LoginFormProps {
   isLogin: boolean;
   onSuccess: (user: any) => void;
-  referralCode?: string | null;
 }
 
-export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFormProps) {
+export default function LoginForm({ isLogin, onSuccess }: LoginFormProps) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -42,22 +41,6 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
         onSuccess(data.user);
         return; // Exit early to prevent finally block
       } else {
-        // If there's a referral code, validate it first
-        let referrerId = null;
-        if (referralCode) {
-          const { data: referrer, error: referrerError } = await supabase
-            .from('stub_users')
-            .select('id')
-            .eq('referral_code', referralCode.toUpperCase())
-            .single();
-
-          if (referrerError || !referrer) {
-            setError('Invalid referral code. Continuing without referral.');
-          } else {
-            referrerId = referrer.id;
-          }
-        }
-
         // Sign up with Supabase Auth
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: formData.email,

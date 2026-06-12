@@ -5,7 +5,6 @@ import WelcomeWizard from '@/components/WelcomeWizard';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import BenefitsMarketplace from './BenefitsMarketplace';
 import {
   Upload,
   Download,
@@ -961,7 +960,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               'View tax calendar': () => router.push('/dashboard/taxes'),
                               'Add a platform': () => toast.success('Platform connections coming soon!'),
                               'Connect DoorDash': () => toast.success('Platform connections coming soon!'),
-                              'Browse plans': () => router.push('/dashboard/benefits'),
+                              
                               'Set up tracking': () => toast.success('Mileage tracking coming soon!'),
                             };
 
@@ -1749,7 +1748,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </div>
         )}
 
-        {activeTab === 'benefits' && <BenefitsMarketplace />}
 
         {activeTab === 'taxes' && (
           <div className="space-y-10">
@@ -2204,15 +2202,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               })) || [];
 
               return <PlatformInsights transactions={transactionsWithPlatform} />;
-            })()}
-          </div>
-        )}
-
-        {activeTab === 'referrals' && (
-          <div className="space-y-8">
-            {(() => {
-              const ReferralDashboard = require('./ReferralDashboard').default;
-              return <ReferralDashboard />;
             })()}
           </div>
         )}

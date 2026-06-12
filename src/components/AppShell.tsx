@@ -42,12 +42,10 @@ const MAIN_NAV = [
   { id: 'income', label: 'Income', icon: DollarSign, path: '/dashboard/income' },
   { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
   { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
-  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' },
 ];
 
 const SECONDARY_NAV = [
   { id: 'insights', label: 'Insights', icon: Target, path: '/dashboard/insights' },
-  { id: 'referrals', label: 'Referrals', icon: Users, path: '/dashboard/referrals' },
   { id: 'learn', label: 'Learn', icon: BookOpen, path: '/dashboard/learn' },
 ];
 
