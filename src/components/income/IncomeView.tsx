@@ -174,35 +174,47 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 					{c.momentum.map((m) => (
 						<Card key={m.platform} className="bg-slate-900 border-white/10">
-							<CardContent className="pt-5 flex items-start justify-between gap-3">
-								<div>
-									<p className="text-sm font-semibold text-white inline-flex items-center gap-2">
-										{(() => {
-											const I = PLATFORM_ICONS[m.platform];
-											return I ? <I className="h-4 w-4 text-slate-400" /> : null;
-										})()}
-										{m.platform}
-									</p>
-									<p className="text-xs text-slate-400 mt-1">
-										{money(m.recent)} last 4 weeks vs {money(m.prior)} the 4 before
-									</p>
+							<CardContent className="pt-5">
+								<div className="flex items-start justify-between mb-3">
+									{(() => {
+										const I = PLATFORM_ICONS[m.platform];
+										return (
+											<span
+												className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10"
+												style={{ background: `${colorFor(m.platform)}1f` }}
+											>
+												{I ? (
+													<I className="h-5 w-5" style={{ color: colorFor(m.platform) } as React.CSSProperties} />
+												) : (
+													<span
+														className="h-3 w-3 rounded-full"
+														style={{ background: colorFor(m.platform) }}
+													/>
+												)}
+											</span>
+										);
+									})()}
+									<Badge
+										variant="outline"
+										className={
+											m.delta! >= 0
+												? 'border-emerald-400/40 text-emerald-300'
+												: 'border-red-400/40 text-red-300'
+										}
+									>
+										{m.delta! >= 0 ? (
+											<TrendingUp className="w-3 h-3" />
+										) : (
+											<TrendingDown className="w-3 h-3" />
+										)}
+										{m.delta! >= 0 ? '+' : ''}
+										{m.delta!.toFixed(0)}%
+									</Badge>
 								</div>
-								<Badge
-									variant="outline"
-									className={
-										m.delta! >= 0
-											? 'border-emerald-400/40 text-emerald-300'
-											: 'border-red-400/40 text-red-300'
-									}
-								>
-									{m.delta! >= 0 ? (
-										<TrendingUp className="w-3 h-3" />
-									) : (
-										<TrendingDown className="w-3 h-3" />
-									)}
-									{m.delta! >= 0 ? '+' : ''}
-									{m.delta!.toFixed(0)}%
-								</Badge>
+								<p className="text-sm font-semibold text-white">{m.platform}</p>
+								<p className="text-xs text-slate-400 mt-1">
+									{money(m.recent)} last 4 weeks vs {money(m.prior)} the 4 before
+								</p>
 							</CardContent>
 						</Card>
 					))}
