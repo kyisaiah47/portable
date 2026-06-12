@@ -12,7 +12,7 @@ import {
 	CardTitle,
 	CardAction,
 } from '@/components/ui/card';
-import { GlowCard, AICard } from '@/components/ui/glow-card';
+import { GlowCard, StatCard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import {
 	ChartContainer,
@@ -132,89 +132,68 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 
 			{/* Stat cards — dashboard-01 style */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Safe to spend</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-							{money(c.safeToSpend)}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						After 30% taxes + 10% buffer on {money(c.totalIncome)} earned
-					</CardContent>
-				</GlowCard>
+				<StatCard
+					label="Safe to spend"
+					gradientValue
+					value={money(c.safeToSpend)}
+					sub={<>After 30% taxes + 10% buffer on {money(c.totalIncome)} earned</>}
+				/>
 
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Stub found you</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
-							{money(c.totalDeductions)}
-						</CardTitle>
-						<CardAction>
-							<Badge variant="outline" className="border-purple-400/40 text-purple-300">
-								<Sparkles className="w-3 h-3" /> AI
-							</Badge>
-						</CardAction>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{c.deductibleCount} deductible expenses caught —{' '}
-						<Link href="/dashboard/expenses" className="text-indigo-400 hover:text-indigo-300">
-							see the reasons →
-						</Link>
-					</CardContent>
-				</GlowCard>
+				<StatCard
+					label="Stub found you"
+					value={money(c.totalDeductions)}
+					action={
+						<Badge variant="outline" className="border-purple-400/40 text-purple-300">
+							<Sparkles className="w-3 h-3" /> AI
+						</Badge>
+					}
+					sub={
+						<>
+							{c.deductibleCount} deductible expenses caught —{' '}
+							<Link href="/dashboard/expenses" className="text-indigo-400 hover:text-indigo-300">
+								see the reasons →
+							</Link>
+						</>
+					}
+				/>
 
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Next IRS deadline</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
-							{c.daysUntil !== null ? `${c.daysUntil}d` : '—'}
-						</CardTitle>
-						<CardAction>
-							<Badge variant="outline" className="border-white/15 text-slate-300">
-								<CalendarClock className="w-3 h-3" />
-								{c.nextDeadline?.quarter ?? ''}
-							</Badge>
-						</CardAction>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{c.nextDeadline
+				<StatCard
+					label="Next IRS deadline"
+					value={c.daysUntil !== null ? `${c.daysUntil}d` : '—'}
+					action={
+						<Badge variant="outline" className="border-white/15 text-slate-300">
+							<CalendarClock className="w-3 h-3" />
+							{c.nextDeadline?.quarter ?? ''}
+						</Badge>
+					}
+					sub={
+						c.nextDeadline
 							? `${c.nextDeadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · set aside ${money(c.taxCalc.quarterlyPayment)}`
-							: 'No upcoming deadline'}
-					</CardContent>
-				</GlowCard>
+							: 'No upcoming deadline'
+					}
+				/>
 
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>This week</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
-							{money(c.thisWeek)}
-						</CardTitle>
-						{c.weekDelta !== null && (
-							<CardAction>
-								<Badge
-									variant="outline"
-									className={
-										c.weekDelta >= 0
-											? 'border-emerald-400/40 text-emerald-300'
-											: 'border-red-400/40 text-red-300'
-									}
-								>
-									{c.weekDelta >= 0 ? (
-										<TrendingUp className="w-3 h-3" />
-									) : (
-										<TrendingDown className="w-3 h-3" />
-									)}
-									{c.weekDelta >= 0 ? '+' : ''}
-									{c.weekDelta.toFixed(0)}%
-								</Badge>
-							</CardAction>
-						)}
-						<CardContent className="px-0 pt-1 text-sm text-slate-300">
-							vs. the week before
-						</CardContent>
-					</CardHeader>
-				</GlowCard>
+				<StatCard
+					label="This week"
+					value={money(c.thisWeek)}
+					action={
+						c.weekDelta !== null ? (
+							<Badge
+								variant="outline"
+								className={
+									c.weekDelta >= 0
+										? 'border-emerald-400/40 text-emerald-300'
+										: 'border-red-400/40 text-red-300'
+								}
+							>
+								{c.weekDelta >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+								{c.weekDelta >= 0 ? '+' : ''}
+								{c.weekDelta.toFixed(0)}%
+							</Badge>
+						) : undefined
+					}
+					sub="vs. the week before"
+				/>
 			</div>
 
 			{/* Income trend — interactive area chart */}

@@ -12,7 +12,7 @@ import {
 	CardTitle,
 	CardAction,
 } from '@/components/ui/card';
-import { GlowCard, AICard } from '@/components/ui/glow-card';
+import { GlowCard, StatCard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import {
 	ChartContainer,
@@ -124,50 +124,33 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 		<div className="space-y-6">
 			{/* Stat cards */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Total income</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-							{money(c.totalIncome)}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{parsedIncome.parsed.income?.length ?? 0} payments across {c.platforms.length}{' '}
-						platforms
-					</CardContent>
-				</GlowCard>
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Top platform</CardDescription>
-						<CardTitle className="text-3xl font-bold font-space-grotesk text-white">
-							{c.top?.platform ?? '—'}
-						</CardTitle>
-						{c.top && (
-							<CardAction>
-								<Badge variant="outline" className="border-white/15 text-slate-300 tabular-nums">
-									{c.top.share.toFixed(0)}%
-								</Badge>
-							</CardAction>
-						)}
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{c.top && c.top.share > 60
+				<StatCard
+					label="Total income"
+					gradientValue
+					value={money(c.totalIncome)}
+					sub={<>{parsedIncome.parsed.income?.length ?? 0} payments across {c.platforms.length} platforms</>}
+				/>
+				<StatCard
+					label="Top platform"
+					value={c.top?.platform ?? '—'}
+					action={
+						c.top ? (
+							<Badge variant="outline" className="border-white/15 text-slate-300 tabular-nums">
+								{c.top.share.toFixed(0)}%
+							</Badge>
+						) : undefined
+					}
+					sub={
+						c.top && c.top.share > 60
 							? 'Heavy concentration — one deactivation hurts. Worth diversifying.'
-							: 'Healthy mix — no single platform owns your income.'}
-					</CardContent>
-				</GlowCard>
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Stability score</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
-							{c.stability.score ?? '—'}/100
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{money(c.stability.weeklyAverage ?? 0)}/week average ·{' '}
-						{c.stability.variability}% variability — the number landlords understand
-					</CardContent>
-				</GlowCard>
+							: 'Healthy mix — no single platform owns your income.'
+					}
+				/>
+				<StatCard
+					label="Stability score"
+					value={`${c.stability.score ?? '—'}/100`}
+					sub={<>{money(c.stability.weeklyAverage ?? 0)}/week average · {c.stability.variability}% variability — the number landlords understand</>}
+				/>
 			</div>
 
 			{/* Momentum callouts */}

@@ -10,7 +10,7 @@ import {
 	CardTitle,
 	CardAction,
 } from '@/components/ui/card';
-import { GlowCard, AICard } from '@/components/ui/glow-card';
+import { GlowCard, StatCard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import {
 	Table,
@@ -72,55 +72,34 @@ export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
 		<div className="space-y-6">
 			{/* Hero cards */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Set aside each quarter</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-							{money(c.taxCalc.quarterlyPayment)}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{(c.taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate on
-						projected income
-					</CardContent>
-				</GlowCard>
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Next deadline</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
-							{c.daysUntil !== null ? `${c.daysUntil} days` : '—'}
-						</CardTitle>
-						{c.next && (
-							<CardAction>
-								<Badge variant="outline" className="border-white/15 text-slate-300">
-									<CalendarClock className="w-3 h-3" />
-									{c.next.quarter}
-								</Badge>
-							</CardAction>
-						)}
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{c.next
-							? c.next.dueDate.toLocaleDateString('en-US', {
-									month: 'long',
-									day: 'numeric',
-									year: 'numeric',
-							  })
-							: 'No upcoming deadline this year'}
-					</CardContent>
-				</GlowCard>
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Deductions lowering your bill</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
-							{money(c.expenseResults.totalDeductions)}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						≈ {money(c.expenseResults.potentialTaxSavings ?? c.expenseResults.totalDeductions * 0.3)}{' '}
-						in tax savings
-					</CardContent>
-				</GlowCard>
+				<StatCard
+					label="Set aside each quarter"
+					gradientValue
+					value={money(c.taxCalc.quarterlyPayment)}
+					sub={<>{(c.taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate on projected income</>}
+				/>
+				<StatCard
+					label="Next deadline"
+					value={c.daysUntil !== null ? `${c.daysUntil} days` : '—'}
+					action={
+						c.next ? (
+							<Badge variant="outline" className="border-white/15 text-slate-300">
+								<CalendarClock className="w-3 h-3" />
+								{c.next.quarter}
+							</Badge>
+						) : undefined
+					}
+					sub={
+						c.next
+							? c.next.dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+							: 'No upcoming deadline this year'
+					}
+				/>
+				<StatCard
+					label="Deductions lowering your bill"
+					value={money(c.expenseResults.totalDeductions)}
+					sub={<>≈ {money(c.expenseResults.potentialTaxSavings ?? c.expenseResults.totalDeductions * 0.3)} in tax savings</>}
+				/>
 			</div>
 
 			{/* AI summary — the centerpiece */}

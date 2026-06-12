@@ -9,7 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { GlowCard, AICard } from '@/components/ui/glow-card';
+import { GlowCard, AICard, StatCard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import {
 	Table,
@@ -149,39 +149,23 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 			<AskDeduction />
 
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Deductions found</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-							{money(c.total)}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						≈ {money(c.total * 0.3)} less tax at a 30% rate
-					</CardContent>
-				</GlowCard>
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Write-offs caught</CardDescription>
-						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
-							{c.deductible.length}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{c.aiFoundCount} needed AI judgment — rules alone would have missed them
-					</CardContent>
-				</GlowCard>
-				<GlowCard>
-					<CardHeader>
-						<CardDescription>Biggest category</CardDescription>
-						<CardTitle className="text-3xl font-bold font-space-grotesk text-white capitalize">
-							{c.topCategory?.[0] ?? '—'}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="text-sm text-slate-300">
-						{c.topCategory ? `${money(c.topCategory[1])} deductible` : 'Upload a statement first'}
-					</CardContent>
-				</GlowCard>
+				<StatCard
+					label="Deductions found"
+					gradientValue
+					value={money(c.total)}
+					sub={<>≈ {money(c.total * 0.3)} less tax at a 30% rate</>}
+				/>
+				<StatCard
+					label="Write-offs caught"
+					value={c.deductible.length}
+					sub={<>{c.aiFoundCount} needed AI judgment — rules alone would have missed them</>}
+				/>
+				<StatCard
+					label="Biggest category"
+					className="capitalize"
+					value={c.topCategory?.[0] ?? '—'}
+					sub={c.topCategory ? `${money(c.topCategory[1])} deductible` : 'Upload a statement first'}
+				/>
 			</div>
 
 			<GlowCard>
