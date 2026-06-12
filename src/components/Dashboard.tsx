@@ -5,13 +5,53 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import BenefitsMarketplace from './BenefitsMarketplace';
-import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown, MoreHorizontal, Calculator, Mail, Lock, Trash2, Save, Loader2, Bell } from 'lucide-react';
-import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
+import {
+  Upload,
+  Download,
+  Calculator,
+  Receipt,
+  FileText,
+  BarChart3,
+  BookOpen,
+  Globe,
+  Briefcase,
+  ChevronDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  ArrowRight,
+  User,
+  Lock,
+  Trash2,
+  Save,
+  Loader2,
+  Bell,
+  DollarSign,
+  Target,
+} from 'lucide-react';
+import {
+  SiUber,
+  SiLyft,
+  SiDoordash,
+  SiInstacart,
+  SiGrubhub,
+  SiUbereats,
+  SiUpwork,
+  SiFiverr,
+  SiFreelancer,
+  SiToptal,
+  SiYoutube,
+  SiTwitch,
+  SiPatreon,
+  SiOnlyfans,
+  SiSubstack,
+  SiAirbnb,
+} from 'react-icons/si';
 import { calculateStabilityScore, type Transaction } from '@/lib/income-parser';
 import { classifyTransactions, buildIncomeResults, buildExpensesFromTransactions } from '@/lib/hybrid-classifier';
 import { calculateTaxes, getQuarterlyDeadlines, projectAnnualTax } from '@/lib/tax-calculator';
 import AITaxSummary from './AITaxSummary';
 import DeductionCheckDialog from './DeductionCheckDialog';
+import AppShell from './AppShell';
 import { getTips, getGuides, type City, type GigType } from '@/lib/content-registry';
 import { useParsedIncome, useTransactions, clearAllCaches } from '@/hooks/useSupabaseData';
 import { supabase } from '@/lib/supabase';
@@ -19,7 +59,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -47,14 +86,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  ResponsiveContainer,
-  RadialBarChart,
-  RadialBar,
   LineChart,
   Line,
-  LabelList,
-  Tooltip,
-  Legend,
 } from 'recharts';
 
 interface User {
@@ -67,6 +100,208 @@ interface User {
 interface DashboardProps {
   user: User;
   onLogout: () => void;
+}
+
+/* ------------------------------------------------------------------ */
+/* Quiet visual vocabulary shared by every tab                         */
+/* ------------------------------------------------------------------ */
+
+const CHART_GRID = '#eceef1';
+const CHART_AXIS = '#9ca3af';
+
+// Muted categorical palette — no neon.
+const PLATFORM_COLORS: Record<string, string> = {
+  Uber: '#5b5bd6',
+  Lyft: '#c98a98',
+  DoorDash: '#cf6f6f',
+  Instacart: '#6fa287',
+  Grubhub: '#c9a36a',
+  UberEats: '#7da7c9',
+  'Uber Eats': '#7da7c9',
+  Upwork: '#6f9e94',
+  Fiverr: '#86a06f',
+  Freelancer: '#9b8ed4',
+  YouTube: '#b07c7c',
+  Twitch: '#8d7cb0',
+  Airbnb: '#c4848f',
+  Other: '#9aa1ad',
+};
+
+const EXPENSE_CATEGORY_COLORS: Record<string, string> = {
+  vehicle: '#5b5bd6',
+  equipment: '#9b8ed4',
+  supplies: '#6fa287',
+  software: '#7da7c9',
+  phone: '#c9a36a',
+  'home-office': '#6f9e94',
+  other: '#9aa1ad',
+};
+
+const PLATFORM_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Uber: SiUber,
+  Lyft: SiLyft,
+  DoorDash: SiDoordash,
+  Instacart: SiInstacart,
+  Grubhub: SiGrubhub,
+  'Uber Eats': SiUbereats,
+  UberEats: SiUbereats,
+  Upwork: SiUpwork,
+  Fiverr: SiFiverr,
+  Freelancer: SiFreelancer,
+  Toptal: SiToptal,
+  YouTube: SiYoutube,
+  Twitch: SiTwitch,
+  Patreon: SiPatreon,
+  OnlyFans: SiOnlyfans,
+  Substack: SiSubstack,
+  Airbnb: SiAirbnb,
+};
+
+const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
+const money2 = (n: number) =>
+  `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+function PageHeader({
+  eyebrow,
+  title,
+  subtitle,
+  actions,
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+  actions?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+      <div>
+        <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-1.5">
+          {eyebrow}
+        </p>
+        <h1 className="text-3xl font-semibold tracking-tight text-gray-900">{title}</h1>
+        {subtitle && <p className="text-sm text-gray-500 mt-1.5">{subtitle}</p>}
+      </div>
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
+    </div>
+  );
+}
+
+function StatGrid({ stats }: { stats: { label: string; value: React.ReactNode; sub?: React.ReactNode }[] }) {
+  return (
+    <div
+      className={`grid sm:grid-cols-2 ${
+        stats.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
+      } gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden`}
+    >
+      {stats.map((s) => (
+        <div key={s.label} className="bg-white p-4">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-1.5">
+            {s.label}
+          </p>
+          <p className="text-2xl font-semibold tracking-tight text-gray-900">{s.value}</p>
+          {s.sub && <p className="text-xs text-gray-500 mt-1">{s.sub}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SectionHeader({ title, hint }: { title: string; hint?: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 mb-3">
+      <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
+      {hint && <p className="text-xs text-gray-400">{hint}</p>}
+    </div>
+  );
+}
+
+function SegmentedControl<T extends string>({
+  options,
+  value,
+  onChange,
+}: {
+  options: { value: T; label: string }[];
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div className="inline-flex items-center bg-gray-100 rounded-md p-0.5">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          className={`px-2.5 py-1 text-xs font-medium rounded transition-colors ${
+            value === opt.value
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-500 hover:text-gray-900'
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ChartEmptyState({ icon: Icon, title, hint }: { icon: typeof BarChart3; title: string; hint: string }) {
+  return (
+    <div className="h-72 flex items-center justify-center rounded-md border border-dashed border-gray-200 bg-gray-50/50">
+      <div className="text-center px-8">
+        <Icon className="w-8 h-8 text-gray-300 mx-auto mb-3" strokeWidth={1.5} />
+        <p className="text-sm font-medium text-gray-700 mb-0.5">{title}</p>
+        <p className="text-xs text-gray-400">{hint}</p>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({
+  icon: Icon,
+  title,
+  body,
+  action,
+}: {
+  icon: typeof Receipt;
+  title: string;
+  body: string;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/50 px-8 py-16 text-center">
+      <Icon className="w-9 h-9 text-gray-300 mx-auto mb-4" strokeWidth={1.5} />
+      <h3 className="text-base font-semibold text-gray-900 mb-1">{title}</h3>
+      <p className="text-sm text-gray-500 max-w-md mx-auto mb-6">{body}</p>
+      {action}
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <div>
+        <div className="h-3 w-24 bg-gray-200 rounded mb-3" />
+        <div className="h-9 w-56 bg-gray-200 rounded" />
+      </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="bg-white p-4">
+            <div className="h-3 w-20 bg-gray-200 rounded mb-3" />
+            <div className="h-7 w-28 bg-gray-200 rounded" />
+          </div>
+        ))}
+      </div>
+      <div className="rounded-lg border border-gray-200">
+        <div className="h-10 border-b border-gray-100 bg-gray-50/60 rounded-t-lg" />
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div key={i} className="flex items-center justify-between px-4 py-3 border-b border-gray-100 last:border-0">
+            <div className="h-3.5 w-48 bg-gray-200 rounded" />
+            <div className="h-3.5 w-16 bg-gray-200 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
@@ -175,24 +410,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   // Loading state
   const isLoading = incomeLoading || transactionsLoading;
 
-  // Error handling
-  if (incomeError) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6 max-w-md">
-          <h2 className="text-red-400 font-bold mb-2">Error Loading Data</h2>
-          <p className="text-slate-300 text-sm">{incomeError.message}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-4 bg-red-500/20 text-red-400 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-500/30 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -221,7 +438,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
       if (error) throw error;
 
-      setProfileMessage('✅ Profile updated successfully');
+      setProfileMessage('Profile updated successfully');
       setTimeout(() => setProfileMessage(''), 3000);
     } catch (err) {
       setSettingsError(err instanceof Error ? err.message : 'Failed to update profile');
@@ -255,7 +472,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
       if (error) throw error;
 
-      setPasswordMessage('✅ Password updated successfully');
+      setPasswordMessage('Password updated successfully');
       setNewPassword('');
       setConfirmPassword('');
       setTimeout(() => setPasswordMessage(''), 3000);
@@ -285,7 +502,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
       if (error) throw error;
 
-      setNotificationsMessage('✅ Notification preferences updated');
+      setNotificationsMessage('Notification preferences updated');
       setTimeout(() => setNotificationsMessage(''), 3000);
     } catch (err) {
       setSettingsError(err instanceof Error ? err.message : 'Failed to update preferences');
@@ -343,22 +560,22 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
-      console.log('⚠️ No file selected');
+      console.log('No file selected');
       return;
     }
 
-    console.log('📤 Starting CSV upload:', file.name);
+    console.log('Starting CSV upload:', file.name);
     toast.info('Uploading CSV...', { duration: 2000 });
 
     const reader = new FileReader();
     reader.onerror = (error) => {
-      console.error('❌ File reader error:', error);
+      console.error('File reader error:', error);
       toast.error('Failed to read file');
     };
 
     reader.onload = async (e) => {
       try {
-        console.log('📖 File loaded, parsing...');
+        console.log('File loaded, parsing...');
         const text = e.target?.result as string;
         const lines = text.split('\n');
         const transactions: Transaction[] = [];
@@ -380,23 +597,23 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           }
         }
 
-        console.log(`✅ Parsed ${transactions.length} transactions`);
+        console.log(`Parsed ${transactions.length} transactions`);
 
         // Hybrid classification: regex handles the obvious hits for free,
         // Claude classifies the remainder/low-confidence transactions.
         toast.info('Classifying transactions with AI...', { duration: 3000 });
         const { classifications, aiUsed, aiError } = await classifyTransactions(transactions);
         if (aiError) {
-          console.warn('⚠️ AI classification unavailable:', aiError);
+          console.warn('AI classification unavailable:', aiError);
           toast.warning('AI classification unavailable — using pattern matching only.');
         } else if (aiUsed) {
-          console.log('🤖 AI classified the transactions regex could not match');
+          console.log('AI classified the transactions regex could not match');
         }
 
         const parsed = buildIncomeResults(transactions, classifications);
         const stability = calculateStabilityScore(parsed.income);
 
-        console.log('💾 Saving to database...');
+        console.log('Saving to database...');
 
         // Save transactions to database
         const transactionsToInsert = transactions.map((tx) => ({
@@ -416,12 +633,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
 
         if (txError) {
-          console.error('❌ Error saving transactions:', txError);
+          console.error('Error saving transactions:', txError);
           toast.error('Error uploading transactions: ' + txError.message);
           return;
         }
 
-        console.log('✅ Transactions saved');
+        console.log('Transactions saved');
 
         // Save parsed income to database
         const byPlatformData = Object.fromEntries(
@@ -464,12 +681,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           }, { onConflict: 'user_id' });
 
         if (incomeError) {
-          console.error('❌ Error saving parsed income:', incomeError);
+          console.error('Error saving parsed income:', incomeError);
           toast.error('Error uploading income data: ' + incomeError.message);
           return;
         }
 
-        console.log('✅ Income data saved');
+        console.log('Income data saved');
 
         // Clear all caches so data will be refetched
         clearAllCaches(user.id);
@@ -477,12 +694,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         // Show success message
         toast.success('CSV uploaded successfully! Reloading...', { duration: 2000 });
 
-        console.log('🔄 Reloading page now...');
+        console.log('Reloading page now...');
 
         // Immediate reload
         window.location.reload();
       } catch (error) {
-        console.error('❌ Error uploading CSV:', error);
+        console.error('Error uploading CSV:', error);
         toast.error('Error uploading CSV: ' + (error as Error).message);
       } finally {
         // Reset the input so the same file can be uploaded again
@@ -493,885 +710,396 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
     reader.readAsText(file);
   };
 
-  return (
-    <div className="min-h-screen bg-slate-950 font-inter">
-      {/* Navigation */}
-      <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-2">
-                <div className="flex -space-x-2">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
-                </div>
-                <h1 className="text-2xl font-bold text-white font-space-grotesk">Stub</h1>
-              </div>
-              <div className="hidden md:flex items-center space-x-1">
-                {[
-                  { id: 'home', label: 'Home', icon: BarChart3, path: '/dashboard' },
-                  { id: 'income', label: 'Income', icon: DollarSign, path: '/dashboard/income' },
-                  { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
-                  { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
-                  { id: 'benefits', label: 'Benefits', icon: Shield, path: '/dashboard/benefits' }
-                ].map((tab) => (
-                  <Link
-                    key={tab.id}
-                    href={tab.path}
-                    className={`flex items-center space-x-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
-                      activeTab === tab.id
-                        ? 'text-white bg-white/10'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <tab.icon className="w-4 h-4" />
-                    <span>{tab.label}</span>
-                  </Link>
-                ))}
-
-                {/* More dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger className={`flex items-center space-x-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
-                    ['insights', 'referrals', 'learn', 'settings'].includes(activeTab)
-                      ? 'text-white bg-white/10'
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}>
-                    <MoreHorizontal className="w-4 h-4" />
-                    <span>More</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-slate-900 border-white/10">
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/insights" className="flex items-center space-x-2 cursor-pointer">
-                        <Target className="w-4 h-4" />
-                        <span>Insights</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/referrals" className="flex items-center space-x-2 cursor-pointer">
-                        <Users className="w-4 h-4" />
-                        <span>Referrals</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/learn" className="flex items-center space-x-2 cursor-pointer">
-                        <BookOpen className="w-4 h-4" />
-                        <span>Learn</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-            <div className="flex items-center space-x-6">
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-white/10">
-                    <User className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-white">
-                      {user.firstName}
-                    </p>
-                    <p className="text-xs text-slate-400">{user.email}</p>
-                  </div>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-slate-900 border-white/10 w-48">
-                  <DropdownMenuLabel className="text-slate-400">My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-white/10" />
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard/settings" className="flex items-center cursor-pointer">
-                      <User className="w-4 h-4 mr-2" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-white/10" />
-                  <DropdownMenuItem
-                    onSelect={handleLogout}
-                    className="text-slate-300 focus:bg-slate-800 focus:text-white cursor-pointer flex items-center"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
+  // Error handling
+  if (incomeError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 max-w-md w-full">
+          <h2 className="text-base font-semibold text-gray-900 mb-1">Error loading data</h2>
+          <p className="text-sm text-gray-500">{incomeError.message}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-3.5 py-1.5 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+          >
+            Retry
+          </button>
         </div>
-      </nav>
+      </div>
+    );
+  }
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+  const uploadActions = (
+    <>
+      <input
+        type="file"
+        id="csv-upload"
+        accept=".csv"
+        onChange={handleFileUpload}
+        className="hidden"
+      />
+      <a
+        href="/sample-bank-statement.csv"
+        download
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors"
+      >
+        <Download className="w-3.5 h-3.5" />
+        Sample
+      </a>
+      <label
+        htmlFor="csv-upload"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+      >
+        <Upload className="w-3.5 h-3.5" />
+        Upload CSV
+      </label>
+    </>
+  );
 
+  return (
+    <AppShell user={user} onLogout={handleLogout}>
+      {isLoading && activeTab === 'home' ? (
+        <DashboardSkeleton />
+      ) : (
+        <>
         {activeTab === 'home' && (
-          <div className="space-y-8">
-            {/* Hero message - SHORT AND PUNCHY */}
-            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1">
-                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                    You&apos;re crushing it, {user.firstName}
-                  </h1>
-                  <p className="text-base md:text-lg text-slate-300">
-                    {parsedIncome?.parsed?.totalIncome ? (
+          <div className="space-y-10">
+            <PageHeader
+              eyebrow="Overview"
+              title={parsedIncome ? money(parsedIncome.parsed.totalIncome) : 'Welcome'}
+              subtitle={
+                parsedIncome ? (
+                  <>
+                    Total income tracked
+                    {parsedIncome.parsed.startDate && parsedIncome.parsed.endDate && (
                       <>
-                        ${Math.round(parsedIncome.parsed.totalIncome).toLocaleString()} total earned. Auto-saved ${Math.round(parsedIncome.parsed.totalIncome * 0.30).toLocaleString()} for taxes. Most people don&apos;t have their shit this together.
-                      </>
-                    ) : (
-                      <>
-                        Connect your bank to automatically track your earnings across all gig platforms in one place.
+                        {' · '}
+                        {parsedIncome.parsed.startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        {' – '}
+                        {parsedIncome.parsed.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </>
                     )}
-                  </p>
-                </div>
+                  </>
+                ) : (
+                  'Upload a bank statement to start tracking income across every platform.'
+                )
+              }
+              actions={uploadActions}
+            />
 
-                {/* Upload/Download Buttons */}
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <input
-                    type="file"
-                    id="csv-upload"
-                    accept=".csv"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
+            {!parsedIncome ? (
+              <EmptyState
+                icon={BarChart3}
+                title="No income data yet"
+                body="Upload a CSV bank statement and Stub will classify every payout by platform, flag deductible expenses, and estimate your quarterly taxes."
+                action={
                   <label
                     htmlFor="csv-upload"
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors text-sm font-semibold"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer"
                   >
-                    <Upload className="w-4 h-4" />
-                    Upload
+                    <Upload className="w-3.5 h-3.5" />
+                    Upload statement
                   </label>
+                }
+              />
+            ) : (
+              <>
+                <StatGrid
+                  stats={[
+                    {
+                      label: 'This month',
+                      value: money(parsedIncome.stability.weeklyAverage * 4),
+                      sub: 'Estimated from weekly average',
+                    },
+                    {
+                      label: 'Set aside for taxes',
+                      value: money(parsedIncome.parsed.totalIncome * 0.3),
+                      sub: '30% of tracked income',
+                    },
+                    {
+                      label: 'Weekly average',
+                      value: money(parsedIncome.stability.weeklyAverage),
+                      sub: `${parsedIncome.stability.variability}% variability`,
+                    },
+                    {
+                      label: 'Stability score',
+                      value: `${parsedIncome.stability.score}/100`,
+                      sub: parsedIncome.stability.rating,
+                    },
+                  ]}
+                />
 
-                  <a
-                    href="/sample-bank-statement.csv"
-                    download
-                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors text-sm font-semibold"
-                  >
-                    <Download className="w-4 h-4" />
-                    Sample
-                  </a>
-                </div>
-              </div>
-            </div>
+                {/* Platform summary table */}
+                <section>
+                  <SectionHeader title="Income by platform" hint="From your uploaded statements" />
+                  <div className="rounded-lg border border-gray-200 overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-gray-50/60 border-b border-gray-200">
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Platform</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Payments</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Share</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Array.from(parsedIncome.parsed.byPlatform.entries())
+                          .map(([platform, data]: [string, any]) => ({
+                            platform,
+                            total: data.total || 0,
+                            count: data.count || 0,
+                          }))
+                          .sort((a, b) => b.total - a.total)
+                          .map(({ platform, total, count }) => {
+                            const PIcon = PLATFORM_ICONS[platform];
+                            const share = parsedIncome.parsed.totalIncome
+                              ? (total / parsedIncome.parsed.totalIncome) * 100
+                              : 0;
+                            return (
+                              <tr key={platform} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                                <td className="px-4 py-2.5">
+                                  <span className="inline-flex items-center gap-2.5 text-gray-900 font-medium">
+                                    {PIcon ? (
+                                      <PIcon className="w-3.5 h-3.5 text-gray-400" />
+                                    ) : (
+                                      <span
+                                        className="w-2 h-2 rounded-full"
+                                        style={{ background: PLATFORM_COLORS[platform] || PLATFORM_COLORS.Other }}
+                                      />
+                                    )}
+                                    {platform}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-2.5 text-right text-gray-500">{count}</td>
+                                <td className="px-4 py-2.5 text-right text-gray-500">{share.toFixed(1)}%</td>
+                                <td className="px-4 py-2.5 text-right font-medium text-gray-900">{money2(total)}</td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
 
-            {/* Dynamic Insights & Key Metrics */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Earnings Card */}
-              <div className="bg-gradient-to-br from-blue-900/40 via-blue-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-blue-500/20">
-                <div className="flex items-center justify-between mb-2">
-                  <DollarSign className="w-5 h-5 text-blue-400" />
-                  <span className="text-xs text-blue-400 font-semibold">+12%</span>
-                </div>
-                <div className="text-3xl font-black text-white font-space-grotesk mb-1">
-                  ${parsedIncome?.stability.weeklyAverage ? (parsedIncome.stability.weeklyAverage * 4).toFixed(0) : '0'}
-                </div>
-                <div className="text-xs text-slate-400 mb-3">Earned this month</div>
+                {/* Recent payouts */}
+                <section>
+                  <div className="flex items-baseline justify-between gap-4 mb-3">
+                    <h2 className="text-sm font-semibold text-gray-900">Recent payouts</h2>
+                    <Link href="/dashboard/income" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
+                      View all →
+                    </Link>
+                  </div>
+                  <div className="rounded-lg border border-gray-200 overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-gray-50/60 border-b border-gray-200">
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Date</th>
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Description</th>
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Platform</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[...parsedIncome.parsed.income]
+                          .sort((a: any, b: any) => b.date.getTime() - a.date.getTime())
+                          .slice(0, 8)
+                          .map((item: any, idx: number) => (
+                            <tr key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                              <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
+                                {item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                              </td>
+                              <td className="px-4 py-2.5 text-gray-900 max-w-[260px] truncate">
+                                {item.description || `${item.platform} payout`}
+                              </td>
+                              <td className="px-4 py-2.5 hidden sm:table-cell">
+                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-gray-100 text-gray-600">
+                                  {item.platform}
+                                </span>
+                              </td>
+                              <td className="px-4 py-2.5 text-right font-medium text-emerald-700">
+                                +{money2(item.amount)}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
 
-                {/* Mini Sparkline */}
-                {parsedIncome?.parsed?.income && parsedIncome.parsed.income.length > 0 && (
-                  <div className="h-12 -mx-2">
-                    <ChartContainer
-                      config={{ income: { label: 'Income', color: '#3b82f6' } }}
-                      className="h-full w-full"
-                    >
-                      <LineChart
-                        data={(() => {
-                          // Get last 6 weeks of income
-                          const weeklyData: Record<string, number> = {};
-                          parsedIncome.parsed.income.forEach((item: any) => {
-                            const date = new Date(item.date);
-                            const weekStart = new Date(date);
-                            weekStart.setDate(date.getDate() - date.getDay());
-                            const key = weekStart.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
-                            weeklyData[key] = (weeklyData[key] || 0) + item.amount;
-                          });
-                          return Object.entries(weeklyData)
-                            .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
-                            .slice(-6)
-                            .map(([week, amount]) => ({ week, amount }));
-                        })()}
+                {/* Personalized tips */}
+                {(() => {
+                  const tips = getTips(
+                    selectedCities.length > 0 ? selectedCities : [],
+                    selectedGigTypes
+                  );
+                  const topTips = tips.slice(0, 6);
+
+                  return (
+                    <section>
+                      <SectionHeader
+                        title="Suggestions"
+                        hint="Based on your income, platforms, and location"
+                      />
+                      <div className="rounded-lg border border-gray-200 divide-y divide-gray-100">
+                        {topTips.map((tip) => {
+                          const handleTipClick = () => {
+                            const actionMap: Record<string, () => void> = {
+                              'View tax calendar': () => router.push('/dashboard/taxes'),
+                              'Add a platform': () => toast.success('Platform connections coming soon!'),
+                              'Connect DoorDash': () => toast.success('Platform connections coming soon!'),
+                              'Browse plans': () => router.push('/dashboard/benefits'),
+                              'Set up tracking': () => toast.success('Mileage tracking coming soon!'),
+                            };
+
+                            if (tip.action && actionMap[tip.action]) {
+                              actionMap[tip.action]();
+                            }
+                          };
+
+                          return (
+                            <button
+                              key={tip.id}
+                              onClick={handleTipClick}
+                              className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left hover:bg-gray-50/75 transition-colors group"
+                            >
+                              <div className="min-w-0">
+                                <p className="text-sm font-medium text-gray-900">{tip.title}</p>
+                                <p className="text-xs text-gray-500 mt-0.5 truncate">{tip.description}</p>
+                              </div>
+                              {tip.action && (
+                                <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-indigo-600 group-hover:text-indigo-700">
+                                  {tip.action}
+                                  <ArrowRight className="w-3 h-3" />
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  );
+                })()}
+
+                {/* Reading */}
+                <section>
+                  <SectionHeader title="Guides" hint="Reading for multi-platform workers" />
+                  <div className="rounded-lg border border-gray-200 divide-y divide-gray-100">
+                    {[
+                      { href: '/blog/quarterly-tax-guide-for-gig-workers', title: 'Quarterly tax estimates, explained', time: '10 min' },
+                      { href: '/blog/top-10-tax-deductions-for-uber-drivers', title: 'Top deductions for rideshare drivers', time: '6 min' },
+                      { href: '/blog/how-to-track-income-across-multiple-gig-platforms', title: 'Tracking income across multiple platforms', time: '8 min' },
+                      { href: '/blog/building-emergency-fund-as-freelancer', title: 'Building an emergency fund on variable income', time: '7 min' },
+                    ].map((article) => (
+                      <Link
+                        key={article.href}
+                        href={article.href}
+                        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-gray-50/75 transition-colors group"
                       >
-                        <Line
-                          type="monotone"
-                          dataKey="amount"
-                          stroke="#3b82f6"
-                          strokeWidth={2}
-                          dot={false}
-                        />
-                      </LineChart>
-                    </ChartContainer>
+                        <span className="inline-flex items-center gap-2.5 text-sm text-gray-900 min-w-0">
+                          <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0" strokeWidth={1.75} />
+                          <span className="truncate group-hover:text-indigo-700 transition-colors">{article.title}</span>
+                        </span>
+                        <span className="text-xs text-gray-400 shrink-0">{article.time} read</span>
+                      </Link>
+                    ))}
                   </div>
-                )}
-              </div>
-
-              {/* Tax Readiness Card */}
-              <div className="bg-gradient-to-br from-purple-900/40 via-purple-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-purple-500/20">
-                <div className="flex items-center justify-between mb-2">
-                  <Receipt className="w-5 h-5 text-purple-400" />
-                  <span className="text-xs text-purple-400 font-semibold">68%</span>
-                </div>
-                <div className="text-3xl font-black text-white font-space-grotesk mb-1">
-                  ${parsedIncome?.stability?.weeklyAverage ? ((parsedIncome.stability.weeklyAverage * 4) * 0.25).toFixed(0) : '0'}
-                </div>
-                <div className="text-xs text-slate-400">Set aside for taxes</div>
-              </div>
-
-              {/* Benefits Coverage Card */}
-              <div className="bg-gradient-to-br from-pink-900/40 via-pink-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-pink-500/20">
-                <div className="flex items-center justify-between mb-2">
-                  <Shield className="w-5 h-5 text-pink-400" />
-                  <span className="text-xs text-pink-400 font-semibold">1.2 mo</span>
-                </div>
-                <div className="text-3xl font-black text-white font-space-grotesk mb-1">
-                  $3,200
-                </div>
-                <div className="text-xs text-slate-400">Emergency fund</div>
-              </div>
-
-              {/* Next Deadline Card */}
-              <div className="bg-gradient-to-br from-orange-900/40 via-orange-900/20 to-slate-900/40 backdrop-blur-xl rounded-lg p-6 border border-orange-500/20">
-                <div className="flex items-center justify-between mb-2">
-                  <Calendar className="w-5 h-5 text-orange-400" />
-                  <span className="text-xs text-orange-400 font-semibold">2 weeks</span>
-                </div>
-                <div className="text-xl font-black text-white font-space-grotesk mb-1">
-                  Q3 Taxes
-                </div>
-                <div className="text-xs text-slate-400">Next deadline</div>
-              </div>
-            </div>
-
-            {/* Financial Pillars */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Earnings Stability Pillar */}
-              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Earnings Stability</h3>
-                    <p className="text-xs text-slate-400">
-                      {parsedIncome ? 'Good' : 'No data'}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-xs text-slate-300">
-                  {parsedIncome && parsedIncome.stability?.weeklyAverage
-                    ? `$${parsedIncome.stability.weeklyAverage.toFixed(0)}/week average • ${parsedIncome.stability.variability}% variability`
-                    : 'Upload income data to track stability'}
-                </p>
-              </div>
-
-              {/* Tax Readiness Pillar */}
-              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                    <Receipt className="w-5 h-5 text-purple-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Tax Readiness</h3>
-                    <p className="text-xs text-slate-400">On track</p>
-                  </div>
-                </div>
-                <p className="text-xs text-slate-300">Q3 deadline in 2 weeks • 68% of taxes set aside</p>
-              </div>
-
-              {/* Benefits Coverage Pillar */}
-              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-pink-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Benefits Coverage</h3>
-                    <p className="text-xs text-slate-400">Partial</p>
-                  </div>
-                </div>
-                <p className="text-xs text-slate-300">Emergency fund covers 1.2 months • Consider health insurance</p>
-              </div>
-
-              {/* Expenses & Deductions Pillar */}
-              <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-                    <TrendingDown className="w-5 h-5 text-green-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Expenses & Deductions</h3>
-                    <p className="text-xs text-slate-400">Optimized</p>
-                  </div>
-                </div>
-                <p className="text-xs text-slate-300">Tracking $1,240 in deductible expenses this month</p>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Personalized Tips */}
-            {parsedIncome && (() => {
-              // Get filtered tips from centralized registry
-              const tips = getTips(
-                selectedCities.length > 0 ? selectedCities : [],
-                selectedGigTypes
-              );
-
-              const topTips = tips.slice(0, 6); // Show top 6 tips
-
-              return (
-                <div>
-                  <div className="mb-4">
-                    <h2 className="text-xl font-bold text-white font-space-grotesk">Personalized tips</h2>
-                    <p className="text-xs text-slate-400">
-                      {selectedCities.length > 0 || selectedGigTypes.length > 0
-                        ? `Filtered by ${selectedCities.length > 0 ? selectedCities.join(', ') : 'all cities'}${selectedGigTypes.length > 0 ? ` · ${selectedGigTypes.join(', ')}` : ''}`
-                        : 'Based on your income, platforms, and location'}
-                    </p>
-                  </div>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {topTips.map((tip) => {
-                      const colorClasses = {
-                        blue: 'border-blue-500/50 hover:border-blue-500',
-                        green: 'border-green-500/50 hover:border-green-500',
-                        purple: 'border-purple-500/50 hover:border-purple-500',
-                        orange: 'border-orange-500/50 hover:border-orange-500',
-                        red: 'border-red-500/50 hover:border-red-500',
-                        yellow: 'border-yellow-500/50 hover:border-yellow-500',
-                      };
-
-                      const handleTipClick = () => {
-                        const actionMap: Record<string, () => void> = {
-                          'View tax calendar': () => router.push('/dashboard/taxes'),
-                          'Add a platform': () => toast.success('Platform connections coming soon!'),
-                          'Connect DoorDash': () => toast.success('Platform connections coming soon!'),
-                          'Browse plans': () => router.push('/dashboard/benefits'),
-                          'Set up tracking': () => toast.success('Mileage tracking coming soon!'),
-                        };
-
-                        if (tip.action && actionMap[tip.action]) {
-                          actionMap[tip.action]();
-                        }
-                      };
-
-                      return (
-                        <button
-                          key={tip.id}
-                          onClick={handleTipClick}
-                          className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colorClasses[tip.color as keyof typeof colorClasses]} transition-all cursor-pointer group text-left w-full`}
-                        >
-                          <div className="flex items-start space-x-3 mb-3">
-                            <div className="text-2xl flex-shrink-0">{tip.icon}</div>
-                            <div className="flex-1">
-                              <h3 className="text-sm font-bold text-white mb-1 font-space-grotesk">{tip.title}</h3>
-                              <p className="text-xs text-slate-400 leading-relaxed">{tip.description}</p>
-                            </div>
-                          </div>
-                          {tip.action && (
-                            <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                              <span className={`text-xs font-semibold text-${tip.color}-400`}>{tip.action}</span>
-                              <ArrowRight className={`w-3 h-3 text-${tip.color}-400 group-hover:translate-x-1 transition-transform`} />
-                            </div>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Recommended for you - TOP OF FEED */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-lg font-bold text-white font-space-grotesk">Recommended for you</h2>
-                <p className="text-xs text-slate-400">Quick actions to improve your financial health</p>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <Link
-                  href="/dashboard/benefits"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                        <Heart className="w-4 h-4 text-blue-400" />
-                      </div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk">Get health insurance</h3>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-400 transition-colors" />
-                  </div>
-                  <p className="text-xs text-slate-400 mb-2">As an Uber driver, having health coverage protects you and your income. Plans start at $200/mo with subsidies available.</p>
-                  <div className="text-xs text-blue-400 font-semibold">Browse marketplace →</div>
-                </Link>
-
-                <Link
-                  href="/dashboard/benefits"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                        <PiggyBank className="w-4 h-4 text-purple-400" />
-                      </div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk">Start a retirement fund</h3>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-purple-400 transition-colors" />
-                  </div>
-                  <p className="text-xs text-slate-400 mb-2">Solo 401(k) designed for gig workers. Tax advantages + we&apos;ll auto-contribute based on your earnings.</p>
-                  <div className="text-xs text-purple-400 font-semibold">Learn more →</div>
-                </Link>
-
-                <button
-                  onClick={() => toast.success('Platform connections coming soon!')}
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group text-left"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center">
-                        <Briefcase className="w-4 h-4 text-pink-400" />
-                      </div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk">Connect Instacart</h3>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-pink-400 transition-colors" />
-                  </div>
-                  <p className="text-xs text-slate-400 mb-2">Top earners work 3+ platforms. Instacart pairs well with your Uber schedule and could add $800+/mo.</p>
-                  <div className="text-xs text-pink-400 font-semibold">Connect platform →</div>
-                </button>
-
-                <button
-                  onClick={() => toast.success('Deduction tracker coming soon!')}
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group text-left"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-                        <Receipt className="w-4 h-4 text-green-400" />
-                      </div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk">Tax deduction tracker</h3>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-green-400 transition-colors" />
-                  </div>
-                  <p className="text-xs text-slate-400 mb-2">Automatically track mileage, phone bills, and other deductions. Average user saves $2,800/year.</p>
-                  <div className="text-xs text-green-400 font-semibold">Start tracking →</div>
-                </button>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Platform breakdown - DENSE GRID */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-white font-space-grotesk">Where your money&apos;s coming from</h2>
-                <p className="text-sm text-slate-400">You&apos;re crushing it on Uber. DoorDash is solid. Upwork? You&apos;re leaving money on the table.</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Uber */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-2xl">🚗</div>
-                      <div>
-                        <h3 className="text-base font-bold text-white font-space-grotesk">Uber</h3>
-                        <p className="text-xs text-slate-400">Rideshare</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-black bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent font-space-grotesk">$1,890</div>
-                      <div className="text-xs text-slate-400">44% of income</div>
-                    </div>
-                  </div>
-                  <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{width: '44%'}}></div>
-                  </div>
-                  <p className="text-xs text-blue-400"><strong>Your best hours:</strong> 5-9pm weekdays when surge hits</p>
-                </div>
-
-                {/* DoorDash */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-2xl">🍔</div>
-                      <div>
-                        <h3 className="text-base font-bold text-white font-space-grotesk">DoorDash</h3>
-                        <p className="text-xs text-slate-400">Delivery</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-black bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent font-space-grotesk">$1,290</div>
-                      <div className="text-xs text-slate-400">30% of income</div>
-                    </div>
-                  </div>
-                  <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full" style={{width: '30%'}}></div>
-                  </div>
-                  <p className="text-xs text-purple-400"><strong>Pro tip:</strong> Downtown & university = stacked orders</p>
-                </div>
-
-                {/* Upwork */}
-                <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-2xl">💼</div>
-                      <div>
-                        <h3 className="text-base font-bold text-white font-space-grotesk">Upwork</h3>
-                        <p className="text-xs text-slate-400">Freelance</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-black bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">$1,120</div>
-                      <div className="text-xs text-slate-400">26% of income</div>
-                    </div>
-                  </div>
-                  <div className="h-1.5 bg-slate-800 rounded-full mb-2 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full" style={{width: '26%'}}></div>
-                  </div>
-                  <p className="text-xs text-pink-400"><strong>Real talk:</strong> Bump your rate 15%. You&apos;re undercharging.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* More sections side by side */}
-            <div className="grid md:grid-cols-2 gap-4">
-              {/* Quick actions */}
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                <h3 className="text-lg font-bold text-white mb-3 font-space-grotesk">Quick actions</h3>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => toast.success('Platform connections coming soon!')}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-lg text-left hover:opacity-90 transition-opacity flex items-center justify-between"
-                  >
-                    <div>
-                      <div className="text-sm font-semibold">Connect new platform</div>
-                      <div className="text-xs text-blue-100">Sync earnings automatically</div>
-                    </div>
-                    <Globe className="w-5 h-5" />
-                  </button>
-                  <Link
-                    href="/dashboard/taxes"
-                    className="w-full bg-slate-800/50 text-white p-3 rounded-lg text-left hover:bg-slate-800 transition-colors flex items-center justify-between"
-                  >
-                    <div>
-                      <div className="text-sm font-semibold">Calculate taxes</div>
-                      <div className="text-xs text-slate-400">See Q1 estimate</div>
-                    </div>
-                    <FileText className="w-5 h-5" />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Financial health */}
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                <h3 className="text-lg font-bold text-white mb-3 font-space-grotesk">Financial health</h3>
-                <div className="flex items-center space-x-4 mb-3">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-4 border-green-500/30 flex items-center justify-center">
-                    <div className="text-xl font-black text-white font-space-grotesk">78</div>
-                  </div>
-                  <div>
-                    <div className="text-base font-bold text-white mb-1">Looking good</div>
-                    <div className="text-xs text-slate-400">Better than 65% of gig workers</div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Emergency fund</span>
-                    <span className="text-green-400 font-semibold">✓ On track</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Retirement</span>
-                    <span className="text-yellow-400 font-semibold">⚠ Needs work</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Health coverage</span>
-                    <span className="text-green-400 font-semibold">✓ Active</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Educational content */}
-            <div>
-              <div className="mb-4">
-                <h2 className="text-lg font-bold text-white font-space-grotesk">Learn & grow</h2>
-                <p className="text-xs text-slate-400">Articles based on your work</p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-4">
-                <Link
-                  href="/blog/doordash-vs-uber-eats-which-pays-more"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <BookOpen className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Maximizing Uber earnings in your city</h3>
-                  <p className="text-xs text-slate-400 mb-3">Learn the best times, zones, and strategies to increase your hourly rate by 30% or more.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-blue-400">5 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-400 transition-colors" />
-                  </div>
-                </Link>
-
-                <Link
-                  href="/blog/health-insurance-options-for-gig-workers"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Heart className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">The gig worker&apos;s guide to health insurance</h3>
-                  <p className="text-xs text-slate-400 mb-3">Everything you need to know about getting affordable coverage without an employer.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-purple-400">8 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-purple-400 transition-colors" />
-                  </div>
-                </Link>
-
-                <Link
-                  href="/blog/top-10-tax-deductions-for-uber-drivers"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-pink-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Receipt className="w-4 h-4 text-pink-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-pink-400 transition-colors">How to track mileage for tax deductions</h3>
-                  <p className="text-xs text-slate-400 mb-3">Simple systems to capture every deductible mile and maximize your tax savings.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-pink-400">6 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-pink-400 transition-colors" />
-                  </div>
-                </Link>
-
-                <Link
-                  href="/blog/building-emergency-fund-as-freelancer"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Wallet className="w-4 h-4 text-green-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-green-400 transition-colors">Building an emergency fund on variable income</h3>
-                  <p className="text-xs text-slate-400 mb-3">Proven strategies to save consistently even when your earnings fluctuate month to month.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-green-400">7 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-green-400 transition-colors" />
-                  </div>
-                </Link>
-
-                <Link
-                  href="/blog/quarterly-tax-guide-for-gig-workers"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-orange-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <FileText className="w-4 h-4 text-orange-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-orange-400 transition-colors">Quarterly tax estimates explained</h3>
-                  <p className="text-xs text-slate-400 mb-3">How to calculate, when to pay, and how to avoid penalties on your self-employment taxes.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-orange-400">10 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-orange-400 transition-colors" />
-                  </div>
-                </Link>
-
-                <Link
-                  href="/blog/how-to-track-income-across-multiple-gig-platforms"
-                  className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group"
-                >
-                  <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
-                    <Target className="w-4 h-4 text-indigo-400" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-indigo-400 transition-colors">Retirement planning for freelancers</h3>
-                  <p className="text-xs text-slate-400 mb-3">Solo 401(k)s, SEP IRAs, and other retirement accounts designed for independent workers.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-indigo-400">12 min read</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-400 transition-colors" />
-                  </div>
-                </Link>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10"></div>
-
-            {/* Community insights */}
-            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-6">
-              <div className="flex items-center space-x-2 mb-3">
-                <Users className="w-5 h-5 text-blue-400" />
-                <h2 className="text-lg font-bold text-white font-space-grotesk">Community insights</h2>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
-                  <p className="text-sm text-slate-300">
-                    <span className="font-bold text-white">12,000 Uber drivers</span> on Stub average <span className="font-bold text-blue-400">$2,100/mo more</span> with multi-platform strategies
-                  </p>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-1.5 flex-shrink-0"></div>
-                  <p className="text-sm text-slate-300">
-                    <span className="font-bold text-white">Top earners in your area</span> work <span className="font-bold text-purple-400">3+ platforms simultaneously</span>
-                  </p>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-pink-500 rounded-full mt-1.5 flex-shrink-0"></div>
-                  <p className="text-sm text-slate-300">
-                    <span className="font-bold text-pink-400">95% of members</span> hit their emergency fund goal <span className="font-bold text-white">within 8 months</span>
-                  </p>
-                </div>
-              </div>
-            </div>
+                </section>
+              </>
+            )}
           </div>
         )}
 
         {activeTab === 'income' && (
-          <div className="space-y-8">
-            {/* Top Card - Hero number with utilities */}
-            <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1">
-                  <h1 className="text-sm font-semibold text-slate-400 mb-2 uppercase tracking-wide">Income This Month</h1>
-                  <div className="flex items-baseline gap-4 mb-2">
-                    <div className="text-5xl md:text-6xl font-black text-white font-space-grotesk">
-                      ${parsedIncome?.stability.weeklyAverage ? (parsedIncome.stability.weeklyAverage * 4).toFixed(0) : '0'}
-                    </div>
-                    <div className="flex items-center gap-1 text-green-400">
-                      <ArrowRight className="w-4 h-4 rotate-[-45deg]" />
-                      <span className="text-lg font-bold">+12%</span>
-                    </div>
-                  </div>
-                  <p className="text-base text-slate-300">
-                    vs last month • Track every dollar across platforms
-                  </p>
-                </div>
-                </div>
-            </div>
+          <div className="space-y-10">
+            <PageHeader
+              eyebrow="Income"
+              title={parsedIncome ? money(parsedIncome.parsed.totalIncome) : '$0'}
+              subtitle={
+                parsedIncome ? (
+                  <>
+                    {parsedIncome.parsed.income.length} payments across{' '}
+                    {parsedIncome.parsed.byPlatform.size} platform
+                    {parsedIncome.parsed.byPlatform.size === 1 ? '' : 's'}
+                    {parsedIncome.parsed.startDate && parsedIncome.parsed.endDate && (
+                      <>
+                        {' · '}
+                        {parsedIncome.parsed.startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        {' – '}
+                        {parsedIncome.parsed.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </>
+                    )}
+                  </>
+                ) : (
+                  'Every payout from every platform, in one ledger.'
+                )
+              }
+              actions={uploadActions}
+            />
 
-            {/* Explainer text */}
-            <div className="space-y-4 text-base text-slate-300 leading-relaxed">
-              <p>
-                Connect your gig platforms and we&apos;ll automatically track <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">all your income in one place</span>. No more logging into five different apps to see what you made this month. We pull everything together—Uber, DoorDash, Upwork, Fiverr, Instacart, and 50+ other platforms—into a single unified timeline.
-              </p>
-              <p>
-                We analyze your earning patterns across every platform you work on, calculate your <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">safe-to-spend amount</span> after taxes and expenses, and give you a <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">stability score</span> based on consistency and diversification. Think of it as a financial health check designed specifically for gig workers.
-              </p>
-              <p>
-                Here&apos;s the data: <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">top earners work 3+ platforms simultaneously</span> to maximize income and improve their stability scores. Multi-platform workers earn 40% more on average and have significantly better income stability during slow periods. We&apos;ll show you personalized tips to boost your earnings based on your city, work schedule, and income mix.
-              </p>
-            </div>
-
-            {/* No Bank Connected CTA */}
             {!parsedIncome && (
-              <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
-                <div className="max-w-2xl mx-auto">
-                  <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Wallet className="w-10 h-10 text-white" />
-                  </div>
-                  <h2 className="text-3xl font-bold text-white mb-4 font-space-grotesk">
-                    Upload your bank statement to get started
-                  </h2>
-                  <p className="text-slate-300 mb-8 text-lg">
-                    Upload a CSV file of your bank transactions to automatically track all your income across platforms.
-                    We'll analyze your earnings, calculate your stability score, and help you maximize your income.
-                  </p>
-                  <p className="text-slate-400 text-sm">
-                    Click "Upload Statement" button above to get started
-                  </p>
-                </div>
-              </div>
+              <EmptyState
+                icon={DollarSign}
+                title="Upload a statement to get started"
+                body="Upload a CSV of your bank transactions and Stub will detect payouts from Uber, DoorDash, Upwork, and 50+ other platforms — then score the stability of your income."
+                action={
+                  <label
+                    htmlFor="csv-upload"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    Upload statement
+                  </label>
+                }
+              />
             )}
 
-            {/* Divider */}
-            <div className="border-t border-white/10 mt-8"></div>
-
-            {/* Parsed Results */}
             {parsedIncome && (
               <>
-                {/* Stats Cards */}
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl rounded-lg p-5 border border-green-500/20">
-                    <div className="text-xs text-green-400 mb-1 font-semibold">Total Income Detected</div>
-                    <div className="text-3xl font-black text-white font-space-grotesk">
-                      ${parsedIncome.parsed.totalIncome.toFixed(2)}
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">{parsedIncome.parsed.income.length} payments</div>
-                  </div>
-                  <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl rounded-lg p-5 border border-blue-500/20">
-                    <div className="text-xs text-blue-400 mb-1 font-semibold">Platforms Found</div>
-                    <div className="text-3xl font-black text-white font-space-grotesk">
-                      {parsedIncome.parsed.byPlatform.size}
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      {Array.from(parsedIncome.parsed.byPlatform.keys()).slice(0, 3).join(', ')}
-                      {parsedIncome.parsed.byPlatform.size > 3 && '...'}
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-5 border border-purple-500/20">
-                    <div className="text-xs text-purple-400 mb-1 font-semibold">Stability Score</div>
-                    <div className="text-3xl font-black text-white font-space-grotesk">
-                      {parsedIncome.stability.score}/100
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1 uppercase font-semibold">{parsedIncome.stability.rating}</div>
-                  </div>
-                </div>
+                <StatGrid
+                  stats={[
+                    {
+                      label: 'Total income',
+                      value: money2(parsedIncome.parsed.totalIncome),
+                      sub: `${parsedIncome.parsed.income.length} payments`,
+                    },
+                    {
+                      label: 'Platforms',
+                      value: parsedIncome.parsed.byPlatform.size,
+                      sub: `${Array.from(parsedIncome.parsed.byPlatform.keys()).slice(0, 3).join(', ')}${parsedIncome.parsed.byPlatform.size > 3 ? '…' : ''}`,
+                    },
+                    {
+                      label: 'Stability score',
+                      value: `${parsedIncome.stability.score}/100`,
+                      sub: parsedIncome.stability.rating,
+                    },
+                  ]}
+                />
 
-                {/* Income Chart with View Toggles */}
-                <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
-                  <div className="flex items-center justify-between mb-6">
+                {/* Income chart */}
+                <section className="rounded-lg border border-gray-200 p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                     <div>
-                      <h2 className="text-xl font-bold text-white font-space-grotesk">Income Trends</h2>
-                      <p className="text-xs text-slate-400">Your earnings across platforms over time</p>
+                      <h2 className="text-sm font-semibold text-gray-900">Income trends</h2>
+                      <p className="text-xs text-gray-400 mt-0.5">Earnings across platforms over time</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      {/* View toggles */}
-                      <button
-                        onClick={() => setIncomeChartView('bar')}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                          incomeChartView === 'bar'
-                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                            : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                        }`}
-                      >
-                        Stacked Bar
-                      </button>
-                      <button
-                        onClick={() => setIncomeChartView('pie')}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                          incomeChartView === 'pie'
-                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                            : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                        }`}
-                      >
-                        Pie
-                      </button>
-                      {/* Time period toggles (only for bar chart) */}
+                      <SegmentedControl
+                        options={[
+                          { value: 'bar' as const, label: 'Stacked' },
+                          { value: 'pie' as const, label: 'Share' },
+                        ]}
+                        value={incomeChartView}
+                        onChange={setIncomeChartView}
+                      />
                       {incomeChartView === 'bar' && (
-                        <>
-                          <div className="w-px h-6 bg-white/10 mx-1"></div>
-                          {(['weekly', 'biweekly', 'monthly'] as const).map((period) => (
-                            <button
-                              key={period}
-                              onClick={() => setIncomeTimePeriod(period)}
-                              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors capitalize ${
-                                incomeTimePeriod === period
-                                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                                  : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                              }`}
-                            >
-                              {period}
-                            </button>
-                          ))}
-                        </>
+                        <SegmentedControl
+                          options={[
+                            { value: 'weekly' as const, label: 'Weekly' },
+                            { value: 'biweekly' as const, label: 'Biweekly' },
+                            { value: 'monthly' as const, label: 'Monthly' },
+                          ]}
+                          value={incomeTimePeriod}
+                          onChange={setIncomeTimePeriod}
+                        />
                       )}
                     </div>
                   </div>
@@ -1383,45 +1111,32 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     // Empty state check
                     if (!platforms.length || parsedIncome.parsed.income.length === 0) {
                       return (
-                        <div className="h-80 flex items-center justify-center bg-slate-900/30 rounded-lg border border-white/5">
-                          <div className="text-center px-8">
-                            <BarChart3 className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                            <p className="text-sm text-slate-400 font-medium mb-1">No income data yet</p>
-                            <p className="text-xs text-slate-500">Upload a bank statement to see your earnings visualized</p>
-                          </div>
-                        </div>
+                        <ChartEmptyState
+                          icon={BarChart3}
+                          title="No income data yet"
+                          hint="Upload a bank statement to see your earnings visualized"
+                        />
                       );
                     }
 
-                    // Color mapping for platforms
-                    const platformColors: Record<string, string> = {
-                      'Uber': '#3b82f6',
-                      'Lyft': '#ec4899',
-                      'DoorDash': '#ef4444',
-                      'Instacart': '#10b981',
-                      'Grubhub': '#f59e0b',
-                      'UberEats': '#06b6d4',
-                      'Upwork': '#14b8a6',
-                      'Fiverr': '#22c55e',
-                      'Freelancer': '#8b5cf6',
-                      'Other': '#64748b',
-                    };
+                    const colorFor = (platform: string) =>
+                      PLATFORM_COLORS[platform] || PLATFORM_COLORS.Other;
 
                     if (incomeChartView === 'pie') {
                       // Pie chart data
                       const pieData = platforms.map(([platform, data]: [string, any]) => ({
                         name: platform,
                         value: data.total,
-                        fill: platformColors[platform] || platformColors['Other'],
+                        fill: colorFor(platform),
                       }));
 
                       return (
-                        <div className="h-80">
+                        <div className="h-72">
                           <ChartContainer
                             config={Object.fromEntries(
                               platforms.map(([platform]) => [
                                 platform,
-                                { label: platform, color: platformColors[platform] || platformColors['Other'] }
+                                { label: platform, color: colorFor(platform) },
                               ])
                             )}
                             className="h-full w-full"
@@ -1434,9 +1149,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                 cy="50%"
                                 labelLine={false}
                                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                outerRadius={120}
-                                fill="#8884d8"
+                                outerRadius={105}
+                                innerRadius={62}
                                 dataKey="value"
+                                stroke="#fff"
                               >
                                 {pieData.map((entry, index) => (
                                   <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -1485,25 +1201,29 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     });
 
                     return (
-                      <div className="h-80">
+                      <div className="h-72">
                         <ChartContainer
                           config={Object.fromEntries(
                             platforms.map(([platform]) => [
                               platform,
-                              { label: platform, color: platformColors[platform] || platformColors['Other'] }
+                              { label: platform, color: colorFor(platform) },
                             ])
                           )}
                           className="h-full w-full"
                         >
                           <BarChart data={barData}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                            <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
                             <XAxis
                               dataKey="period"
-                              stroke="#64748b"
+                              stroke={CHART_AXIS}
+                              tickLine={false}
+                              axisLine={false}
                               style={{ fontSize: '12px' }}
                             />
                             <YAxis
-                              stroke="#64748b"
+                              stroke={CHART_AXIS}
+                              tickLine={false}
+                              axisLine={false}
                               style={{ fontSize: '12px' }}
                               tickFormatter={(value) => `$${value.toLocaleString()}`}
                             />
@@ -1514,7 +1234,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                 key={platform}
                                 dataKey={platform}
                                 stackId="a"
-                                fill={platformColors[platform] || platformColors['Other']}
+                                fill={colorFor(platform)}
+                                radius={[0, 0, 0, 0]}
                               />
                             ))}
                           </BarChart>
@@ -1522,15 +1243,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       </div>
                     );
                   })()}
-                </div>
+                </section>
 
-                {/* Safe-to-Spend Calculator */}
-                <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
-                  <div className="mb-6">
-                    <h2 className="text-xl font-bold text-white font-space-grotesk">Safe to spend</h2>
-                    <p className="text-xs text-slate-400">What you can safely spend after setting aside for taxes and savings</p>
-                  </div>
-
+                {/* Safe to spend */}
+                <section>
+                  <SectionHeader
+                    title="Safe to spend"
+                    hint="After taxes and emergency savings are set aside"
+                  />
                   {(() => {
                     const totalIncome = parsedIncome.parsed.totalIncome;
                     const taxSetAside = totalIncome * 0.30; // 30% for taxes
@@ -1538,620 +1258,477 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     const safeToSpend = totalIncome - taxSetAside - emergencyFund;
 
                     return (
-                      <div className="grid md:grid-cols-2 gap-8">
-                        {/* Left: Visual breakdown */}
-                        <div>
-                          <div className="space-y-4">
-                            {/* Total Income */}
-                            <div>
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-semibold text-white">Total Income</span>
-                                <span className="text-lg font-black text-white font-space-grotesk">
-                                  ${totalIncome.toLocaleString()}
-                                </span>
-                              </div>
-                              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                                <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" style={{ width: '100%' }}></div>
-                              </div>
-                            </div>
-
-                            {/* Tax Set-Aside */}
-                            <div>
-                              <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center space-x-2">
-                                  <Receipt className="w-4 h-4 text-orange-400" />
-                                  <span className="text-sm font-semibold text-slate-300">Tax Set-Aside (30%)</span>
-                                </div>
-                                <span className="text-base font-bold text-orange-400 font-space-grotesk">
-                                  -${taxSetAside.toLocaleString()}
-                                </span>
-                              </div>
-                              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                <div className="h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full" style={{ width: '30%' }}></div>
-                              </div>
-                            </div>
-
-                            {/* Emergency Savings */}
-                            <div>
-                              <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center space-x-2">
-                                  <PiggyBank className="w-4 h-4 text-blue-400" />
-                                  <span className="text-sm font-semibold text-slate-300">Emergency Fund (10%)</span>
-                                </div>
-                                <span className="text-base font-bold text-blue-400 font-space-grotesk">
-                                  -${emergencyFund.toLocaleString()}
-                                </span>
-                              </div>
-                              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{ width: '10%' }}></div>
-                              </div>
-                            </div>
-
-                            {/* Divider */}
-                            <div className="border-t border-white/10 my-4"></div>
-
-                            {/* Safe to Spend */}
-                            <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg p-4">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <div className="text-xs text-green-400 font-semibold mb-1">SAFE TO SPEND</div>
-                                  <div className="text-4xl font-black text-white font-space-grotesk">
-                                    ${Math.round(safeToSpend).toLocaleString()}
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className="text-2xl font-black text-green-400 font-space-grotesk">60%</div>
-                                  <div className="text-xs text-slate-400">of income</div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                      <div className="grid md:grid-cols-5 gap-4">
+                        <div className="md:col-span-3 rounded-lg border border-gray-200 overflow-hidden">
+                          <table className="w-full text-sm">
+                            <tbody>
+                              <tr className="border-b border-gray-100">
+                                <td className="px-4 py-3 text-gray-900 font-medium">Total income</td>
+                                <td className="px-4 py-3 text-right font-medium text-gray-900">
+                                  {money2(totalIncome)}
+                                </td>
+                              </tr>
+                              <tr className="border-b border-gray-100">
+                                <td className="px-4 py-3 text-gray-500">Tax set-aside (30%)</td>
+                                <td className="px-4 py-3 text-right text-red-700">
+                                  −{money2(taxSetAside)}
+                                </td>
+                              </tr>
+                              <tr className="border-b border-gray-100">
+                                <td className="px-4 py-3 text-gray-500">Emergency fund (10%)</td>
+                                <td className="px-4 py-3 text-right text-red-700">
+                                  −{money2(emergencyFund)}
+                                </td>
+                              </tr>
+                              <tr className="bg-gray-50/60">
+                                <td className="px-4 py-3">
+                                  <span className="text-[11px] font-medium uppercase tracking-wider text-gray-400 block">
+                                    Safe to spend
+                                  </span>
+                                  <span className="text-lg font-semibold text-gray-900">
+                                    {money(safeToSpend)}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-3 text-right align-bottom text-sm text-emerald-700 font-medium">
+                                  {Math.round((safeToSpend / totalIncome) * 100)}% of income
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
 
-                        {/* Right: Explanation and tips */}
-                        <div className="flex flex-col justify-center space-y-4">
-                          <div className="bg-slate-800/50 rounded-lg p-4 border border-white/5">
-                            <h3 className="text-sm font-bold text-white mb-2 flex items-center space-x-2">
-                              <Zap className="w-4 h-4 text-yellow-400" />
-                              <span>Why this matters</span>
-                            </h3>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              As a gig worker, you need to manually set aside money for taxes (30%) and build an emergency fund (10%) before spending. This calculator shows your true spending power.
+                        <div className="md:col-span-2 rounded-lg border border-gray-200 p-4 space-y-4">
+                          <div>
+                            <h3 className="text-[13px] font-semibold text-gray-900 mb-1">Why this matters</h3>
+                            <p className="text-xs text-gray-500 leading-relaxed">
+                              No employer is withholding for you. Set aside taxes (30%) and an
+                              emergency buffer (10%) before spending — what&apos;s left is your real
+                              spending power.
                             </p>
                           </div>
-
-                          <div className="bg-slate-800/50 rounded-lg p-4 border border-white/5">
-                            <h3 className="text-sm font-bold text-white mb-2 flex items-center space-x-2">
-                              <Target className="w-4 h-4 text-blue-400" />
-                              <span>Smart budgeting tip</span>
-                            </h3>
-                            <p className="text-xs text-slate-400 leading-relaxed">
-                              Transfer ${taxSetAside.toLocaleString()} to a separate tax savings account <span className="text-white font-semibold">right now</span>. Set up auto-transfers so you never touch tax money.
-                            </p>
-                          </div>
-
-                          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-lg p-4 border border-purple-500/20">
-                            <h3 className="text-sm font-bold text-white mb-2 flex items-center space-x-2">
-                              <Heart className="w-4 h-4 text-pink-400" />
-                              <span>Good news</span>
-                            </h3>
-                            <p className="text-xs text-slate-300 leading-relaxed">
-                              You're earning <span className="text-white font-semibold">${safeToSpend.toLocaleString()}</span> in real spending power. That's <span className="text-white font-semibold">{Math.round((safeToSpend / totalIncome) * 100)}%</span> take-home after being financially responsible.
+                          <div className="border-t border-gray-100 pt-4">
+                            <h3 className="text-[13px] font-semibold text-gray-900 mb-1">Make it automatic</h3>
+                            <p className="text-xs text-gray-500 leading-relaxed">
+                              Move {money(taxSetAside)} to a separate tax savings account now and set
+                              up auto-transfers so tax money never looks spendable.
                             </p>
                           </div>
                         </div>
                       </div>
                     );
                   })()}
-                </div>
-
-                {/* Divider */}
-                <div className="border-t border-white/10"></div>
+                </section>
 
                 {/* Platform Breakdown */}
-                <div>
-                  <div className="mb-4">
-                    <h2 className="text-xl font-bold text-white font-space-grotesk">Platform Breakdown</h2>
-                    <p className="text-xs text-slate-400">Income sources with trend indicators</p>
+                <section>
+                  <SectionHeader title="Platform breakdown" hint="Income sources with trend indicators" />
+                  <div className="rounded-lg border border-gray-200 overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-gray-50/60 border-b border-gray-200">
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Platform</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Payments</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Share</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Trend</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Array.from(parsedIncome.parsed.byPlatform.entries())
+                          .map((entry) => {
+                            const [platform, data] = entry;
+                            return {
+                              platform,
+                              total: data.total || 0,
+                              count: data.count || 0,
+                            };
+                          })
+                          .sort((a, b) => b.total - a.total)
+                          .map(({ platform, total, count }, index) => {
+                            const PIcon = PLATFORM_ICONS[platform];
+                            // Mock trend data (in production, calculate from historical data)
+                            const trendPercent = [8, -3, 15, 5, -2][index % 5];
+                            const isPositive = trendPercent > 0;
+                            const totalIncome = parsedIncome.parsed.totalIncome;
+                            const percentOfTotal = ((total / totalIncome) * 100).toFixed(1);
+
+                            return (
+                              <tr key={platform} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                                <td className="px-4 py-2.5">
+                                  <span className="inline-flex items-center gap-2.5 font-medium text-gray-900">
+                                    {PIcon ? (
+                                      <PIcon className="w-3.5 h-3.5 text-gray-400" />
+                                    ) : (
+                                      <span
+                                        className="w-2 h-2 rounded-full"
+                                        style={{ background: PLATFORM_COLORS[platform] || PLATFORM_COLORS.Other }}
+                                      />
+                                    )}
+                                    {platform}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-2.5 text-right text-gray-500 hidden sm:table-cell">{count}</td>
+                                <td className="px-4 py-2.5 text-right text-gray-500 hidden sm:table-cell">{percentOfTotal}%</td>
+                                <td className="px-4 py-2.5 text-right">
+                                  <span
+                                    className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+                                      isPositive ? 'text-emerald-700' : 'text-red-700'
+                                    }`}
+                                  >
+                                    {isPositive ? (
+                                      <ArrowUpRight className="w-3 h-3" />
+                                    ) : (
+                                      <ArrowDownRight className="w-3 h-3" />
+                                    )}
+                                    {Math.abs(trendPercent)}%
+                                  </span>
+                                </td>
+                                <td className="px-4 py-2.5 text-right font-medium text-gray-900">{money2(total)}</td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
                   </div>
-                  <div className="space-y-3">
-                    {Array.from(parsedIncome.parsed.byPlatform.entries())
-                      .map((entry) => {
-                        const [platform, data] = entry;
-                        return {
-                          platform,
-                          total: data.total || 0,
-                          count: data.count || 0,
-                          category: 'other', // Placeholder - would need to map platform to category
-                        };
-                      })
-                      .sort((a, b) => b.total - a.total)
-                      .map(({ platform, total, count, category }, index) => {
-                        // Map platforms to brand icons
-                        const platformIconMap: Record<string, any> = {
-                          'Uber': SiUber,
-                          'Lyft': SiLyft,
-                          'DoorDash': SiDoordash,
-                          'Instacart': SiInstacart,
-                          'Grubhub': SiGrubhub,
-                          'Uber Eats': SiUbereats,
-                          'Upwork': SiUpwork,
-                          'Fiverr': SiFiverr,
-                          'Freelancer': SiFreelancer,
-                          'Toptal': SiToptal,
-                          'YouTube': SiYoutube,
-                          'Twitch': SiTwitch,
-                          'Patreon': SiPatreon,
-                          'OnlyFans': SiOnlyfans,
-                          'Substack': SiSubstack,
-                          'Airbnb': SiAirbnb,
-                        };
-
-                        // Fallback category icons
-                        const categoryIconMap: Record<string, any> = {
-                          'rideshare': DollarSign,
-                          'delivery': Receipt,
-                          'freelance': Briefcase,
-                          'creator': Target,
-                          'rental': Globe,
-                          'other': DollarSign,
-                        };
-
-                        const IconComponent = platformIconMap[platform] || categoryIconMap[category];
-
-                        // Mock trend data (in production, calculate from historical data)
-                        const trendPercent = [8, -3, 15, 5, -2][index % 5];
-                        const isPositive = trendPercent > 0;
-                        const totalIncome = parsedIncome.parsed.totalIncome;
-                        const percentOfTotal = ((total / totalIncome) * 100).toFixed(1);
-
-                        return (
-                          <div key={platform} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-4 border border-white/10 hover:border-white/20 transition-colors">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-3 flex-1">
-                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                                  <IconComponent className="w-5 h-5 text-blue-400" />
-                                </div>
-                                <div className="flex-1">
-                                  <h3 className="text-sm font-bold text-white font-space-grotesk">{platform}</h3>
-                                  <p className="text-xs text-slate-400">{count} payments • {percentOfTotal}% of total</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-4">
-                                <div className={`flex items-center gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                                  <ArrowRight className={`w-4 h-4 ${isPositive ? 'rotate-[-45deg]' : 'rotate-[45deg]'}`} />
-                                  <span className="text-xs font-semibold">{Math.abs(trendPercent)}%</span>
-                                </div>
-                                <div className="text-right">
-                                  <div className="text-lg font-black text-white font-space-grotesk">
-                                    ${total.toFixed(0)}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
+                </section>
               </>
             )}
-
           </div>
         )}
-
         {activeTab === 'expenses' && (
-          <div className="space-y-8">
-            {/* Hero message */}
-            <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                Track every deduction
-              </h1>
-              <p className="text-base md:text-lg text-slate-300">
-                Upload your bank statement to discover hidden tax deductions and maximize your savings.
-              </p>
-            </div>
-
-            {/* Explainer text */}
-            <div className="space-y-4 text-base text-slate-300 leading-relaxed">
-              <p>
-                Every dollar you spend on your gig work is <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">potentially tax-deductible</span>. Gas for Uber. Hot bags for DoorDash. Camera gear for YouTube. Software subscriptions for Upwork. Phone bills. Internet. Home office space. Most gig workers leave thousands on the table because they don't know what qualifies.
-              </p>
-              <p>
-                We automatically scan your transactions and <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">flag deductible expenses</span> based on your gig type. Rideshare drivers get mileage tracking. Delivery workers see hot bag purchases. Freelancers catch software subscriptions. Creators track equipment costs. Everything is categorized, calculated, and ready for tax time.
-              </p>
-              <p>
-                The <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">average gig worker</span> who tracks expenses properly saves <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-semibold">$2,800 per year</span> in taxes. That's real money back in your pocket. Upload your statement and see what you've been missing.
-              </p>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10 mt-8"></div>
-
-            {!parsedIncome ? (
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
-                <Receipt className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-white mb-2">No expenses tracked yet</h3>
-                <p className="text-sm text-slate-400 mb-6 max-w-md mx-auto">
-                  Upload your bank statement in the Income tab to automatically detect deductible business expenses.
-                </p>
-                <Link
-                  href="/dashboard/income"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity inline-flex items-center space-x-2"
-                >
-                  <Upload className="w-4 h-4" />
-                  <span>Go to Income Tab</span>
-                </Link>
-              </div>
-            ) : (() => {
-              // Parse expenses from uploaded transactions
-              const expenseResults = buildExpensesFromTransactions(parsedIncome.rawTransactions || []);
-              const { expenses, byCategory, totalExpenses, totalDeductions, potentialTaxSavings } = expenseResults;
-
-              const categoryIcons: Record<string, any> = {
-                vehicle: '🚗',
-                equipment: '📦',
-                supplies: '✏️',
-                software: '💻',
-                phone: '📱',
-                'home-office': '🏠',
-                other: '💼',
-              };
-
-              const categoryColors: Record<string, string> = {
-                vehicle: 'blue',
-                equipment: 'purple',
-                supplies: 'green',
-                software: 'pink',
-                phone: 'orange',
-                'home-office': 'indigo',
-                other: 'slate',
-              };
-
-              if (expenses.length === 0) {
-                return (
-                  <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
-                    <Receipt className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-bold text-white mb-2">No deductible expenses detected</h3>
-                    <p className="text-sm text-slate-400 max-w-md mx-auto">
-                      We didn't find any recognizable business expenses in your uploaded transactions. Try uploading a statement that includes gas, maintenance, equipment, or software purchases.
-                    </p>
-                  </div>
-                );
-              }
+          <div className="space-y-10">
+            {(() => {
+              const expenseResults = parsedIncome
+                ? buildExpensesFromTransactions(parsedIncome.rawTransactions || [])
+                : null;
 
               return (
-                <div className="space-y-8">
-                  {/* Summary Cards */}
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 backdrop-blur-sm border border-blue-500/20 rounded-lg p-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-blue-400 font-semibold">TOTAL EXPENSES</span>
-                        <Receipt className="w-5 h-5 text-blue-400" />
-                      </div>
-                      <div className="text-3xl font-black text-white font-space-grotesk">
-                        ${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                      <p className="text-xs text-slate-400 mt-1">{expenses.length} deductible transactions</p>
-                    </div>
+                <>
+                  <PageHeader
+                    eyebrow="Expenses"
+                    title={expenseResults ? money(expenseResults.totalDeductions) : '$0'}
+                    subtitle={
+                      expenseResults && expenseResults.expenses.length > 0
+                        ? `Qualified deductions from ${expenseResults.expenses.length} business expense${expenseResults.expenses.length === 1 ? '' : 's'}`
+                        : 'Deductible business expenses, detected automatically from your statement.'
+                    }
+                    actions={uploadActions}
+                  />
 
-                    <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 backdrop-blur-sm border border-green-500/20 rounded-lg p-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-green-400 font-semibold">TAX DEDUCTIONS</span>
-                        <Target className="w-5 h-5 text-green-400" />
-                      </div>
-                      <div className="text-3xl font-black text-white font-space-grotesk">
-                        ${totalDeductions.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                      <p className="text-xs text-slate-400 mt-1">Qualified business deductions</p>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 backdrop-blur-sm border border-purple-500/20 rounded-lg p-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-purple-400 font-semibold">TAX SAVINGS</span>
-                        <Zap className="w-5 h-5 text-purple-400" />
-                      </div>
-                      <div className="text-3xl font-black text-white font-space-grotesk">
-                        ${potentialTaxSavings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                      <p className="text-xs text-slate-400 mt-1">Estimated at 30% tax rate</p>
-                    </div>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Expenses Chart with View Toggle */}
-                  <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <h2 className="text-xl font-bold text-white font-space-grotesk">Expenses Overview</h2>
-                        <p className="text-xs text-slate-400">
-                          {expenseChartView === 'donut' && 'Monthly breakdown by category'}
-                          {expenseChartView === 'bar' && 'Category trends over time'}
-                          {expenseChartView === 'line' && 'Cumulative expenses year-to-date'}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setExpenseChartView('donut')}
-                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                            expenseChartView === 'donut'
-                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                          }`}
+                  {!parsedIncome ? (
+                    <EmptyState
+                      icon={Receipt}
+                      title="No expenses tracked yet"
+                      body="Upload your bank statement on the Income tab to automatically detect deductible business expenses — gas, equipment, software, phone bills, and more."
+                      action={
+                        <Link
+                          href="/dashboard/income"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
                         >
-                          Donut
-                        </button>
-                        <button
-                          onClick={() => setExpenseChartView('bar')}
-                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                            expenseChartView === 'bar'
-                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          Trend
-                        </button>
-                        <button
-                          onClick={() => setExpenseChartView('line')}
-                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                            expenseChartView === 'line'
-                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          YTD
-                        </button>
-                      </div>
-                    </div>
-
-                    {(() => {
-                      const colorMap: Record<string, string> = {
-                        'blue': '#3b82f6',
-                        'purple': '#a855f7',
-                        'green': '#22c55e',
-                        'pink': '#ec4899',
-                        'orange': '#f97316',
-                        'indigo': '#6366f1',
-                        'slate': '#64748b',
-                      };
-
-                      // Prepare category data
-                      const categories = Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
-                        const color = categoryColors[category] || 'slate';
-                        return {
-                          category,
-                          displayName: category.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-                          expenses: categoryExpenses,
-                          color: colorMap[color] || colorMap['slate'],
-                        };
-                      });
-
-                      // Empty state check
-                      if (!categories.length || expenses.length === 0) {
-                        return (
-                          <div className="h-80 flex items-center justify-center bg-slate-900/30 rounded-lg border border-white/5">
-                            <div className="text-center px-8">
-                              <Receipt className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                              <p className="text-sm text-slate-400 font-medium mb-1">No expense data yet</p>
-                              <p className="text-xs text-slate-500">Upload transactions to track deductible business expenses</p>
-                            </div>
-                          </div>
-                        );
+                          <Upload className="w-3.5 h-3.5" />
+                          Go to Income
+                        </Link>
                       }
+                    />
+                  ) : (() => {
+                    const { expenses, byCategory, totalExpenses, totalDeductions, potentialTaxSavings } = expenseResults!;
 
-                      if (expenseChartView === 'donut') {
-                        // Donut chart - current month snapshot
-                        const donutData = categories.map(cat => ({
-                          name: cat.displayName,
-                          value: cat.expenses.reduce((sum, e) => sum + e.deductibleAmount, 0),
-                          fill: cat.color,
-                        }));
-
-                        return (
-                          <div className="h-80">
-                            <ChartContainer
-                              config={Object.fromEntries(
-                                donutData.map((item) => [item.name, { label: item.name, color: item.fill }])
-                              )}
-                              className="h-full w-full"
-                            >
-                              <PieChart>
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Pie
-                                  data={donutData}
-                                  cx="50%"
-                                  cy="50%"
-                                  labelLine={false}
-                                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                  outerRadius={120}
-                                  innerRadius={60}
-                                  dataKey="value"
-                                >
-                                  {donutData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                  ))}
-                                </Pie>
-                                <ChartLegend content={<ChartLegendContent />} />
-                              </PieChart>
-                            </ChartContainer>
-                          </div>
-                        );
-                      }
-
-                      if (expenseChartView === 'bar') {
-                        // Stacked bar - monthly trend
-                        // Group expenses by month
-                        const monthlyData: Record<string, any> = {};
-
-                        categories.forEach(cat => {
-                          cat.expenses.forEach(exp => {
-                            const monthKey = exp.date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-                            if (!monthlyData[monthKey]) {
-                              monthlyData[monthKey] = { month: monthKey };
-                            }
-                            monthlyData[monthKey][cat.displayName] = (monthlyData[monthKey][cat.displayName] || 0) + exp.deductibleAmount;
-                          });
-                        });
-
-                        const barData = Object.values(monthlyData);
-
-                        return (
-                          <div className="h-80">
-                            <ChartContainer
-                              config={Object.fromEntries(
-                                categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
-                              )}
-                              className="h-full w-full"
-                            >
-                              <BarChart data={barData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                                <XAxis dataKey="month" stroke="#64748b" style={{ fontSize: '12px' }} />
-                                <YAxis stroke="#64748b" style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <ChartLegend content={<ChartLegendContent />} />
-                                {categories.map(cat => (
-                                  <Bar key={cat.category} dataKey={cat.displayName} stackId="a" fill={cat.color} />
-                                ))}
-                              </BarChart>
-                            </ChartContainer>
-                          </div>
-                        );
-                      }
-
-                      // Line chart - cumulative YTD
-                      // Sort all expenses by date and calculate running totals per category
-                      const allExpenses = categories.flatMap(cat =>
-                        cat.expenses.map(exp => ({
-                          ...exp,
-                          category: cat.displayName,
-                          color: cat.color,
-                        }))
-                      ).sort((a, b) => a.date.getTime() - b.date.getTime());
-
-                      const cumulativeData: Record<string, any>[] = [];
-                      const runningTotals: Record<string, number> = {};
-
-                      allExpenses.forEach(exp => {
-                        runningTotals[exp.category] = (runningTotals[exp.category] || 0) + exp.deductibleAmount;
-                        cumulativeData.push({
-                          date: exp.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-                          ...runningTotals,
-                        });
-                      });
-
+                    if (expenses.length === 0) {
                       return (
-                        <div className="h-80">
-                          <ChartContainer
-                            config={Object.fromEntries(
-                              categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
-                            )}
-                            className="h-full w-full"
-                          >
-                            <LineChart data={cumulativeData}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                              <XAxis dataKey="date" stroke="#64748b" style={{ fontSize: '12px' }} />
-                              <YAxis stroke="#64748b" style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
-                              <ChartTooltip content={<ChartTooltipContent />} />
-                              <ChartLegend content={<ChartLegendContent />} />
-                              {categories.map(cat => (
-                                <Line key={cat.category} type="monotone" dataKey={cat.displayName} stroke={cat.color} strokeWidth={2} />
-                              ))}
-                            </LineChart>
-                          </ChartContainer>
-                        </div>
+                        <EmptyState
+                          icon={Receipt}
+                          title="No deductible expenses detected"
+                          body="We didn't find recognizable business expenses in your uploaded transactions. Try a statement that includes gas, maintenance, equipment, or software purchases."
+                        />
                       );
-                    })()}
-                  </div>
+                    }
 
-                  {/* Divider */}
-                  <div className="border-t border-white/10"></div>
+                    return (
+                      <div className="space-y-10">
+                        <StatGrid
+                          stats={[
+                            {
+                              label: 'Total expenses',
+                              value: money2(totalExpenses),
+                              sub: `${expenses.length} deductible transactions`,
+                            },
+                            {
+                              label: 'Tax deductions',
+                              value: money2(totalDeductions),
+                              sub: 'Qualified business deductions',
+                            },
+                            {
+                              label: 'Estimated savings',
+                              value: money2(potentialTaxSavings),
+                              sub: 'At a 30% tax rate',
+                            },
+                          ]}
+                        />
 
-                  {/* Expenses by Category */}
-                  <div>
-                    <div className="mb-4">
-                      <h2 className="text-xl font-bold text-white font-space-grotesk">Expenses by category</h2>
-                      <p className="text-xs text-slate-400">Detected deductible business expenses</p>
-                    </div>
-
-                    <div className="space-y-6">
-                      {Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
-                        const categoryTotal = categoryExpenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
-                        const color = categoryColors[category] || 'slate';
-
-                        return (
-                          <div key={category} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center space-x-3">
-                                <div className="text-3xl">{categoryIcons[category]}</div>
-                                <div>
-                                  <h3 className="text-lg font-bold text-white font-space-grotesk capitalize">{category.replace('-', ' ')}</h3>
-                                  <p className="text-xs text-slate-400">{categoryExpenses.length} transactions</p>
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <div className={`text-2xl font-black bg-gradient-to-r from-${color}-400 to-${color}-600 bg-clip-text text-transparent font-space-grotesk`}>
-                                  ${categoryTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </div>
-                                <p className="text-xs text-slate-400">deductible</p>
-                              </div>
+                        {/* Expense chart */}
+                        <section className="rounded-lg border border-gray-200 p-5">
+                          <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+                            <div>
+                              <h2 className="text-sm font-semibold text-gray-900">Expenses overview</h2>
+                              <p className="text-xs text-gray-400 mt-0.5">
+                                {expenseChartView === 'donut' && 'Breakdown by category'}
+                                {expenseChartView === 'bar' && 'Category trends over time'}
+                                {expenseChartView === 'line' && 'Cumulative expenses year-to-date'}
+                              </p>
                             </div>
-
-                            {/* Expense Items */}
-                            <div className="space-y-2">
-                              {categoryExpenses.slice(0, 5).map((expense, idx) => (
-                                <div key={idx} className="flex items-center justify-between gap-3 py-2 px-3 bg-slate-800/50 rounded">
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-white font-medium truncate">{expense.description}</p>
-                                    <p className="text-xs text-slate-400" title={expense.rationale}>
-                                      {expense.date.toLocaleDateString()} • {expense.subcategory}
-                                      {expense.source === 'ai' && (
-                                        <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">
-                                          AI
-                                        </span>
-                                      )}
-                                    </p>
-                                  </div>
-                                  <DeductionCheckDialog
-                                    description={expense.description}
-                                    amount={expense.amount}
-                                    date={expense.date}
-                                    gigTypes={Array.from(parsedIncome.parsed.byPlatform.keys())}
-                                  />
-                                  <div className="text-right flex-shrink-0">
-                                    <p className="text-sm font-bold text-white">${expense.deductibleAmount.toFixed(2)}</p>
-                                    {expense.deductionRate < 100 && (
-                                      <p className="text-xs text-slate-400">{expense.deductionRate}% deductible</p>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                              {categoryExpenses.length > 5 && (
-                                <p className="text-xs text-slate-400 text-center py-2">
-                                  + {categoryExpenses.length - 5} more expenses
-                                </p>
-                              )}
-                            </div>
+                            <SegmentedControl
+                              options={[
+                                { value: 'donut' as const, label: 'Breakdown' },
+                                { value: 'bar' as const, label: 'Trend' },
+                                { value: 'line' as const, label: 'YTD' },
+                              ]}
+                              value={expenseChartView}
+                              onChange={setExpenseChartView}
+                            />
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
 
-                  {/* Tips */}
-                  <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-lg p-6">
-                    <div className="flex items-start space-x-3">
-                      <div className="text-2xl">💡</div>
-                      <div>
-                        <h3 className="text-base font-bold text-white mb-2 font-space-grotesk">Pro tip</h3>
-                        <p className="text-sm text-slate-300 leading-relaxed">
-                          Keep all receipts for expenses over $75. The IRS may require documentation during an audit. Take photos and store them digitally for easy access.
+                          {(() => {
+                            // Prepare category data
+                            const categories = Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
+                              return {
+                                category,
+                                displayName: category.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+                                expenses: categoryExpenses,
+                                color: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other,
+                              };
+                            });
+
+                            // Empty state check
+                            if (!categories.length || expenses.length === 0) {
+                              return (
+                                <ChartEmptyState
+                                  icon={Receipt}
+                                  title="No expense data yet"
+                                  hint="Upload transactions to track deductible business expenses"
+                                />
+                              );
+                            }
+
+                            if (expenseChartView === 'donut') {
+                              // Donut chart - current month snapshot
+                              const donutData = categories.map(cat => ({
+                                name: cat.displayName,
+                                value: cat.expenses.reduce((sum, e) => sum + e.deductibleAmount, 0),
+                                fill: cat.color,
+                              }));
+
+                              return (
+                                <div className="h-72">
+                                  <ChartContainer
+                                    config={Object.fromEntries(
+                                      donutData.map((item) => [item.name, { label: item.name, color: item.fill }])
+                                    )}
+                                    className="h-full w-full"
+                                  >
+                                    <PieChart>
+                                      <ChartTooltip content={<ChartTooltipContent />} />
+                                      <Pie
+                                        data={donutData}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                        outerRadius={105}
+                                        innerRadius={62}
+                                        dataKey="value"
+                                        stroke="#fff"
+                                      >
+                                        {donutData.map((entry, index) => (
+                                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                                        ))}
+                                      </Pie>
+                                      <ChartLegend content={<ChartLegendContent />} />
+                                    </PieChart>
+                                  </ChartContainer>
+                                </div>
+                              );
+                            }
+
+                            if (expenseChartView === 'bar') {
+                              // Stacked bar - monthly trend
+                              // Group expenses by month
+                              const monthlyData: Record<string, any> = {};
+
+                              categories.forEach(cat => {
+                                cat.expenses.forEach(exp => {
+                                  const monthKey = exp.date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                                  if (!monthlyData[monthKey]) {
+                                    monthlyData[monthKey] = { month: monthKey };
+                                  }
+                                  monthlyData[monthKey][cat.displayName] = (monthlyData[monthKey][cat.displayName] || 0) + exp.deductibleAmount;
+                                });
+                              });
+
+                              const barData = Object.values(monthlyData);
+
+                              return (
+                                <div className="h-72">
+                                  <ChartContainer
+                                    config={Object.fromEntries(
+                                      categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
+                                    )}
+                                    className="h-full w-full"
+                                  >
+                                    <BarChart data={barData}>
+                                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                                      <XAxis dataKey="month" stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} />
+                                      <YAxis stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
+                                      <ChartTooltip content={<ChartTooltipContent />} />
+                                      <ChartLegend content={<ChartLegendContent />} />
+                                      {categories.map(cat => (
+                                        <Bar key={cat.category} dataKey={cat.displayName} stackId="a" fill={cat.color} />
+                                      ))}
+                                    </BarChart>
+                                  </ChartContainer>
+                                </div>
+                              );
+                            }
+
+                            // Line chart - cumulative YTD
+                            // Sort all expenses by date and calculate running totals per category
+                            const allExpenses = categories.flatMap(cat =>
+                              cat.expenses.map(exp => ({
+                                ...exp,
+                                category: cat.displayName,
+                                color: cat.color,
+                              }))
+                            ).sort((a, b) => a.date.getTime() - b.date.getTime());
+
+                            const cumulativeData: Record<string, any>[] = [];
+                            const runningTotals: Record<string, number> = {};
+
+                            allExpenses.forEach(exp => {
+                              runningTotals[exp.category] = (runningTotals[exp.category] || 0) + exp.deductibleAmount;
+                              cumulativeData.push({
+                                date: exp.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                                ...runningTotals,
+                              });
+                            });
+
+                            return (
+                              <div className="h-72">
+                                <ChartContainer
+                                  config={Object.fromEntries(
+                                    categories.map(cat => [cat.displayName, { label: cat.displayName, color: cat.color }])
+                                  )}
+                                  className="h-full w-full"
+                                >
+                                  <LineChart data={cumulativeData}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                                    <XAxis dataKey="date" stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} />
+                                    <YAxis stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <ChartLegend content={<ChartLegendContent />} />
+                                    {categories.map(cat => (
+                                      <Line key={cat.category} type="monotone" dataKey={cat.displayName} stroke={cat.color} strokeWidth={2} dot={false} />
+                                    ))}
+                                  </LineChart>
+                                </ChartContainer>
+                              </div>
+                            );
+                          })()}
+                        </section>
+
+                        {/* Expenses by Category */}
+                        <section>
+                          <SectionHeader
+                            title="Expenses by category"
+                            hint="Detected deductible business expenses"
+                          />
+                          <div className="rounded-lg border border-gray-200 overflow-hidden">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="bg-gray-50/60 border-b border-gray-200">
+                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Description</th>
+                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden md:table-cell">Date</th>
+                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Type</th>
+                                  <th className="px-4 py-2.5"></th>
+                                  <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Deductible</th>
+                                </tr>
+                              </thead>
+                              {Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
+                                const categoryTotal = categoryExpenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
+                                const displayName = category.replace('-', ' ');
+
+                                return (
+                                  <tbody key={category}>
+                                    <tr className="bg-gray-50/60 border-y border-gray-200 first:border-t-0">
+                                      <td colSpan={4} className="px-4 py-2">
+                                        <span className="inline-flex items-center gap-2">
+                                          <span
+                                            className="w-2 h-2 rounded-full"
+                                            style={{ background: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other }}
+                                          />
+                                          <span className="text-xs font-semibold text-gray-700 capitalize">{displayName}</span>
+                                          <span className="text-xs text-gray-400">{categoryExpenses.length} transactions</span>
+                                        </span>
+                                      </td>
+                                      <td className="px-4 py-2 text-right text-xs font-semibold text-gray-700">
+                                        {money2(categoryTotal)}
+                                      </td>
+                                    </tr>
+                                    {categoryExpenses.slice(0, 5).map((expense, idx) => (
+                                      <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50/75 transition-colors">
+                                        <td className="px-4 py-2.5 text-gray-900 max-w-[260px] truncate">
+                                          {expense.description}
+                                          {expense.source === 'ai' && (
+                                            <span className="ml-2 inline-flex items-center rounded px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-indigo-50 text-indigo-700">
+                                              AI
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap hidden md:table-cell">
+                                          {expense.date.toLocaleDateString()}
+                                        </td>
+                                        <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell" title={expense.rationale}>
+                                          {expense.subcategory}
+                                        </td>
+                                        <td className="px-4 py-2.5 text-right">
+                                          <DeductionCheckDialog
+                                            description={expense.description}
+                                            amount={expense.amount}
+                                            date={expense.date}
+                                            gigTypes={Array.from(parsedIncome.parsed.byPlatform.keys())}
+                                          />
+                                        </td>
+                                        <td className="px-4 py-2.5 text-right">
+                                          <span className="font-medium text-gray-900">{money2(expense.deductibleAmount)}</span>
+                                          {expense.deductionRate < 100 && (
+                                            <span className="block text-[11px] text-gray-400">
+                                              {expense.deductionRate}% deductible
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                    {categoryExpenses.length > 5 && (
+                                      <tr className="border-b border-gray-100">
+                                        <td colSpan={5} className="px-4 py-2 text-center text-xs text-gray-400">
+                                          + {categoryExpenses.length - 5} more expenses
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                );
+                              })}
+                            </table>
+                          </div>
+                        </section>
+
+                        {/* Tip */}
+                        <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-200 pt-4">
+                          Keep receipts for expenses over $75 — the IRS may require documentation during
+                          an audit. Photograph them and store digitally.
                         </p>
                       </div>
-                    </div>
-                  </div>
-                </div>
+                    );
+                  })()}
+                </>
               );
             })()}
           </div>
@@ -2160,43 +1737,39 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         {activeTab === 'benefits' && <BenefitsMarketplace />}
 
         {activeTab === 'taxes' && (
-          <div className="space-y-8">
-            {/* Hero message */}
-            <div className="bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1">
-                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                    Stay ahead of tax season
-                  </h1>
-                  <p className="text-base md:text-lg text-slate-300">
-                    Set aside the right amount each month. Track every deduction. Never get caught off guard.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setIsCalculatorModalOpen(true)}
-                  className="flex items-center space-x-2 px-6 py-3 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity flex-shrink-0"
-                >
-                  <Calculator className="w-4 h-4" />
-                  <span>Tax Calculator</span>
-                </button>
-              </div>
-            </div>
-
+          <div className="space-y-10">
             {!parsedIncome ? (
-              <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-12 border border-white/10 text-center">
-                <FileText className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-white mb-2">Upload income to calculate taxes</h3>
-                <p className="text-sm text-slate-400 mb-6 max-w-md mx-auto">
-                  Upload your bank statement in the Income tab to get accurate quarterly tax estimates and deduction calculations.
-                </p>
-                <Link
-                  href="/dashboard/income"
-                  className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity inline-flex items-center space-x-2"
-                >
-                  <Upload className="w-4 h-4" />
-                  <span>Go to Income Tab</span>
-                </Link>
-              </div>
+              <>
+                <PageHeader
+                  eyebrow="Taxes"
+                  title="$0"
+                  subtitle="Quarterly self-employment tax estimates, computed from your real income."
+                  actions={
+                    <button
+                      onClick={() => setIsCalculatorModalOpen(true)}
+                      disabled
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200 text-sm font-medium text-gray-300 cursor-not-allowed"
+                    >
+                      <Calculator className="w-3.5 h-3.5" />
+                      Tax calculator
+                    </button>
+                  }
+                />
+                <EmptyState
+                  icon={FileText}
+                  title="Upload income to calculate taxes"
+                  body="Upload your bank statement on the Income tab to get quarterly tax estimates, a payment schedule, and deduction calculations."
+                  action={
+                    <Link
+                      href="/dashboard/income"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      Go to Income
+                    </Link>
+                  }
+                />
+              </>
             ) : (() => {
               // Calculate real taxes from uploaded data
               const expenseResults = buildExpensesFromTransactions(parsedIncome.rawTransactions || []);
@@ -2213,37 +1786,45 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
               return (
                 <>
-                  {/* Tax Summary Cards */}
-                  <div className="grid md:grid-cols-4 gap-4">
-                    <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 backdrop-blur-xl rounded-lg p-5 border border-orange-500/20">
-                      <div className="text-xs text-orange-400 mb-1 font-semibold">Annual Tax Liability</div>
-                      <div className="text-3xl font-black text-white font-space-grotesk">
-                        ${Math.round(taxCalc.totalTaxLiability).toLocaleString()}
-                      </div>
-                      <div className="text-xs text-slate-400 mt-1">{(taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate</div>
-                    </div>
-                    <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 backdrop-blur-xl rounded-lg p-5 border border-blue-500/20">
-                      <div className="text-xs text-blue-400 mb-1 font-semibold">Quarterly Payment</div>
-                      <div className="text-3xl font-black text-white font-space-grotesk">
-                        ${Math.round(taxCalc.quarterlyPayment).toLocaleString()}
-                      </div>
-                      <div className="text-xs text-slate-400 mt-1">Due 4 times per year</div>
-                    </div>
-                    <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl rounded-lg p-5 border border-green-500/20">
-                      <div className="text-xs text-green-400 mb-1 font-semibold">Total Deductions</div>
-                      <div className="text-3xl font-black text-white font-space-grotesk">
-                        ${Math.round(expenseResults.totalDeductions).toLocaleString()}
-                      </div>
-                      <div className="text-xs text-slate-400 mt-1">{expenseResults.expenses.length} expenses tracked</div>
-                    </div>
-                    <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-5 border border-purple-500/20">
-                      <div className="text-xs text-purple-400 mb-1 font-semibold">Tax Savings</div>
-                      <div className="text-3xl font-black text-white font-space-grotesk">
-                        ${Math.round(expenseResults.potentialTaxSavings).toLocaleString()}
-                      </div>
-                      <div className="text-xs text-slate-400 mt-1">From deductions</div>
-                    </div>
-                  </div>
+                  <PageHeader
+                    eyebrow="Taxes"
+                    title={money(taxCalc.quarterlyPayment)}
+                    subtitle={`Estimated quarterly payment · ${(taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate`}
+                    actions={
+                      <button
+                        onClick={() => setIsCalculatorModalOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors"
+                      >
+                        <Calculator className="w-3.5 h-3.5" />
+                        Tax calculator
+                      </button>
+                    }
+                  />
+
+                  <StatGrid
+                    stats={[
+                      {
+                        label: 'Annual tax liability',
+                        value: money(taxCalc.totalTaxLiability),
+                        sub: `${(taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate`,
+                      },
+                      {
+                        label: 'Quarterly payment',
+                        value: money(taxCalc.quarterlyPayment),
+                        sub: 'Due four times per year',
+                      },
+                      {
+                        label: 'Total deductions',
+                        value: money(expenseResults.totalDeductions),
+                        sub: `${expenseResults.expenses.length} expenses tracked`,
+                      },
+                      {
+                        label: 'Tax savings',
+                        value: money(expenseResults.potentialTaxSavings),
+                        sub: 'From deductions',
+                      },
+                    ]}
+                  />
 
                   {/* AI plain-English summary (numbers come from the tax calculator) */}
                   <AITaxSummary
@@ -2259,190 +1840,121 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     )}
                   />
 
-                  {/* Divider */}
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Tax Breakdown */}
-                  <div>
-                    <div className="mb-4">
-                      <h2 className="text-xl font-bold text-white font-space-grotesk">Tax breakdown</h2>
-                      <p className="text-xs text-slate-400">How your ${Math.round(taxCalc.totalTaxLiability).toLocaleString()} tax bill is calculated</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Left: Visual breakdown */}
-                      <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-                        <h3 className="text-sm font-bold text-white mb-4">Tax Components</h3>
+                  {/* Tax breakdown */}
+                  <section>
+                    <SectionHeader
+                      title="Tax breakdown"
+                      hint={`How your ${money(taxCalc.totalTaxLiability)} bill is calculated`}
+                    />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* Left: components */}
+                      <div className="rounded-lg border border-gray-200 p-4">
+                        <h3 className="text-[13px] font-semibold text-gray-900 mb-3">Tax components</h3>
                         <div className="space-y-3">
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm text-slate-300">Federal Income Tax</span>
-                              <span className="text-sm font-bold text-white">
-                                ${Math.round(taxCalc.breakdown.federalIncome).toLocaleString()}
-                              </span>
+                          {[
+                            { label: 'Federal income tax', value: taxCalc.breakdown.federalIncome },
+                            { label: 'Social Security (12.4%)', value: taxCalc.breakdown.socialSecurity },
+                            { label: 'Medicare (2.9%)', value: taxCalc.breakdown.medicare },
+                            { label: 'State tax (CA)', value: taxCalc.breakdown.state },
+                          ].map((row) => (
+                            <div key={row.label}>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-sm text-gray-500">{row.label}</span>
+                                <span className="text-sm font-medium text-gray-900">{money(row.value)}</span>
+                              </div>
+                              <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-indigo-400/70 rounded-full"
+                                  style={{ width: `${(row.value / taxCalc.totalTaxLiability) * 100}%` }}
+                                ></div>
+                              </div>
                             </div>
-                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
-                                style={{ width: `${(taxCalc.breakdown.federalIncome / taxCalc.totalTaxLiability) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm text-slate-300">Social Security (12.4%)</span>
-                              <span className="text-sm font-bold text-white">
-                                ${Math.round(taxCalc.breakdown.socialSecurity).toLocaleString()}
-                              </span>
-                            </div>
-                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"
-                                style={{ width: `${(taxCalc.breakdown.socialSecurity / taxCalc.totalTaxLiability) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm text-slate-300">Medicare (2.9%)</span>
-                              <span className="text-sm font-bold text-white">
-                                ${Math.round(taxCalc.breakdown.medicare).toLocaleString()}
-                              </span>
-                            </div>
-                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full"
-                                style={{ width: `${(taxCalc.breakdown.medicare / taxCalc.totalTaxLiability) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm text-slate-300">State Tax (CA)</span>
-                              <span className="text-sm font-bold text-white">
-                                ${Math.round(taxCalc.breakdown.state).toLocaleString()}
-                              </span>
-                            </div>
-                            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"
-                                style={{ width: `${(taxCalc.breakdown.state / taxCalc.totalTaxLiability) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
+                          ))}
                         </div>
-
-                        <div className="mt-4 pt-4 border-t border-white/10">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-white">Total Tax</span>
-                            <span className="text-lg font-black text-white font-space-grotesk">
-                              ${Math.round(taxCalc.totalTaxLiability).toLocaleString()}
-                            </span>
-                          </div>
+                        <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-between">
+                          <span className="text-sm font-semibold text-gray-900">Total tax</span>
+                          <span className="text-base font-semibold text-gray-900">
+                            {money(taxCalc.totalTaxLiability)}
+                          </span>
                         </div>
                       </div>
 
-                      {/* Right: Income calculation */}
-                      <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-                        <h3 className="text-sm font-bold text-white mb-4">Income Calculation</h3>
-                        <div className="space-y-3">
+                      {/* Right: income calculation */}
+                      <div className="rounded-lg border border-gray-200 p-4">
+                        <h3 className="text-[13px] font-semibold text-gray-900 mb-3">Income calculation</h3>
+                        <div className="space-y-2.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-slate-300">Gross Income</span>
-                            <span className="text-sm font-bold text-white">
-                              ${Math.round(taxCalc.grossIncome).toLocaleString()}
+                            <span className="text-sm text-gray-500">Gross income</span>
+                            <span className="text-sm font-medium text-gray-900">{money(taxCalc.grossIncome)}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-500">Business deductions</span>
+                            <span className="text-sm font-medium text-red-700">
+                              −{money(expenseResults.totalDeductions)}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between text-red-400">
-                            <span className="text-sm">Business Deductions</span>
-                            <span className="text-sm font-bold">
-                              -${Math.round(expenseResults.totalDeductions).toLocaleString()}
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-500">Standard deduction</span>
+                            <span className="text-sm font-medium text-red-700">−$14,600</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-500">SE tax deduction (50%)</span>
+                            <span className="text-sm font-medium text-red-700">
+                              −{money(taxCalc.selfEmploymentTax * 0.5)}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between text-red-400">
-                            <span className="text-sm">Standard Deduction</span>
-                            <span className="text-sm font-bold">-$14,600</span>
-                          </div>
-                          <div className="flex items-center justify-between text-red-400">
-                            <span className="text-sm">SE Tax Deduction (50%)</span>
-                            <span className="text-sm font-bold">
-                              -${Math.round(taxCalc.selfEmploymentTax * 0.5).toLocaleString()}
+                          <div className="border-t border-gray-200 pt-2.5 flex items-center justify-between">
+                            <span className="text-sm font-semibold text-gray-900">Taxable income</span>
+                            <span className="text-sm font-semibold text-gray-900">
+                              {money(taxCalc.adjustedGrossIncome - 14600)}
                             </span>
-                          </div>
-                          <div className="border-t border-white/10 pt-3 mt-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-white">Taxable Income</span>
-                              <span className="text-sm font-bold text-green-400">
-                                ${Math.round(taxCalc.adjustedGrossIncome - 14600).toLocaleString()}
-                              </span>
-                            </div>
                           </div>
                         </div>
 
-                        <div className="mt-6 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg p-4 border border-blue-500/20">
-                          <h4 className="text-xs font-semibold text-blue-400 mb-2">💡 Pro Tip</h4>
-                          <p className="text-xs text-slate-300 leading-relaxed">
-                            As a self-employed person, you can deduct 50% of your self-employment tax from your adjusted gross income. This saves you ${Math.round(taxCalc.selfEmploymentTax * 0.5 * 0.22).toLocaleString()} in federal income tax.
-                          </p>
-                        </div>
+                        <p className="mt-4 text-xs text-gray-400 leading-relaxed border-t border-gray-100 pt-3">
+                          Self-employed filers deduct 50% of self-employment tax from adjusted gross
+                          income — worth about {money(taxCalc.selfEmploymentTax * 0.5 * 0.22)} in federal
+                          income tax here.
+                        </p>
                       </div>
                     </div>
-                  </div>
+                  </section>
 
-                  {/* Divider */}
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Tax Visualization */}
-                  <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
-                    <div className="flex items-center justify-between mb-6">
+                  {/* Tax chart */}
+                  <section className="rounded-lg border border-gray-200 p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                       <div>
-                        <h2 className="text-xl font-bold text-white font-space-grotesk">Tax Overview</h2>
-                        <p className="text-xs text-slate-400">Quarterly payments and tax liability breakdown</p>
+                        <h2 className="text-sm font-semibold text-gray-900">Tax overview</h2>
+                        <p className="text-xs text-gray-400 mt-0.5">Quarterly payments and liability breakdown</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setTaxChartView('quarterly')}
-                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                            taxChartView === 'quarterly'
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          Quarterly
-                        </button>
-                        <button
-                          onClick={() => setTaxChartView('liability')}
-                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                            taxChartView === 'liability'
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                              : 'text-slate-400 hover:text-white border border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          Liability
-                        </button>
-                      </div>
+                      <SegmentedControl
+                        options={[
+                          { value: 'quarterly' as const, label: 'Quarterly' },
+                          { value: 'liability' as const, label: 'Liability' },
+                        ]}
+                        value={taxChartView}
+                        onChange={setTaxChartView}
+                      />
                     </div>
 
                     {taxChartView === 'liability' ? (
                       (() => {
                         // Pie chart for tax liability breakdown
                         const liabilityData = [
-                          { name: 'Federal Income', value: taxCalc.breakdown.federalIncome, fill: '#3b82f6' },
-                          { name: 'Social Security', value: taxCalc.breakdown.socialSecurity, fill: '#a855f7' },
-                          { name: 'Medicare', value: taxCalc.breakdown.medicare, fill: '#ec4899' },
-                          { name: 'State Tax', value: taxCalc.breakdown.state, fill: '#f97316' },
+                          { name: 'Federal Income', value: taxCalc.breakdown.federalIncome, fill: '#5b5bd6' },
+                          { name: 'Social Security', value: taxCalc.breakdown.socialSecurity, fill: '#7da7c9' },
+                          { name: 'Medicare', value: taxCalc.breakdown.medicare, fill: '#9b8ed4' },
+                          { name: 'State Tax', value: taxCalc.breakdown.state, fill: '#c9a36a' },
                         ];
 
                         return (
-                          <div className="h-80">
+                          <div className="h-72">
                             <ChartContainer
                               config={{
-                                'Federal Income': { label: 'Federal Income Tax', color: '#3b82f6' },
-                                'Social Security': { label: 'Social Security', color: '#a855f7' },
-                                'Medicare': { label: 'Medicare', color: '#ec4899' },
-                                'State Tax': { label: 'State Tax', color: '#f97316' },
+                                'Federal Income': { label: 'Federal income tax', color: '#5b5bd6' },
+                                'Social Security': { label: 'Social Security', color: '#7da7c9' },
+                                'Medicare': { label: 'Medicare', color: '#9b8ed4' },
+                                'State Tax': { label: 'State tax', color: '#c9a36a' },
                               }}
                               className="h-full w-full"
                             >
@@ -2454,9 +1966,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                   cy="50%"
                                   labelLine={false}
                                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                  outerRadius={120}
-                                  fill="#8884d8"
+                                  outerRadius={105}
+                                  innerRadius={62}
                                   dataKey="value"
+                                  stroke="#fff"
                                 >
                                   {liabilityData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -2478,150 +1991,152 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         }));
 
                         return (
-                          <div className="h-80">
+                          <div className="h-72">
                             <ChartContainer
                               config={{
-                                owed: { label: 'Owed', color: '#ef4444' },
-                                setAside: { label: 'Set Aside', color: '#22c55e' },
+                                owed: { label: 'Owed', color: '#cf6f6f' },
+                                setAside: { label: 'Set aside', color: '#6fa287' },
                               }}
                               className="h-full w-full"
                             >
                               <BarChart data={quarterlyData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
                                 <XAxis
                                   dataKey="quarter"
-                                  stroke="#64748b"
+                                  stroke={CHART_AXIS}
+                                  tickLine={false}
+                                  axisLine={false}
                                   style={{ fontSize: '12px' }}
                                 />
                                 <YAxis
-                                  stroke="#64748b"
+                                  stroke={CHART_AXIS}
+                                  tickLine={false}
+                                  axisLine={false}
                                   style={{ fontSize: '12px' }}
                                   tickFormatter={(value) => `$${value}`}
                                 />
                                 <ChartTooltip content={<ChartTooltipContent />} />
                                 <ChartLegend content={<ChartLegendContent />} />
-                                <Bar dataKey="setAside" fill="#22c55e" />
-                                <Bar dataKey="owed" fill="#ef4444" />
+                                <Bar dataKey="setAside" fill="#6fa287" />
+                                <Bar dataKey="owed" fill="#cf6f6f" />
                               </BarChart>
                             </ChartContainer>
                           </div>
                         );
                       })()
                     )}
-                  </div>
+                  </section>
 
-                  {/* Divider */}
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Quarterly Payment Cards */}
-                  <div>
-                    <div className="mb-4">
-                      <h2 className="text-xl font-bold text-white font-space-grotesk">Quarterly payment schedule</h2>
-                      <p className="text-xs text-slate-400">Pay ${Math.round(taxCalc.quarterlyPayment).toLocaleString()} four times per year to avoid penalties</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {deadlines.map((deadline, idx) => {
-                        const colors = [
-                          { blur: 'from-orange-500 to-red-600', bg: 'from-orange-600/20 to-red-700/20', border: 'border-orange-400/30', text: 'text-orange-300' },
-                          { blur: 'from-blue-500 to-blue-600', bg: 'from-blue-600/20 to-blue-700/20', border: 'border-blue-400/30', text: 'text-blue-300' },
-                          { blur: 'from-purple-500 to-purple-600', bg: 'from-purple-600/20 to-purple-700/20', border: 'border-purple-400/30', text: 'text-purple-300' },
-                          { blur: 'from-pink-500 to-pink-600', bg: 'from-pink-600/20 to-pink-700/20', border: 'border-pink-400/30', text: 'text-pink-300' },
-                        ][idx];
-
-                        return (
-                          <div key={deadline.quarter} className="group relative">
-                            <div className={`absolute inset-0 bg-gradient-to-br ${colors.blur} rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity`}></div>
-                            <div className={`relative bg-gradient-to-br ${colors.bg} backdrop-blur-xl rounded-lg p-6 border ${colors.border} transform group-hover:-translate-y-1 transition-transform`}>
-                              <div className="flex items-center justify-between mb-2">
-                                <div className={`text-xs ${colors.text} font-semibold uppercase tracking-wider`}>{deadline.quarter} 2024</div>
+                  {/* Quarterly payment schedule */}
+                  <section>
+                    <SectionHeader
+                      title="Quarterly payment schedule"
+                      hint={`Pay ${money(taxCalc.quarterlyPayment)} four times per year to avoid penalties`}
+                    />
+                    <div className="rounded-lg border border-gray-200 overflow-hidden">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-gray-50/60 border-b border-gray-200">
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Quarter</th>
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Period</th>
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Due</th>
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Status</th>
+                            <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Amount</th>
+                            <th className="px-4 py-2.5"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {deadlines.map((deadline) => (
+                            <tr key={deadline.quarter} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                              <td className="px-4 py-2.5 font-medium text-gray-900">{deadline.quarter} 2024</td>
+                              <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell">{deadline.period}</td>
+                              <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
+                                {deadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                              </td>
+                              <td className="px-4 py-2.5">
                                 {deadline.isPast ? (
-                                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-red-50 text-red-700">
+                                    Overdue
+                                  </span>
                                 ) : (
-                                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-emerald-50 text-emerald-700">
+                                    Upcoming
+                                  </span>
                                 )}
-                              </div>
-                              <div className="text-2xl font-black text-white mb-1 font-space-grotesk">
-                                ${Math.round(deadline.amount).toLocaleString()}
-                              </div>
-                              <div className="text-xs text-slate-400 mb-3">{deadline.period}</div>
-                              <div className={`text-xs ${colors.text} font-semibold mb-4`}>
-                                Due: {deadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                              </div>
-                              {deadline.isPast ? (
-                                <button
-                                  onClick={() => toast.success('IRS payment portal integration coming soon!')}
-                                  className="w-full bg-white/10 backdrop-blur-sm text-white py-2 px-3 rounded-lg text-xs font-bold border border-white/20 hover:bg-white/20 transition-colors"
-                                >
-                                  Overdue - Pay Now
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => toast.success('Tax reminders coming soon!')}
-                                  className="w-full bg-white/10 backdrop-blur-sm text-white py-2 px-3 rounded-lg text-xs font-bold border border-white/20 hover:bg-white/20 transition-colors"
-                                >
-                                  Set Reminder
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
+                              </td>
+                              <td className="px-4 py-2.5 text-right font-medium text-gray-900">
+                                {money(deadline.amount)}
+                              </td>
+                              <td className="px-4 py-2.5 text-right">
+                                {deadline.isPast ? (
+                                  <button
+                                    onClick={() => toast.success('IRS payment portal integration coming soon!')}
+                                    className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                                  >
+                                    Pay now
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => toast.success('Tax reminders coming soon!')}
+                                    className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                                  >
+                                    Set reminder
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  </div>
+                  </section>
 
-                  {/* Divider */}
-                  <div className="border-t border-white/10"></div>
-
-                  {/* Deduction Summary */}
-                  <div>
-                    <div className="mb-4">
-                      <h2 className="text-xl font-bold text-white font-space-grotesk">Your deductions</h2>
-                      <p className="text-xs text-slate-400">Track every dollar you can write off</p>
-                    </div>
-
+                  {/* Deduction summary */}
+                  <section>
+                    <SectionHeader title="Your deductions" hint="Every dollar you can write off" />
                     {expenseResults.expenses.length === 0 ? (
-                      <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-8 border border-white/10 text-center">
-                        <Receipt className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                        <h3 className="text-sm font-bold text-white mb-2">No deductions tracked yet</h3>
-                        <p className="text-xs text-slate-400 max-w-md mx-auto">
-                          Upload transactions with business expenses to see potential tax deductions
-                        </p>
-                      </div>
+                      <EmptyState
+                        icon={Receipt}
+                        title="No deductions tracked yet"
+                        body="Upload transactions with business expenses to see potential tax deductions."
+                      />
                     ) : (
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {Array.from(expenseResults.byCategory.entries()).map(([category, expenses]) => {
-                          const categoryIcons: Record<string, string> = {
-                            vehicle: '🚗',
-                            equipment: '📦',
-                            supplies: '✏️',
-                            software: '💻',
-                            phone: '📱',
-                            'home-office': '🏠',
-                            other: '💼',
-                          };
+                      <div className="rounded-lg border border-gray-200 overflow-hidden">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="bg-gray-50/60 border-b border-gray-200">
+                              <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Category</th>
+                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Items</th>
+                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Deductible</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Array.from(expenseResults.byCategory.entries()).map(([category, expenses]) => {
+                              const totalAmount = expenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
 
-                          const totalAmount = expenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
-
-                          return (
-                            <div key={category} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10">
-                              <div className="flex items-start justify-between mb-3">
-                                <div className="text-2xl">{categoryIcons[category]}</div>
-                                <div className="text-xs text-slate-400">{expenses.length} items</div>
-                              </div>
-                              <h3 className="text-sm font-bold text-white mb-1 capitalize">{category.replace('-', ' ')}</h3>
-                              <div className="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent font-space-grotesk">
-                                ${Math.round(totalAmount).toLocaleString()}
-                              </div>
-                              <p className="text-xs text-slate-400 mt-2">Deductible amount</p>
-                            </div>
-                          );
-                        })}
+                              return (
+                                <tr key={category} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                                  <td className="px-4 py-2.5">
+                                    <span className="inline-flex items-center gap-2.5 font-medium text-gray-900 capitalize">
+                                      <span
+                                        className="w-2 h-2 rounded-full"
+                                        style={{ background: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other }}
+                                      />
+                                      {category.replace('-', ' ')}
+                                    </span>
+                                  </td>
+                                  <td className="px-4 py-2.5 text-right text-gray-500">{expenses.length}</td>
+                                  <td className="px-4 py-2.5 text-right font-medium text-gray-900">
+                                    {money(totalAmount)}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
                       </div>
                     )}
-                  </div>
-
-                  {/* End of tax calculations */}
+                  </section>
                 </>
               );
             })()}
@@ -2633,21 +2148,18 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
               return (
                 <Dialog open={isCalculatorModalOpen} onOpenChange={setIsCalculatorModalOpen}>
-                  <DialogContent className="max-w-7xl w-[95vw] p-0 max-h-[90vh] overflow-hidden">
-                    <div className="p-6 border-b border-white/10">
+                  <DialogContent className="max-w-4xl w-[95vw] p-0 max-h-[90vh] overflow-hidden">
+                    <div className="p-5 border-b border-gray-200">
                       <DialogHeader>
-                        <DialogTitle className="text-xl font-bold text-white font-space-grotesk">
-                          Quarterly Tax Calculator
+                        <DialogTitle className="text-base font-semibold text-gray-900">
+                          Quarterly tax calculator
                         </DialogTitle>
-                        <DialogDescription className="text-sm">
+                        <DialogDescription className="text-sm text-gray-500">
                           Calculate and track your quarterly estimated tax payments
                         </DialogDescription>
                       </DialogHeader>
                     </div>
-                    <div className="overflow-y-auto max-h-[calc(90vh-120px)] px-6 pb-6" style={{
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: '#475569 #1e293b'
-                    }}>
+                    <div className="overflow-y-auto max-h-[calc(90vh-110px)] px-5 pb-5">
                       <QuarterlyTaxCalculator
                         yearToDateIncome={parsedIncome.parsed.totalIncome}
                         yearToDateExpenses={expenseResults.totalDeductions}
@@ -2662,12 +2174,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         {activeTab === 'insights' && (
           <div className="space-y-8">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white mb-2 font-space-grotesk">Platform Insights</h1>
-              <p className="text-slate-400">
-                Compare platform performance and get personalized recommendations to maximize earnings
-              </p>
-            </div>
+            <PageHeader
+              eyebrow="Workspace"
+              title="Platform insights"
+              subtitle="Compare platform performance and find where the next dollar comes from."
+            />
 
             {(() => {
               const PlatformInsights = require('./PlatformInsights').default;
@@ -2684,7 +2195,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         {activeTab === 'referrals' && (
           <div className="space-y-8">
-            {/* Dynamic import for ReferralDashboard */}
             {(() => {
               const ReferralDashboard = require('./ReferralDashboard').default;
               return <ReferralDashboard />;
@@ -2693,35 +2203,27 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         )}
 
         {activeTab === 'learn' && (
-          <div className="space-y-8">
-            {/* Hero message */}
-            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1">
-                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
-                    Learn & grow your gig business
-                  </h1>
-                  <p className="text-base md:text-lg text-slate-300">
-                    City-specific guides, tax tips, and strategies from top earners. Everything you need to level up.
-                  </p>
-                </div>
-
-                {/* Filters */}
-                <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="space-y-10">
+            <PageHeader
+              eyebrow="Workspace"
+              title="Learn"
+              subtitle="City-specific guides, tax tips, and strategies from top earners."
+              actions={
+                <>
                   {/* City Selector */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-white/10 hover:border-purple-500/50 transition-all text-sm">
-                        <Globe className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-300">
-                          {selectedCities.length === 0 ? 'All Cities' : selectedCities.length === 1 ? selectedCities[0] : `${selectedCities.length} cities`}
+                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors">
+                        <Globe className="w-3.5 h-3.5 text-gray-400" />
+                        <span>
+                          {selectedCities.length === 0 ? 'All cities' : selectedCities.length === 1 ? selectedCities[0] : `${selectedCities.length} cities`}
                         </span>
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 bg-slate-900 border-white/10">
-                      <DropdownMenuLabel className="text-slate-400">Select Cities</DropdownMenuLabel>
-                      <DropdownMenuSeparator className="bg-white/10" />
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel className="text-gray-500 text-xs">Select cities</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
                       {(['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Austin'] as City[]).map((city) => (
                         <DropdownMenuCheckboxItem
                           key={city}
@@ -2733,17 +2235,16 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               setSelectedCities(selectedCities.filter(c => c !== city));
                             }
                           }}
-                          className="text-slate-300 focus:bg-slate-800 focus:text-white"
                         >
                           {city}
                         </DropdownMenuCheckboxItem>
                       ))}
                       {selectedCities.length > 0 && (
                         <>
-                          <DropdownMenuSeparator className="bg-white/10" />
+                          <DropdownMenuSeparator />
                           <button
                             onClick={() => setSelectedCities([])}
-                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
+                            className="w-full px-2 py-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors text-center"
                           >
                             Clear all
                           </button>
@@ -2755,17 +2256,17 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* Gig Type Selector */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-white/10 hover:border-purple-500/50 transition-all text-sm">
-                        <Briefcase className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-300">
-                          {selectedGigTypes.length === 0 ? 'All Gigs' : selectedGigTypes.length === 1 ? selectedGigTypes[0] : `${selectedGigTypes.length} types`}
+                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors">
+                        <Briefcase className="w-3.5 h-3.5 text-gray-400" />
+                        <span>
+                          {selectedGigTypes.length === 0 ? 'All gigs' : selectedGigTypes.length === 1 ? selectedGigTypes[0] : `${selectedGigTypes.length} types`}
                         </span>
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 bg-slate-900 border-white/10">
-                      <DropdownMenuLabel className="text-slate-400">Select Gig Types</DropdownMenuLabel>
-                      <DropdownMenuSeparator className="bg-white/10" />
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel className="text-gray-500 text-xs">Select gig types</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
                       {(['rideshare', 'delivery', 'freelance', 'creator', 'rental'] as const).map((gigType) => (
                         <DropdownMenuCheckboxItem
                           key={gigType}
@@ -2777,17 +2278,16 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               setSelectedGigTypes(selectedGigTypes.filter(t => t !== gigType));
                             }
                           }}
-                          className="text-slate-300 focus:bg-slate-800 focus:text-white"
                         >
                           {gigType.charAt(0).toUpperCase() + gigType.slice(1)}
                         </DropdownMenuCheckboxItem>
                       ))}
                       {selectedGigTypes.length > 0 && (
                         <>
-                          <DropdownMenuSeparator className="bg-white/10" />
+                          <DropdownMenuSeparator />
                           <button
                             onClick={() => setSelectedGigTypes([])}
-                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
+                            className="w-full px-2 py-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors text-center"
                           >
                             Clear all
                           </button>
@@ -2795,137 +2295,104 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       )}
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </div>
-              </div>
-            </div>
-
-            {/* Explainer text */}
-            <div className="space-y-4 text-base text-slate-300 leading-relaxed">
-              <p>
-                Every gig platform has its own tricks, strategies, and hidden features. <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">Uber surge patterns in New York City</span> are completely different from Chicago. The best zones for DoorDash in San Francisco won&apos;t work in Austin. How you price yourself on Upwork depends on your reviews, your competition, and your positioning.
-              </p>
-              <p>
-                We&apos;ve built a <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">knowledge base designed specifically for gig workers</span>. Every article is 3-4 minutes long, focused on actionable strategies, and personalized to your gig type and city. Filter by rideshare, delivery, freelance, or creator work. Get <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">city-specific tips</span> that actually matter in your market.
-              </p>
-              <p>
-                Learn how to maximize surge pricing. How to stack orders across multiple apps without getting deactivated. How to raise your rates on Upwork without losing clients. How to track mileage for maximum tax deductions. These aren&apos;t generic blog posts—they&apos;re <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">practical playbooks</span> from top earners in your exact situation.
-              </p>
-              <p>
-                The difference between struggling and thriving in the gig economy often comes down to knowing what the top 10% know. Now you do too.
-              </p>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10 mt-8"></div>
+                </>
+              }
+            />
 
             {/* Filtered Guides */}
             {(() => {
               const guides = getGuides(selectedCities, selectedGigTypes);
 
-              const colorClasses = {
-                blue: { border: 'hover:border-blue-500/50', bg: 'bg-blue-500/20', text: 'text-blue-400', hover: 'group-hover:text-blue-400' },
-                green: { border: 'hover:border-green-500/50', bg: 'bg-green-500/20', text: 'text-green-400', hover: 'group-hover:text-green-400' },
-                purple: { border: 'hover:border-purple-500/50', bg: 'bg-purple-500/20', text: 'text-purple-400', hover: 'group-hover:text-purple-400' },
-                orange: { border: 'hover:border-orange-500/50', bg: 'bg-orange-500/20', text: 'text-orange-400', hover: 'group-hover:text-orange-400' },
-                red: { border: 'hover:border-red-500/50', bg: 'bg-red-500/20', text: 'text-red-400', hover: 'group-hover:text-red-400' },
-                yellow: { border: 'hover:border-yellow-500/50', bg: 'bg-yellow-500/20', text: 'text-yellow-400', hover: 'group-hover:text-yellow-400' },
-              };
-
               return (
-                <div>
-                  <div className="mb-4">
-                    <h2 className="text-lg font-bold text-white font-space-grotesk">
-                      {selectedCities.length > 0 || selectedGigTypes.length > 0 ? 'Filtered Guides' : 'All Guides'}
-                    </h2>
-                    <p className="text-xs text-slate-400">
-                      {guides.length} guide{guides.length !== 1 ? 's' : ''} found
-                      {selectedCities.length > 0 && ` in ${selectedCities.join(', ')}`}
-                      {selectedGigTypes.length > 0 && ` for ${selectedGigTypes.join(', ')}`}
-                    </p>
-                  </div>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    {guides.map((guide) => {
-                      const colors = colorClasses[guide.color as keyof typeof colorClasses];
-                      return (
-                        <Link
-                          key={guide.id}
-                          href={guide.actionLink || '#'}
-                          className={`bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 ${colors.border} transition-all cursor-pointer group block`}
-                        >
-                          <div className={`w-8 h-8 ${colors.bg} rounded-lg flex items-center justify-center mb-3`}>
-                            <BookOpen className={`w-4 h-4 ${colors.text}`} />
-                          </div>
-                          {guide.cities.length > 0 && !guide.cities.includes('all') && (
-                            <div className="flex items-center space-x-2 mb-2">
-                              <span className={`text-xs ${colors.bg} ${colors.text} px-2 py-0.5 rounded font-semibold`}>
-                                {guide.cities.join(', ')}
-                              </span>
+                <section>
+                  <SectionHeader
+                    title={selectedCities.length > 0 || selectedGigTypes.length > 0 ? 'Filtered guides' : 'All guides'}
+                    hint={`${guides.length} guide${guides.length !== 1 ? 's' : ''}${selectedCities.length > 0 ? ` in ${selectedCities.join(', ')}` : ''}${selectedGigTypes.length > 0 ? ` for ${selectedGigTypes.join(', ')}` : ''}`}
+                  />
+                  <div className="rounded-lg border border-gray-200 divide-y divide-gray-100">
+                    {guides.map((guide) => (
+                      <Link
+                        key={guide.id}
+                        href={guide.actionLink || '#'}
+                        className="flex items-start justify-between gap-4 px-4 py-3.5 hover:bg-gray-50/75 transition-colors group"
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          <BookOpen className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" strokeWidth={1.75} />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-sm font-medium text-gray-900 group-hover:text-indigo-700 transition-colors">
+                                {guide.title}
+                              </p>
+                              {guide.cities.length > 0 && !guide.cities.includes('all') && (
+                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-gray-100 text-gray-600">
+                                  {guide.cities.join(', ')}
+                                </span>
+                              )}
                             </div>
-                          )}
-                          <h3 className={`text-sm font-bold text-white mb-2 font-space-grotesk ${colors.hover} transition-colors`}>{guide.title}</h3>
-                          <p className="text-xs text-slate-400 mb-3">{guide.description}</p>
-                          <div className="flex items-center justify-between">
-                            <span className={`text-xs ${colors.text}`}>{guide.readTime}</span>
-                            <ArrowRight className={`w-3 h-3 text-slate-400 ${colors.hover} transition-colors`} />
+                            <p className="text-xs text-gray-500 mt-0.5">{guide.description}</p>
                           </div>
-                        </Link>
-                      );
-                    })}
+                        </div>
+                        <span className="text-xs text-gray-400 shrink-0">{guide.readTime}</span>
+                      </Link>
+                    ))}
                   </div>
-                </div>
+                </section>
               );
             })()}
           </div>
         )}
-
         {activeTab === 'settings' && (
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-2xl">
+            <PageHeader
+              eyebrow="Account"
+              title="Settings"
+              subtitle="Profile, notifications, and security."
+            />
+
             {/* Profile Settings */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                  <User className="w-5 h-5 text-blue-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-white font-space-grotesk">Profile Information</h2>
+            <section className="rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2.5 mb-5">
+                <User className="w-4 h-4 text-gray-400" strokeWidth={1.75} />
+                <h2 className="text-sm font-semibold text-gray-900">Profile</h2>
               </div>
 
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">First Name</label>
+                    <label className="block text-[13px] font-medium text-gray-700 mb-1.5">First name</label>
                     <input
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500/50"
+                      className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Last Name</label>
+                    <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Last name</label>
                     <input
                       type="text"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500/50"
+                      className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
+                  <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Email</label>
                   <input
                     type="email"
                     value={email}
                     disabled
-                    className="w-full bg-slate-800/30 border border-white/5 rounded-lg px-4 py-3 text-slate-500 cursor-not-allowed"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-400 cursor-not-allowed"
                   />
-                  <p className="text-xs text-slate-500 mt-1">Email cannot be changed</p>
+                  <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
                 </div>
 
                 {profileMessage && (
-                  <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-sm">
                     {profileMessage}
                   </div>
                 )}
@@ -2933,139 +2400,133 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <button
                   type="submit"
                   disabled={savingProfile}
-                  className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
                 >
                   {savingProfile ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Saving...
+                      Saving…
                     </>
                   ) : (
                     <>
                       <Save className="w-4 h-4" />
-                      Save Changes
+                      Save changes
                     </>
                   )}
                 </button>
               </form>
-            </div>
+            </section>
 
             {/* Email Notifications */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
-                  <Bell className="w-5 h-5 text-green-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-white font-space-grotesk">Email Notifications</h2>
+            <section className="rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2.5 mb-5">
+                <Bell className="w-4 h-4 text-gray-400" strokeWidth={1.75} />
+                <h2 className="text-sm font-semibold text-gray-900">Email notifications</h2>
               </div>
 
-              <form onSubmit={handleUpdateNotifications} className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-lg border border-white/5">
+              <form onSubmit={handleUpdateNotifications} className="space-y-5">
+                <div className="divide-y divide-gray-100 border border-gray-200 rounded-md">
+                  <div className="flex items-start gap-3 p-4">
                     <input
                       type="checkbox"
                       id="weeklyReports"
                       checked={weeklyReports}
                       onChange={(e) => setWeeklyReports(e.target.checked)}
-                      className="mt-1 w-5 h-5 rounded border-white/20 bg-slate-800 text-blue-500 focus:ring-2 focus:ring-blue-500/50"
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-300"
                     />
                     <div className="flex-1">
-                      <label htmlFor="weeklyReports" className="block text-white font-semibold mb-1 cursor-pointer">
-                        Weekly Earnings Reports
+                      <label htmlFor="weeklyReports" className="block text-sm font-medium text-gray-900 cursor-pointer">
+                        Weekly earnings reports
                       </label>
-                      <p className="text-sm text-slate-400">
-                        Get a summary of your weekly income, platform breakdown, and personalized insights every Monday morning.
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        A summary of weekly income, platform breakdown, and insights every Monday morning.
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-lg border border-white/5">
+                  <div className="flex items-start gap-3 p-4">
                     <input
                       type="checkbox"
                       id="taxReminders"
                       checked={taxReminders}
                       onChange={(e) => setTaxReminders(e.target.checked)}
-                      className="mt-1 w-5 h-5 rounded border-white/20 bg-slate-800 text-blue-500 focus:ring-2 focus:ring-blue-500/50"
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-300"
                     />
                     <div className="flex-1">
-                      <label htmlFor="taxReminders" className="block text-white font-semibold mb-1 cursor-pointer">
-                        Quarterly Tax Reminders
+                      <label htmlFor="taxReminders" className="block text-sm font-medium text-gray-900 cursor-pointer">
+                        Quarterly tax reminders
                       </label>
-                      <p className="text-sm text-slate-400">
-                        Receive reminders before quarterly tax deadlines (April 15, June 15, September 15, January 15) with estimated payment amounts.
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        Reminders before quarterly deadlines (April 15, June 15, September 15, January 15) with estimated amounts.
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {notificationsMessage && (
-                  <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-sm">
                     {notificationsMessage}
                   </div>
                 )}
 
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                  <p className="text-sm text-slate-300">
-                    <strong className="text-blue-400">Note:</strong> Email notifications require your Supabase project to have SMTP configured.
-                    Until then, these preferences are saved but emails won't be sent.
-                  </p>
-                </div>
+                <p className="text-xs text-gray-400">
+                  Note: email notifications require SMTP to be configured on the Supabase project.
+                  Until then, preferences are saved but emails won&apos;t be sent.
+                </p>
 
                 <button
                   type="submit"
                   disabled={savingNotifications}
-                  className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
                 >
                   {savingNotifications ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Saving...
+                      Saving…
                     </>
                   ) : (
                     <>
                       <Save className="w-4 h-4" />
-                      Save Preferences
+                      Save preferences
                     </>
                   )}
                 </button>
               </form>
-            </div>
+            </section>
 
             {/* Password Settings */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                  <Lock className="w-5 h-5 text-purple-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-white font-space-grotesk">Change Password</h2>
+            <section className="rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2.5 mb-5">
+                <Lock className="w-4 h-4 text-gray-400" strokeWidth={1.75} />
+                <h2 className="text-sm font-semibold text-gray-900">Change password</h2>
               </div>
 
               <form onSubmit={handleUpdatePassword} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">New Password</label>
+                  <label className="block text-[13px] font-medium text-gray-700 mb-1.5">New password</label>
                   <input
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500/50"
+                    className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                     placeholder="At least 8 characters"
                     minLength={8}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Confirm New Password</label>
+                  <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Confirm new password</label>
                   <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500/50"
+                    className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                     placeholder="Repeat password"
                   />
                 </div>
 
                 {passwordMessage && (
-                  <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-sm">
                     {passwordMessage}
                   </div>
                 )}
@@ -3073,43 +2534,44 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <button
                   type="submit"
                   disabled={savingPassword || !newPassword || !confirmPassword}
-                  className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
                 >
                   {savingPassword ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Updating...
+                      Updating…
                     </>
                   ) : (
                     <>
                       <Lock className="w-4 h-4" />
-                      Update Password
+                      Update password
                     </>
                   )}
                 </button>
               </form>
-            </div>
+            </section>
 
             {/* Danger Zone */}
-            <div className="bg-red-500/5 backdrop-blur-xl rounded-2xl p-8 border border-red-500/20">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
-                  <Trash2 className="w-5 h-5 text-red-400" />
-                </div>
-                <h2 className="text-2xl font-bold text-white font-space-grotesk">Danger Zone</h2>
+            <section className="rounded-lg border border-red-200 p-6">
+              <div className="flex items-center gap-2.5 mb-4">
+                <Trash2 className="w-4 h-4 text-red-500" strokeWidth={1.75} />
+                <h2 className="text-sm font-semibold text-gray-900">Danger zone</h2>
               </div>
 
               {/* Delete Account Section */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-2">Delete Account</h3>
-                <p className="text-slate-300 mb-4">
-                  Once you delete your account, there is no going back. All your data will be permanently deleted.
+                <h3 className="text-sm font-medium text-gray-900 mb-1">Delete account</h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  Once you delete your account, there is no going back. All your data will be
+                  permanently deleted.
                 </p>
 
                 {showDeleteConfirm && (
-                  <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-                    <p className="text-red-400 font-semibold mb-2">⚠️ Are you absolutely sure?</p>
-                    <p className="text-sm text-slate-300">This will permanently delete all your transactions, income data, and account settings.</p>
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-sm font-medium text-red-800 mb-1">Are you absolutely sure?</p>
+                    <p className="text-sm text-red-700">
+                      This will permanently delete all your transactions, income data, and account settings.
+                    </p>
                   </div>
                 )}
 
@@ -3117,17 +2579,17 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <button
                     onClick={handleDeleteAccount}
                     disabled={deleting}
-                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
                   >
                     {deleting ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Deleting...
+                        Deleting…
                       </>
                     ) : (
                       <>
                         <Trash2 className="w-4 h-4" />
-                        {showDeleteConfirm ? 'Yes, Delete My Account' : 'Delete Account'}
+                        {showDeleteConfirm ? 'Yes, delete my account' : 'Delete account'}
                       </>
                     )}
                   </button>
@@ -3135,40 +2597,24 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {showDeleteConfirm && (
                     <button
                       onClick={() => setShowDeleteConfirm(false)}
-                      className="text-slate-400 hover:text-white text-sm"
+                      className="text-sm text-gray-500 hover:text-gray-900"
                     >
                       Cancel
                     </button>
                   )}
                 </div>
               </div>
-            </div>
+            </section>
 
             {settingsError && (
-              <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+              <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
                 {settingsError}
               </div>
             )}
           </div>
         )}
-      </div>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-8 px-6 bg-slate-900/50 backdrop-blur-xl mt-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center space-x-2">
-              <div className="flex -space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
-              </div>
-              <span className="text-xl font-bold text-white font-space-grotesk">Stub</span>
-            </div>
-            <div className="text-sm text-slate-500">© 2025 Stub Financial Ltd. All rights reserved.</div>
-          </div>
-        </div>
-      </footer>
-    </div>
+        </>
+      )}
+    </AppShell>
   );
 }
