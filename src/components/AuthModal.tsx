@@ -15,9 +15,11 @@ import { ShiftMark } from '@/components/Logo';
 export default function AuthModal({
 	initialMode,
 	onClose,
+	referralCode,
 }: {
 	initialMode: 'login' | 'signup';
 	onClose: () => void;
+	referralCode?: string | null;
 }) {
 	const router = useRouter();
 	const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
@@ -44,6 +46,7 @@ export default function AuthModal({
 
 				<LoginForm
 					isLogin={mode === 'login'}
+					referralCode={referralCode}
 					onSuccess={() =>
 						router.push(mode === 'signup' ? '/onboarding' : '/dashboard')
 					}

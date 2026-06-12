@@ -290,7 +290,13 @@ function Home() {
 				</div>
 			</footer>
 
-			{auth && <AuthModal initialMode={auth} onClose={() => setAuth(null)} />}
+			{auth && (
+				<AuthModal
+					initialMode={auth}
+					referralCode={searchParams.get('ref')}
+					onClose={() => setAuth(null)}
+				/>
+			)}
 		</div>
 	);
 }
