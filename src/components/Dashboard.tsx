@@ -7,9 +7,11 @@ import { toast } from 'sonner';
 import BenefitsMarketplace from './BenefitsMarketplace';
 import { BarChart3, DollarSign, PiggyBank, Shield, LogOut, User, FileText, Zap, Globe, ArrowRight, Heart, Wallet, Briefcase, Receipt, BookOpen, Users, Target, Upload, Download, Check, ChevronDown, Calendar, TrendingDown, MoreHorizontal, Calculator, Mail, Lock, Trash2, Save, Loader2, Bell } from 'lucide-react';
 import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
-import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
-import { parseExpenses } from '@/lib/expense-parser';
+import { calculateStabilityScore, type Transaction } from '@/lib/income-parser';
+import { classifyTransactions, buildIncomeResults, buildExpensesFromTransactions } from '@/lib/hybrid-classifier';
 import { calculateTaxes, getQuarterlyDeadlines, projectAnnualTax } from '@/lib/tax-calculator';
+import AITaxSummary from './AITaxSummary';
+import DeductionCheckDialog from './DeductionCheckDialog';
 import { getTips, getGuides, type City, type GigType } from '@/lib/content-registry';
 import { useParsedIncome, useTransactions, clearAllCaches } from '@/hooks/useSupabaseData';
 import { supabase } from '@/lib/supabase';
@@ -165,6 +167,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         description: tx.name,
         amount: tx.amount,
         type: tx.amount > 0 ? 'credit' : 'debit' as 'credit' | 'debit',
+        classification: tx.classification ?? null,
       })),
     };
   }, [supabaseParsedIncome, transactions]);
@@ -379,7 +382,18 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         console.log(`✅ Parsed ${transactions.length} transactions`);
 
-        const parsed = parseTransactions(transactions);
+        // Hybrid classification: regex handles the obvious hits for free,
+        // Claude classifies the remainder/low-confidence transactions.
+        toast.info('Classifying transactions with AI...', { duration: 3000 });
+        const { classifications, aiUsed, aiError } = await classifyTransactions(transactions);
+        if (aiError) {
+          console.warn('⚠️ AI classification unavailable:', aiError);
+          toast.warning('AI classification unavailable — using pattern matching only.');
+        } else if (aiUsed) {
+          console.log('🤖 AI classified the transactions regex could not match');
+        }
+
+        const parsed = buildIncomeResults(transactions, classifications);
         const stability = calculateStabilityScore(parsed.income);
 
         console.log('💾 Saving to database...');
@@ -394,6 +408,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           amount: tx.amount, // CSV already has correct sign: positive for credits, negative for debits
           category: null,
           pending: false,
+          classification: classifications.get(tx.id) || null,
         }));
 
         const { error: txError } = await supabase
@@ -1770,7 +1785,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </div>
             ) : (() => {
               // Parse expenses from uploaded transactions
-              const expenseResults = parseExpenses(parsedIncome.rawTransactions || []);
+              const expenseResults = buildExpensesFromTransactions(parsedIncome.rawTransactions || []);
               const { expenses, byCategory, totalExpenses, totalDeductions, potentialTaxSavings } = expenseResults;
 
               const categoryIcons: Record<string, any> = {
@@ -2086,12 +2101,25 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             {/* Expense Items */}
                             <div className="space-y-2">
                               {categoryExpenses.slice(0, 5).map((expense, idx) => (
-                                <div key={idx} className="flex items-center justify-between py-2 px-3 bg-slate-800/50 rounded">
-                                  <div className="flex-1">
-                                    <p className="text-sm text-white font-medium">{expense.description}</p>
-                                    <p className="text-xs text-slate-400">{expense.date.toLocaleDateString()} • {expense.subcategory}</p>
+                                <div key={idx} className="flex items-center justify-between gap-3 py-2 px-3 bg-slate-800/50 rounded">
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-white font-medium truncate">{expense.description}</p>
+                                    <p className="text-xs text-slate-400" title={expense.rationale}>
+                                      {expense.date.toLocaleDateString()} • {expense.subcategory}
+                                      {expense.source === 'ai' && (
+                                        <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                                          AI
+                                        </span>
+                                      )}
+                                    </p>
                                   </div>
-                                  <div className="text-right">
+                                  <DeductionCheckDialog
+                                    description={expense.description}
+                                    amount={expense.amount}
+                                    date={expense.date}
+                                    gigTypes={Array.from(parsedIncome.parsed.byPlatform.keys())}
+                                  />
+                                  <div className="text-right flex-shrink-0">
                                     <p className="text-sm font-bold text-white">${expense.deductibleAmount.toFixed(2)}</p>
                                     {expense.deductionRate < 100 && (
                                       <p className="text-xs text-slate-400">{expense.deductionRate}% deductible</p>
@@ -2171,7 +2199,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               </div>
             ) : (() => {
               // Calculate real taxes from uploaded data
-              const expenseResults = parseExpenses(parsedIncome.rawTransactions || []);
+              const expenseResults = buildExpensesFromTransactions(parsedIncome.rawTransactions || []);
               const taxCalc = parsedIncome.parsed.startDate && parsedIncome.parsed.endDate
                 ? projectAnnualTax(
                     parsedIncome.parsed.totalIncome,
@@ -2216,6 +2244,20 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       <div className="text-xs text-slate-400 mt-1">From deductions</div>
                     </div>
                   </div>
+
+                  {/* AI plain-English summary (numbers come from the tax calculator) */}
+                  <AITaxSummary
+                    taxCalc={taxCalc}
+                    totalDeductions={expenseResults.totalDeductions}
+                    deadlines={deadlines}
+                    platforms={Array.from(parsedIncome.parsed.byPlatform.keys())}
+                    deductionsByCategory={Object.fromEntries(
+                      Array.from(expenseResults.byCategory.entries()).map(([category, items]) => [
+                        category,
+                        items.reduce((sum, e) => sum + e.deductibleAmount, 0),
+                      ])
+                    )}
+                  />
 
                   {/* Divider */}
                   <div className="border-t border-white/10"></div>
@@ -2587,7 +2629,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             {/* Tax Calculator Modal */}
             {parsedIncome && (() => {
               const QuarterlyTaxCalculator = require('./QuarterlyTaxCalculator').default;
-              const expenseResults = parseExpenses(parsedIncome.rawTransactions || []);
+              const expenseResults = buildExpensesFromTransactions(parsedIncome.rawTransactions || []);
 
               return (
                 <Dialog open={isCalculatorModalOpen} onOpenChange={setIsCalculatorModalOpen}>
