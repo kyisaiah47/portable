@@ -36,7 +36,7 @@ export function ShiftMark({
 /** Mark + wordmark lockup used in headers and the sidebar. */
 export function Logo({ className, markClassName }: { className?: string; markClassName?: string }) {
   return (
-    <span className={cn('inline-flex items-center gap-2 text-gray-900', className)}>
+    <span className={cn('inline-flex items-center gap-2 text-white', className)}>
       <ShiftMark className={markClassName} />
       <span className="text-[17px] font-semibold tracking-tight leading-none">stub</span>
     </span>

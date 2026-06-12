@@ -63,8 +63,8 @@ function NavLink({
       href={item.path}
       className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
         active
-          ? 'bg-indigo-50 text-indigo-700 font-medium'
-          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+          ? 'bg-indigo-500/10 text-indigo-300 font-medium'
+          : 'text-slate-400 hover:bg-slate-800 hover:text-white'
       }`}
     >
       <item.icon className="w-4 h-4" strokeWidth={1.75} />
@@ -82,9 +82,9 @@ export default function AppShell({ user, onLogout, children }: AppShellProps) {
   const activeTab = pathname === '/dashboard' ? 'home' : pathname.split('/').pop() || 'home';
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex">
+    <div className="dark min-h-screen bg-slate-950 text-white flex">
       {/* Sidebar */}
-      <aside className="hidden md:flex w-56 shrink-0 flex-col border-r border-gray-200 bg-gray-50/60 sticky top-0 h-screen">
+      <aside className="hidden md:flex w-56 shrink-0 flex-col border-r border-white/10 bg-slate-950/60 sticky top-0 h-screen">
         <div className="px-4 pt-5 pb-4">
           <Link href="/dashboard" aria-label="Stub home">
             <Logo />
@@ -96,7 +96,7 @@ export default function AppShell({ user, onLogout, children }: AppShellProps) {
             <NavLink key={item.id} item={item} active={activeTab === item.id} />
           ))}
 
-          <div className="pt-5 pb-1.5 px-2.5 text-[11px] font-medium uppercase tracking-wider text-gray-400">
+          <div className="pt-5 pb-1.5 px-2.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">
             Workspace
           </div>
           {SECONDARY_NAV.map((item) => (
@@ -105,20 +105,20 @@ export default function AppShell({ user, onLogout, children }: AppShellProps) {
         </nav>
 
         {/* User block */}
-        <div className="border-t border-gray-200 p-2.5">
+        <div className="border-t border-white/10 p-2.5">
           <DropdownMenu>
-            <DropdownMenuTrigger className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-gray-100 transition-colors text-left">
-              <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-semibold shrink-0">
+            <DropdownMenuTrigger className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-slate-800 transition-colors text-left">
+              <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-300 flex items-center justify-center text-xs font-semibold shrink-0">
                 {user.firstName?.charAt(0)?.toUpperCase() || 'U'}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-medium text-gray-900 truncate">{user.firstName}</p>
-                <p className="text-[11px] text-gray-500 truncate">{user.email}</p>
+                <p className="text-[13px] font-medium text-white truncate">{user.firstName}</p>
+                <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
               </div>
-              <ChevronsUpDown className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+              <ChevronsUpDown className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="start" className="w-52">
-              <DropdownMenuLabel className="text-gray-500 text-xs">My account</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-slate-400 text-xs">My account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/dashboard/settings" className="flex items-center cursor-pointer">
@@ -129,7 +129,7 @@ export default function AppShell({ user, onLogout, children }: AppShellProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={onLogout}
-                className="cursor-pointer flex items-center text-red-600 focus:text-red-600"
+                className="cursor-pointer flex items-center text-red-400 focus:text-red-400"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 Log out
@@ -142,13 +142,13 @@ export default function AppShell({ user, onLogout, children }: AppShellProps) {
       {/* Main column */}
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Mobile top bar */}
-        <header className="md:hidden sticky top-0 z-40 bg-white border-b border-gray-200">
+        <header className="md:hidden sticky top-0 z-40 bg-slate-900 border-b border-white/10">
           <div className="flex items-center justify-between px-4 h-12">
             <Link href="/dashboard" aria-label="Stub home">
               <Logo />
             </Link>
             <DropdownMenu>
-              <DropdownMenuTrigger className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-semibold">
+              <DropdownMenuTrigger className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-300 flex items-center justify-center text-xs font-semibold">
                 {user.firstName?.charAt(0)?.toUpperCase() || 'U'}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
@@ -161,7 +161,7 @@ export default function AppShell({ user, onLogout, children }: AppShellProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={onLogout}
-                  className="cursor-pointer flex items-center text-red-600 focus:text-red-600"
+                  className="cursor-pointer flex items-center text-red-400 focus:text-red-400"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   Log out
@@ -176,8 +176,8 @@ export default function AppShell({ user, onLogout, children }: AppShellProps) {
                 href={item.path}
                 className={`px-2.5 py-1 rounded-md text-[13px] whitespace-nowrap ${
                   activeTab === item.id
-                    ? 'bg-indigo-50 text-indigo-700 font-medium'
-                    : 'text-gray-600'
+                    ? 'bg-indigo-500/10 text-indigo-300 font-medium'
+                    : 'text-slate-400'
                 }`}
               >
                 {item.label}

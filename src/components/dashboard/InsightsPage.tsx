@@ -31,9 +31,9 @@ export default function InsightsPage({ dashboardData, user }: InsightsPageProps)
   return (
     <div className="space-y-8">
       <div className="mb-8">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-1.5">Workspace</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-gray-900">Platform insights</h1>
-        <p className="text-sm text-gray-500 mt-1.5">
+        <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-1.5">Workspace</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-white">Platform insights</h1>
+        <p className="text-sm text-slate-400 mt-1.5">
           Compare platform performance and find where the next dollar comes from.
         </p>
       </div>

@@ -23,10 +23,10 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-gray-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="text-sm text-gray-500">Loading…</p>
+          <div className="w-8 h-8 border-2 border-white/10 border-t-indigo-600 rounded-full animate-spin"></div>
+          <p className="text-sm text-slate-400">Loading…</p>
         </div>
       </div>
     );
@@ -59,9 +59,9 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950">
       {/* Progress bar */}
-      <div className="w-full h-0.5 bg-gray-200">
+      <div className="w-full h-0.5 bg-slate-700">
         <div
           className="h-full bg-indigo-600 transition-all duration-500"
           style={{ width: `${(step / 2) * 100}%` }}
@@ -74,10 +74,10 @@ export default function OnboardingPage() {
           <div className="space-y-10">
             <div className="text-center">
               <Logo className="mx-auto mb-8" />
-              <h1 className="text-3xl font-semibold tracking-tight text-gray-900 mb-3">
+              <h1 className="text-3xl font-semibold tracking-tight text-white mb-3">
                 Welcome, {user.firstName}.
               </h1>
-              <p className="text-gray-500">
+              <p className="text-slate-400">
                 Bring in some income data and we&apos;ll take it from there.
               </p>
             </div>
@@ -87,26 +87,26 @@ export default function OnboardingPage() {
               {/* CSV Option */}
               <button
                 onClick={() => handleMethodSelect('csv')}
-                className="group bg-white rounded-lg border border-gray-200 p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
+                className="group bg-slate-900 rounded-lg border border-white/10 p-6 text-left hover:border-white/25 hover:shadow-sm transition-all"
               >
-                <div className="w-9 h-9 rounded-md bg-indigo-50 flex items-center justify-center mb-4">
-                  <Upload className="w-4.5 h-4.5 w-[18px] h-[18px] text-indigo-600" />
+                <div className="w-9 h-9 rounded-md bg-indigo-500/10 flex items-center justify-center mb-4">
+                  <Upload className="w-4.5 h-4.5 w-[18px] h-[18px] text-indigo-400" />
                 </div>
-                <h3 className="text-base font-semibold text-gray-900 mb-1">
+                <h3 className="text-base font-semibold text-white mb-1">
                   Upload a bank statement
                 </h3>
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-slate-400 mb-4">
                   A CSV export from your bank. Best for seeing your real numbers.
                 </p>
                 <ul className="space-y-1.5 mb-4">
                   {['No bank login needed', 'Works with any bank', 'Quick setup'].map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-sm text-gray-500">
+                    <li key={item} className="flex items-center gap-2 text-sm text-slate-400">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
-                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600">
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-400">
                   Upload CSV
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </span>
@@ -115,24 +115,24 @@ export default function OnboardingPage() {
               {/* Demo Data Option */}
               <button
                 onClick={() => handleMethodSelect('demo')}
-                className="group bg-white rounded-lg border border-gray-200 p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
+                className="group bg-slate-900 rounded-lg border border-white/10 p-6 text-left hover:border-white/25 hover:shadow-sm transition-all"
               >
-                <div className="w-9 h-9 rounded-md bg-gray-100 flex items-center justify-center mb-4">
-                  <Zap className="w-[18px] h-[18px] text-gray-600" />
+                <div className="w-9 h-9 rounded-md bg-slate-800 flex items-center justify-center mb-4">
+                  <Zap className="w-[18px] h-[18px] text-slate-400" />
                 </div>
-                <h3 className="text-base font-semibold text-gray-900 mb-1">Try demo data</h3>
-                <p className="text-sm text-gray-500 mb-4">
+                <h3 className="text-base font-semibold text-white mb-1">Try demo data</h3>
+                <p className="text-sm text-slate-400 mb-4">
                   Explore Stub with realistic sample gig income before bringing your own.
                 </p>
                 <ul className="space-y-1.5 mb-4">
                   {['Instant setup', 'Realistic data', 'Replace anytime'].map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-sm text-gray-500">
+                    <li key={item} className="flex items-center gap-2 text-sm text-slate-400">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
-                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-700">
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-300">
                   Use sample data
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </span>
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
             <div className="text-center">
               <button
                 onClick={() => router.push('/dashboard')}
-                className="text-sm text-gray-400 hover:text-gray-600"
+                className="text-sm text-slate-500 hover:text-slate-400"
               >
                 Skip for now →
               </button>
@@ -154,10 +154,10 @@ export default function OnboardingPage() {
         {step === 2 && (
           <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold tracking-tight text-gray-900 mb-2">
+              <h2 className="text-2xl font-semibold tracking-tight text-white mb-2">
                 Upload a bank statement
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-400">
                 A CSV of your recent transactions — we&apos;ll classify everything automatically.
               </p>
             </div>
@@ -169,7 +169,7 @@ export default function OnboardingPage() {
             <div className="text-center">
               <button
                 onClick={() => setStep(1)}
-                className="text-sm text-gray-400 hover:text-gray-600"
+                className="text-sm text-slate-500 hover:text-slate-400"
               >
                 ← Go back
               </button>

@@ -122,10 +122,10 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
   // Error handling
   if (incomeError) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-white border border-gray-200 rounded-lg p-6 max-w-md w-full">
-          <h2 className="text-base font-semibold text-gray-900 mb-1">Error loading data</h2>
-          <p className="text-sm text-gray-500">{incomeError.message}</p>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
+        <div className="bg-slate-900 border border-white/10 rounded-lg p-6 max-w-md w-full">
+          <h2 className="text-base font-semibold text-white mb-1">Error loading data</h2>
+          <p className="text-sm text-slate-400">{incomeError.message}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-4 px-3.5 py-1.5 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"

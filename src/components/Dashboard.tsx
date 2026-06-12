@@ -175,11 +175,11 @@ function PageHeader({
   return (
     <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
       <div>
-        <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-1.5">
+        <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-1.5">
           {eyebrow}
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-gray-900">{title}</h1>
-        {subtitle && <p className="text-sm text-gray-500 mt-1.5">{subtitle}</p>}
+        <h1 className="text-3xl font-semibold tracking-tight text-white">{title}</h1>
+        {subtitle && <p className="text-sm text-slate-400 mt-1.5">{subtitle}</p>}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
@@ -191,15 +191,15 @@ function StatGrid({ stats }: { stats: { label: string; value: React.ReactNode; s
     <div
       className={`grid sm:grid-cols-2 ${
         stats.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'
-      } gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden`}
+      } gap-px bg-slate-700 border border-white/10 rounded-lg overflow-hidden`}
     >
       {stats.map((s) => (
-        <div key={s.label} className="bg-white p-4">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-1.5">
+        <div key={s.label} className="bg-slate-900 p-4">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-1.5">
             {s.label}
           </p>
-          <p className="text-2xl font-semibold tracking-tight text-gray-900">{s.value}</p>
-          {s.sub && <p className="text-xs text-gray-500 mt-1">{s.sub}</p>}
+          <p className="text-2xl font-semibold tracking-tight text-white">{s.value}</p>
+          {s.sub && <p className="text-xs text-slate-400 mt-1">{s.sub}</p>}
         </div>
       ))}
     </div>
@@ -209,8 +209,8 @@ function StatGrid({ stats }: { stats: { label: string; value: React.ReactNode; s
 function SectionHeader({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4 mb-3">
-      <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
-      {hint && <p className="text-xs text-gray-400">{hint}</p>}
+      <h2 className="text-sm font-semibold text-white">{title}</h2>
+      {hint && <p className="text-xs text-slate-500">{hint}</p>}
     </div>
   );
 }
@@ -225,15 +225,15 @@ function SegmentedControl<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <div className="inline-flex items-center bg-gray-100 rounded-md p-0.5">
+    <div className="inline-flex items-center bg-slate-800 rounded-md p-0.5">
       {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
           className={`px-2.5 py-1 text-xs font-medium rounded transition-colors ${
             value === opt.value
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-500 hover:text-gray-900'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'text-slate-400 hover:text-white'
           }`}
         >
           {opt.label}
@@ -245,11 +245,11 @@ function SegmentedControl<T extends string>({
 
 function ChartEmptyState({ icon: Icon, title, hint }: { icon: typeof BarChart3; title: string; hint: string }) {
   return (
-    <div className="h-72 flex items-center justify-center rounded-md border border-dashed border-gray-200 bg-gray-50/50">
+    <div className="h-72 flex items-center justify-center rounded-md border border-dashed border-white/10 bg-slate-950/50">
       <div className="text-center px-8">
-        <Icon className="w-8 h-8 text-gray-300 mx-auto mb-3" strokeWidth={1.5} />
-        <p className="text-sm font-medium text-gray-700 mb-0.5">{title}</p>
-        <p className="text-xs text-gray-400">{hint}</p>
+        <Icon className="w-8 h-8 text-slate-600 mx-auto mb-3" strokeWidth={1.5} />
+        <p className="text-sm font-medium text-slate-300 mb-0.5">{title}</p>
+        <p className="text-xs text-slate-500">{hint}</p>
       </div>
     </div>
   );
@@ -267,10 +267,10 @@ function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/50 px-8 py-16 text-center">
-      <Icon className="w-9 h-9 text-gray-300 mx-auto mb-4" strokeWidth={1.5} />
-      <h3 className="text-base font-semibold text-gray-900 mb-1">{title}</h3>
-      <p className="text-sm text-gray-500 max-w-md mx-auto mb-6">{body}</p>
+    <div className="rounded-lg border border-dashed border-white/20 bg-slate-950/50 px-8 py-16 text-center">
+      <Icon className="w-9 h-9 text-slate-600 mx-auto mb-4" strokeWidth={1.5} />
+      <h3 className="text-base font-semibold text-white mb-1">{title}</h3>
+      <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">{body}</p>
       {action}
     </div>
   );
@@ -280,23 +280,23 @@ function DashboardSkeleton() {
   return (
     <div className="space-y-8 animate-pulse">
       <div>
-        <div className="h-3 w-24 bg-gray-200 rounded mb-3" />
-        <div className="h-9 w-56 bg-gray-200 rounded" />
+        <div className="h-3 w-24 bg-slate-700 rounded mb-3" />
+        <div className="h-9 w-56 bg-slate-700 rounded" />
       </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-slate-700 border border-white/10 rounded-lg overflow-hidden">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="bg-white p-4">
-            <div className="h-3 w-20 bg-gray-200 rounded mb-3" />
-            <div className="h-7 w-28 bg-gray-200 rounded" />
+          <div key={i} className="bg-slate-900 p-4">
+            <div className="h-3 w-20 bg-slate-700 rounded mb-3" />
+            <div className="h-7 w-28 bg-slate-700 rounded" />
           </div>
         ))}
       </div>
-      <div className="rounded-lg border border-gray-200">
-        <div className="h-10 border-b border-gray-100 bg-gray-50/60 rounded-t-lg" />
+      <div className="rounded-lg border border-white/10">
+        <div className="h-10 border-b border-white/5 bg-slate-950/60 rounded-t-lg" />
         {[0, 1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex items-center justify-between px-4 py-3 border-b border-gray-100 last:border-0">
-            <div className="h-3.5 w-48 bg-gray-200 rounded" />
-            <div className="h-3.5 w-16 bg-gray-200 rounded" />
+          <div key={i} className="flex items-center justify-between px-4 py-3 border-b border-white/5 last:border-0">
+            <div className="h-3.5 w-48 bg-slate-700 rounded" />
+            <div className="h-3.5 w-16 bg-slate-700 rounded" />
           </div>
         ))}
       </div>
@@ -713,10 +713,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   // Error handling
   if (incomeError) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-white border border-gray-200 rounded-lg p-6 max-w-md w-full">
-          <h2 className="text-base font-semibold text-gray-900 mb-1">Error loading data</h2>
-          <p className="text-sm text-gray-500">{incomeError.message}</p>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
+        <div className="bg-slate-900 border border-white/10 rounded-lg p-6 max-w-md w-full">
+          <h2 className="text-base font-semibold text-white mb-1">Error loading data</h2>
+          <p className="text-sm text-slate-400">{incomeError.message}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-4 px-3.5 py-1.5 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
@@ -740,7 +740,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       <a
         href="/sample-bank-statement.csv"
         download
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors"
       >
         <Download className="w-3.5 h-3.5" />
         Sample
@@ -831,14 +831,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 {/* Platform summary table */}
                 <section>
                   <SectionHeader title="Income by platform" hint="From your uploaded statements" />
-                  <div className="rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="rounded-lg border border-white/10 overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-gray-50/60 border-b border-gray-200">
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Platform</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Payments</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Share</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Total</th>
+                        <tr className="bg-slate-950/60 border-b border-white/10">
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Platform</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Payments</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Share</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Total</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -855,11 +855,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               ? (total / parsedIncome.parsed.totalIncome) * 100
                               : 0;
                             return (
-                              <tr key={platform} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                              <tr key={platform} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
                                 <td className="px-4 py-2.5">
-                                  <span className="inline-flex items-center gap-2.5 text-gray-900 font-medium">
+                                  <span className="inline-flex items-center gap-2.5 text-white font-medium">
                                     {PIcon ? (
-                                      <PIcon className="w-3.5 h-3.5 text-gray-400" />
+                                      <PIcon className="w-3.5 h-3.5 text-slate-500" />
                                     ) : (
                                       <span
                                         className="w-2 h-2 rounded-full"
@@ -869,9 +869,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                     {platform}
                                   </span>
                                 </td>
-                                <td className="px-4 py-2.5 text-right text-gray-500">{count}</td>
-                                <td className="px-4 py-2.5 text-right text-gray-500">{share.toFixed(1)}%</td>
-                                <td className="px-4 py-2.5 text-right font-medium text-gray-900">{money2(total)}</td>
+                                <td className="px-4 py-2.5 text-right text-slate-400">{count}</td>
+                                <td className="px-4 py-2.5 text-right text-slate-400">{share.toFixed(1)}%</td>
+                                <td className="px-4 py-2.5 text-right font-medium text-white">{money2(total)}</td>
                               </tr>
                             );
                           })}
@@ -883,19 +883,19 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 {/* Recent payouts */}
                 <section>
                   <div className="flex items-baseline justify-between gap-4 mb-3">
-                    <h2 className="text-sm font-semibold text-gray-900">Recent payouts</h2>
-                    <Link href="/dashboard/income" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
+                    <h2 className="text-sm font-semibold text-white">Recent payouts</h2>
+                    <Link href="/dashboard/income" className="text-xs font-medium text-indigo-400 hover:text-indigo-300">
                       View all →
                     </Link>
                   </div>
-                  <div className="rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="rounded-lg border border-white/10 overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-gray-50/60 border-b border-gray-200">
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Date</th>
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Description</th>
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Platform</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Amount</th>
+                        <tr className="bg-slate-950/60 border-b border-white/10">
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Date</th>
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Description</th>
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Platform</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Amount</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -903,19 +903,19 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           .sort((a: any, b: any) => b.date.getTime() - a.date.getTime())
                           .slice(0, 8)
                           .map((item: any, idx: number) => (
-                            <tr key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
-                              <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
+                            <tr key={idx} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                              <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
                                 {item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                               </td>
-                              <td className="px-4 py-2.5 text-gray-900 max-w-[260px] truncate">
+                              <td className="px-4 py-2.5 text-white max-w-[260px] truncate">
                                 {item.description || `${item.platform} payout`}
                               </td>
                               <td className="px-4 py-2.5 hidden sm:table-cell">
-                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-gray-100 text-gray-600">
+                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-400">
                                   {item.platform}
                                 </span>
                               </td>
-                              <td className="px-4 py-2.5 text-right font-medium text-emerald-700">
+                              <td className="px-4 py-2.5 text-right font-medium text-emerald-400">
                                 +{money2(item.amount)}
                               </td>
                             </tr>
@@ -939,7 +939,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         title="Suggestions"
                         hint="Based on your income, platforms, and location"
                       />
-                      <div className="rounded-lg border border-gray-200 divide-y divide-gray-100">
+                      <div className="rounded-lg border border-white/10 divide-y divide-white/5">
                         {topTips.map((tip) => {
                           const handleTipClick = () => {
                             const actionMap: Record<string, () => void> = {
@@ -959,14 +959,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             <button
                               key={tip.id}
                               onClick={handleTipClick}
-                              className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left hover:bg-gray-50/75 transition-colors group"
+                              className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left hover:bg-slate-800/60/75 transition-colors group"
                             >
                               <div className="min-w-0">
-                                <p className="text-sm font-medium text-gray-900">{tip.title}</p>
-                                <p className="text-xs text-gray-500 mt-0.5 truncate">{tip.description}</p>
+                                <p className="text-sm font-medium text-white">{tip.title}</p>
+                                <p className="text-xs text-slate-400 mt-0.5 truncate">{tip.description}</p>
                               </div>
                               {tip.action && (
-                                <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-indigo-600 group-hover:text-indigo-700">
+                                <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-indigo-400 group-hover:text-indigo-300">
                                   {tip.action}
                                   <ArrowRight className="w-3 h-3" />
                                 </span>
@@ -982,7 +982,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 {/* Reading */}
                 <section>
                   <SectionHeader title="Guides" hint="Reading for multi-platform workers" />
-                  <div className="rounded-lg border border-gray-200 divide-y divide-gray-100">
+                  <div className="rounded-lg border border-white/10 divide-y divide-white/5">
                     {[
                       { href: '/blog/quarterly-tax-guide-for-gig-workers', title: 'Quarterly tax estimates, explained', time: '10 min' },
                       { href: '/blog/top-10-tax-deductions-for-uber-drivers', title: 'Top deductions for rideshare drivers', time: '6 min' },
@@ -992,13 +992,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       <Link
                         key={article.href}
                         href={article.href}
-                        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-gray-50/75 transition-colors group"
+                        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-slate-800/60/75 transition-colors group"
                       >
-                        <span className="inline-flex items-center gap-2.5 text-sm text-gray-900 min-w-0">
-                          <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0" strokeWidth={1.75} />
-                          <span className="truncate group-hover:text-indigo-700 transition-colors">{article.title}</span>
+                        <span className="inline-flex items-center gap-2.5 text-sm text-white min-w-0">
+                          <BookOpen className="w-3.5 h-3.5 text-slate-500 shrink-0" strokeWidth={1.75} />
+                          <span className="truncate group-hover:text-indigo-300 transition-colors">{article.title}</span>
                         </span>
-                        <span className="text-xs text-gray-400 shrink-0">{article.time} read</span>
+                        <span className="text-xs text-slate-500 shrink-0">{article.time} read</span>
                       </Link>
                     ))}
                   </div>
@@ -1075,11 +1075,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 />
 
                 {/* Income chart */}
-                <section className="rounded-lg border border-gray-200 p-5">
+                <section className="rounded-lg border border-white/10 p-5">
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                     <div>
-                      <h2 className="text-sm font-semibold text-gray-900">Income trends</h2>
-                      <p className="text-xs text-gray-400 mt-0.5">Earnings across platforms over time</p>
+                      <h2 className="text-sm font-semibold text-white">Income trends</h2>
+                      <p className="text-xs text-slate-500 mt-0.5">Earnings across platforms over time</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <SegmentedControl
@@ -1259,37 +1259,37 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
                     return (
                       <div className="grid md:grid-cols-5 gap-4">
-                        <div className="md:col-span-3 rounded-lg border border-gray-200 overflow-hidden">
+                        <div className="md:col-span-3 rounded-lg border border-white/10 overflow-hidden">
                           <table className="w-full text-sm">
                             <tbody>
-                              <tr className="border-b border-gray-100">
-                                <td className="px-4 py-3 text-gray-900 font-medium">Total income</td>
-                                <td className="px-4 py-3 text-right font-medium text-gray-900">
+                              <tr className="border-b border-white/5">
+                                <td className="px-4 py-3 text-white font-medium">Total income</td>
+                                <td className="px-4 py-3 text-right font-medium text-white">
                                   {money2(totalIncome)}
                                 </td>
                               </tr>
-                              <tr className="border-b border-gray-100">
-                                <td className="px-4 py-3 text-gray-500">Tax set-aside (30%)</td>
-                                <td className="px-4 py-3 text-right text-red-700">
+                              <tr className="border-b border-white/5">
+                                <td className="px-4 py-3 text-slate-400">Tax set-aside (30%)</td>
+                                <td className="px-4 py-3 text-right text-red-400">
                                   −{money2(taxSetAside)}
                                 </td>
                               </tr>
-                              <tr className="border-b border-gray-100">
-                                <td className="px-4 py-3 text-gray-500">Emergency fund (10%)</td>
-                                <td className="px-4 py-3 text-right text-red-700">
+                              <tr className="border-b border-white/5">
+                                <td className="px-4 py-3 text-slate-400">Emergency fund (10%)</td>
+                                <td className="px-4 py-3 text-right text-red-400">
                                   −{money2(emergencyFund)}
                                 </td>
                               </tr>
-                              <tr className="bg-gray-50/60">
+                              <tr className="bg-slate-950/60">
                                 <td className="px-4 py-3">
-                                  <span className="text-[11px] font-medium uppercase tracking-wider text-gray-400 block">
+                                  <span className="text-[11px] font-medium uppercase tracking-wider text-slate-500 block">
                                     Safe to spend
                                   </span>
-                                  <span className="text-lg font-semibold text-gray-900">
+                                  <span className="text-lg font-semibold text-white">
                                     {money(safeToSpend)}
                                   </span>
                                 </td>
-                                <td className="px-4 py-3 text-right align-bottom text-sm text-emerald-700 font-medium">
+                                <td className="px-4 py-3 text-right align-bottom text-sm text-emerald-400 font-medium">
                                   {Math.round((safeToSpend / totalIncome) * 100)}% of income
                                 </td>
                               </tr>
@@ -1297,18 +1297,18 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           </table>
                         </div>
 
-                        <div className="md:col-span-2 rounded-lg border border-gray-200 p-4 space-y-4">
+                        <div className="md:col-span-2 rounded-lg border border-white/10 p-4 space-y-4">
                           <div>
-                            <h3 className="text-[13px] font-semibold text-gray-900 mb-1">Why this matters</h3>
-                            <p className="text-xs text-gray-500 leading-relaxed">
+                            <h3 className="text-[13px] font-semibold text-white mb-1">Why this matters</h3>
+                            <p className="text-xs text-slate-400 leading-relaxed">
                               No employer is withholding for you. Set aside taxes (30%) and an
                               emergency buffer (10%) before spending — what&apos;s left is your real
                               spending power.
                             </p>
                           </div>
-                          <div className="border-t border-gray-100 pt-4">
-                            <h3 className="text-[13px] font-semibold text-gray-900 mb-1">Make it automatic</h3>
-                            <p className="text-xs text-gray-500 leading-relaxed">
+                          <div className="border-t border-white/5 pt-4">
+                            <h3 className="text-[13px] font-semibold text-white mb-1">Make it automatic</h3>
+                            <p className="text-xs text-slate-400 leading-relaxed">
                               Move {money(taxSetAside)} to a separate tax savings account now and set
                               up auto-transfers so tax money never looks spendable.
                             </p>
@@ -1322,15 +1322,15 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 {/* Platform Breakdown */}
                 <section>
                   <SectionHeader title="Platform breakdown" hint="Income sources with trend indicators" />
-                  <div className="rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="rounded-lg border border-white/10 overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-gray-50/60 border-b border-gray-200">
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Platform</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Payments</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Share</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Trend</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Total</th>
+                        <tr className="bg-slate-950/60 border-b border-white/10">
+                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Platform</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Payments</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Share</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Trend</th>
+                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Total</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1353,11 +1353,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             const percentOfTotal = ((total / totalIncome) * 100).toFixed(1);
 
                             return (
-                              <tr key={platform} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                              <tr key={platform} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
                                 <td className="px-4 py-2.5">
-                                  <span className="inline-flex items-center gap-2.5 font-medium text-gray-900">
+                                  <span className="inline-flex items-center gap-2.5 font-medium text-white">
                                     {PIcon ? (
-                                      <PIcon className="w-3.5 h-3.5 text-gray-400" />
+                                      <PIcon className="w-3.5 h-3.5 text-slate-500" />
                                     ) : (
                                       <span
                                         className="w-2 h-2 rounded-full"
@@ -1367,12 +1367,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                     {platform}
                                   </span>
                                 </td>
-                                <td className="px-4 py-2.5 text-right text-gray-500 hidden sm:table-cell">{count}</td>
-                                <td className="px-4 py-2.5 text-right text-gray-500 hidden sm:table-cell">{percentOfTotal}%</td>
+                                <td className="px-4 py-2.5 text-right text-slate-400 hidden sm:table-cell">{count}</td>
+                                <td className="px-4 py-2.5 text-right text-slate-400 hidden sm:table-cell">{percentOfTotal}%</td>
                                 <td className="px-4 py-2.5 text-right">
                                   <span
                                     className={`inline-flex items-center gap-0.5 text-xs font-medium ${
-                                      isPositive ? 'text-emerald-700' : 'text-red-700'
+                                      isPositive ? 'text-emerald-400' : 'text-red-400'
                                     }`}
                                   >
                                     {isPositive ? (
@@ -1383,7 +1383,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                     {Math.abs(trendPercent)}%
                                   </span>
                                 </td>
-                                <td className="px-4 py-2.5 text-right font-medium text-gray-900">{money2(total)}</td>
+                                <td className="px-4 py-2.5 text-right font-medium text-white">{money2(total)}</td>
                               </tr>
                             );
                           })}
@@ -1466,11 +1466,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         />
 
                         {/* Expense chart */}
-                        <section className="rounded-lg border border-gray-200 p-5">
+                        <section className="rounded-lg border border-white/10 p-5">
                           <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                             <div>
-                              <h2 className="text-sm font-semibold text-gray-900">Expenses overview</h2>
-                              <p className="text-xs text-gray-400 mt-0.5">
+                              <h2 className="text-sm font-semibold text-white">Expenses overview</h2>
+                              <p className="text-xs text-slate-500 mt-0.5">
                                 {expenseChartView === 'donut' && 'Breakdown by category'}
                                 {expenseChartView === 'bar' && 'Category trends over time'}
                                 {expenseChartView === 'line' && 'Cumulative expenses year-to-date'}
@@ -1640,15 +1640,15 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             title="Expenses by category"
                             hint="Detected deductible business expenses"
                           />
-                          <div className="rounded-lg border border-gray-200 overflow-hidden">
+                          <div className="rounded-lg border border-white/10 overflow-hidden">
                             <table className="w-full text-sm">
                               <thead>
-                                <tr className="bg-gray-50/60 border-b border-gray-200">
-                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Description</th>
-                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden md:table-cell">Date</th>
-                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Type</th>
+                                <tr className="bg-slate-950/60 border-b border-white/10">
+                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Description</th>
+                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden md:table-cell">Date</th>
+                                  <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Type</th>
                                   <th className="px-4 py-2.5"></th>
-                                  <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Deductible</th>
+                                  <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Deductible</th>
                                 </tr>
                               </thead>
                               {Array.from(byCategory.entries()).map(([category, categoryExpenses]) => {
@@ -1657,35 +1657,35 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
                                 return (
                                   <tbody key={category}>
-                                    <tr className="bg-gray-50/60 border-y border-gray-200 first:border-t-0">
+                                    <tr className="bg-slate-950/60 border-y border-white/10 first:border-t-0">
                                       <td colSpan={4} className="px-4 py-2">
                                         <span className="inline-flex items-center gap-2">
                                           <span
                                             className="w-2 h-2 rounded-full"
                                             style={{ background: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other }}
                                           />
-                                          <span className="text-xs font-semibold text-gray-700 capitalize">{displayName}</span>
-                                          <span className="text-xs text-gray-400">{categoryExpenses.length} transactions</span>
+                                          <span className="text-xs font-semibold text-slate-300 capitalize">{displayName}</span>
+                                          <span className="text-xs text-slate-500">{categoryExpenses.length} transactions</span>
                                         </span>
                                       </td>
-                                      <td className="px-4 py-2 text-right text-xs font-semibold text-gray-700">
+                                      <td className="px-4 py-2 text-right text-xs font-semibold text-slate-300">
                                         {money2(categoryTotal)}
                                       </td>
                                     </tr>
                                     {categoryExpenses.slice(0, 5).map((expense, idx) => (
-                                      <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50/75 transition-colors">
-                                        <td className="px-4 py-2.5 text-gray-900 max-w-[260px] truncate">
+                                      <tr key={idx} className="border-b border-white/5 hover:bg-slate-800/60/75 transition-colors">
+                                        <td className="px-4 py-2.5 text-white max-w-[260px] truncate">
                                           {expense.description}
                                           {expense.source === 'ai' && (
-                                            <span className="ml-2 inline-flex items-center rounded px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-indigo-50 text-indigo-700">
+                                            <span className="ml-2 inline-flex items-center rounded px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-indigo-500/10 text-indigo-300">
                                               AI
                                             </span>
                                           )}
                                         </td>
-                                        <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap hidden md:table-cell">
+                                        <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap hidden md:table-cell">
                                           {expense.date.toLocaleDateString()}
                                         </td>
-                                        <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell" title={expense.rationale}>
+                                        <td className="px-4 py-2.5 text-slate-400 hidden sm:table-cell" title={expense.rationale}>
                                           {expense.subcategory}
                                         </td>
                                         <td className="px-4 py-2.5 text-right">
@@ -1697,9 +1697,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                           />
                                         </td>
                                         <td className="px-4 py-2.5 text-right">
-                                          <span className="font-medium text-gray-900">{money2(expense.deductibleAmount)}</span>
+                                          <span className="font-medium text-white">{money2(expense.deductibleAmount)}</span>
                                           {expense.deductionRate < 100 && (
-                                            <span className="block text-[11px] text-gray-400">
+                                            <span className="block text-[11px] text-slate-500">
                                               {expense.deductionRate}% deductible
                                             </span>
                                           )}
@@ -1707,8 +1707,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                       </tr>
                                     ))}
                                     {categoryExpenses.length > 5 && (
-                                      <tr className="border-b border-gray-100">
-                                        <td colSpan={5} className="px-4 py-2 text-center text-xs text-gray-400">
+                                      <tr className="border-b border-white/5">
+                                        <td colSpan={5} className="px-4 py-2 text-center text-xs text-slate-500">
                                           + {categoryExpenses.length - 5} more expenses
                                         </td>
                                       </tr>
@@ -1721,7 +1721,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         </section>
 
                         {/* Tip */}
-                        <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-200 pt-4">
+                        <p className="text-xs text-slate-500 leading-relaxed border-t border-white/10 pt-4">
                           Keep receipts for expenses over $75 — the IRS may require documentation during
                           an audit. Photograph them and store digitally.
                         </p>
@@ -1748,7 +1748,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     <button
                       onClick={() => setIsCalculatorModalOpen(true)}
                       disabled
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200 text-sm font-medium text-gray-300 cursor-not-allowed"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/10 text-sm font-medium text-slate-600 cursor-not-allowed"
                     >
                       <Calculator className="w-3.5 h-3.5" />
                       Tax calculator
@@ -1793,7 +1793,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     actions={
                       <button
                         onClick={() => setIsCalculatorModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors"
                       >
                         <Calculator className="w-3.5 h-3.5" />
                         Tax calculator
@@ -1848,8 +1848,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     />
                     <div className="grid md:grid-cols-2 gap-4">
                       {/* Left: components */}
-                      <div className="rounded-lg border border-gray-200 p-4">
-                        <h3 className="text-[13px] font-semibold text-gray-900 mb-3">Tax components</h3>
+                      <div className="rounded-lg border border-white/10 p-4">
+                        <h3 className="text-[13px] font-semibold text-white mb-3">Tax components</h3>
                         <div className="space-y-3">
                           {[
                             { label: 'Federal income tax', value: taxCalc.breakdown.federalIncome },
@@ -1859,10 +1859,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           ].map((row) => (
                             <div key={row.label}>
                               <div className="flex items-center justify-between mb-1">
-                                <span className="text-sm text-gray-500">{row.label}</span>
-                                <span className="text-sm font-medium text-gray-900">{money(row.value)}</span>
+                                <span className="text-sm text-slate-400">{row.label}</span>
+                                <span className="text-sm font-medium text-white">{money(row.value)}</span>
                               </div>
-                              <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+                              <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
                                 <div
                                   className="h-full bg-indigo-400/70 rounded-full"
                                   style={{ width: `${(row.value / taxCalc.totalTaxLiability) * 100}%` }}
@@ -1871,47 +1871,47 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             </div>
                           ))}
                         </div>
-                        <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-between">
-                          <span className="text-sm font-semibold text-gray-900">Total tax</span>
-                          <span className="text-base font-semibold text-gray-900">
+                        <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+                          <span className="text-sm font-semibold text-white">Total tax</span>
+                          <span className="text-base font-semibold text-white">
                             {money(taxCalc.totalTaxLiability)}
                           </span>
                         </div>
                       </div>
 
                       {/* Right: income calculation */}
-                      <div className="rounded-lg border border-gray-200 p-4">
-                        <h3 className="text-[13px] font-semibold text-gray-900 mb-3">Income calculation</h3>
+                      <div className="rounded-lg border border-white/10 p-4">
+                        <h3 className="text-[13px] font-semibold text-white mb-3">Income calculation</h3>
                         <div className="space-y-2.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">Gross income</span>
-                            <span className="text-sm font-medium text-gray-900">{money(taxCalc.grossIncome)}</span>
+                            <span className="text-sm text-slate-400">Gross income</span>
+                            <span className="text-sm font-medium text-white">{money(taxCalc.grossIncome)}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">Business deductions</span>
-                            <span className="text-sm font-medium text-red-700">
+                            <span className="text-sm text-slate-400">Business deductions</span>
+                            <span className="text-sm font-medium text-red-400">
                               −{money(expenseResults.totalDeductions)}
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">Standard deduction</span>
-                            <span className="text-sm font-medium text-red-700">−$14,600</span>
+                            <span className="text-sm text-slate-400">Standard deduction</span>
+                            <span className="text-sm font-medium text-red-400">−$14,600</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">SE tax deduction (50%)</span>
-                            <span className="text-sm font-medium text-red-700">
+                            <span className="text-sm text-slate-400">SE tax deduction (50%)</span>
+                            <span className="text-sm font-medium text-red-400">
                               −{money(taxCalc.selfEmploymentTax * 0.5)}
                             </span>
                           </div>
-                          <div className="border-t border-gray-200 pt-2.5 flex items-center justify-between">
-                            <span className="text-sm font-semibold text-gray-900">Taxable income</span>
-                            <span className="text-sm font-semibold text-gray-900">
+                          <div className="border-t border-white/10 pt-2.5 flex items-center justify-between">
+                            <span className="text-sm font-semibold text-white">Taxable income</span>
+                            <span className="text-sm font-semibold text-white">
                               {money(taxCalc.adjustedGrossIncome - 14600)}
                             </span>
                           </div>
                         </div>
 
-                        <p className="mt-4 text-xs text-gray-400 leading-relaxed border-t border-gray-100 pt-3">
+                        <p className="mt-4 text-xs text-slate-500 leading-relaxed border-t border-white/5 pt-3">
                           Self-employed filers deduct 50% of self-employment tax from adjusted gross
                           income — worth about {money(taxCalc.selfEmploymentTax * 0.5 * 0.22)} in federal
                           income tax here.
@@ -1921,11 +1921,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   </section>
 
                   {/* Tax chart */}
-                  <section className="rounded-lg border border-gray-200 p-5">
+                  <section className="rounded-lg border border-white/10 p-5">
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                       <div>
-                        <h2 className="text-sm font-semibold text-gray-900">Tax overview</h2>
-                        <p className="text-xs text-gray-400 mt-0.5">Quarterly payments and liability breakdown</p>
+                        <h2 className="text-sm font-semibold text-white">Tax overview</h2>
+                        <p className="text-xs text-slate-500 mt-0.5">Quarterly payments and liability breakdown</p>
                       </div>
                       <SegmentedControl
                         options={[
@@ -2033,52 +2033,52 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       title="Quarterly payment schedule"
                       hint={`Pay ${money(taxCalc.quarterlyPayment)} four times per year to avoid penalties`}
                     />
-                    <div className="rounded-lg border border-gray-200 overflow-hidden">
+                    <div className="rounded-lg border border-white/10 overflow-hidden">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="bg-gray-50/60 border-b border-gray-200">
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Quarter</th>
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5 hidden sm:table-cell">Period</th>
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Due</th>
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Status</th>
-                            <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Amount</th>
+                          <tr className="bg-slate-950/60 border-b border-white/10">
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Quarter</th>
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Period</th>
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Due</th>
+                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Status</th>
+                            <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Amount</th>
                             <th className="px-4 py-2.5"></th>
                           </tr>
                         </thead>
                         <tbody>
                           {deadlines.map((deadline) => (
-                            <tr key={deadline.quarter} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
-                              <td className="px-4 py-2.5 font-medium text-gray-900">{deadline.quarter} 2024</td>
-                              <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell">{deadline.period}</td>
-                              <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">
+                            <tr key={deadline.quarter} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                              <td className="px-4 py-2.5 font-medium text-white">{deadline.quarter} 2024</td>
+                              <td className="px-4 py-2.5 text-slate-400 hidden sm:table-cell">{deadline.period}</td>
+                              <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
                                 {deadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                               </td>
                               <td className="px-4 py-2.5">
                                 {deadline.isPast ? (
-                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-red-50 text-red-700">
+                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-red-500/10 text-red-400">
                                     Overdue
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-emerald-50 text-emerald-700">
+                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-emerald-500/10 text-emerald-400">
                                     Upcoming
                                   </span>
                                 )}
                               </td>
-                              <td className="px-4 py-2.5 text-right font-medium text-gray-900">
+                              <td className="px-4 py-2.5 text-right font-medium text-white">
                                 {money(deadline.amount)}
                               </td>
                               <td className="px-4 py-2.5 text-right">
                                 {deadline.isPast ? (
                                   <button
                                     onClick={() => toast.success('IRS payment portal integration coming soon!')}
-                                    className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                                    className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
                                   >
                                     Pay now
                                   </button>
                                 ) : (
                                   <button
                                     onClick={() => toast.success('Tax reminders coming soon!')}
-                                    className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                                    className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
                                   >
                                     Set reminder
                                   </button>
@@ -2101,13 +2101,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         body="Upload transactions with business expenses to see potential tax deductions."
                       />
                     ) : (
-                      <div className="rounded-lg border border-gray-200 overflow-hidden">
+                      <div className="rounded-lg border border-white/10 overflow-hidden">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="bg-gray-50/60 border-b border-gray-200">
-                              <th className="text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Category</th>
-                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Items</th>
-                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-gray-400 px-4 py-2.5">Deductible</th>
+                            <tr className="bg-slate-950/60 border-b border-white/10">
+                              <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Category</th>
+                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Items</th>
+                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Deductible</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -2115,9 +2115,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               const totalAmount = expenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
 
                               return (
-                                <tr key={category} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/75 transition-colors">
+                                <tr key={category} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
                                   <td className="px-4 py-2.5">
-                                    <span className="inline-flex items-center gap-2.5 font-medium text-gray-900 capitalize">
+                                    <span className="inline-flex items-center gap-2.5 font-medium text-white capitalize">
                                       <span
                                         className="w-2 h-2 rounded-full"
                                         style={{ background: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other }}
@@ -2125,8 +2125,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                       {category.replace('-', ' ')}
                                     </span>
                                   </td>
-                                  <td className="px-4 py-2.5 text-right text-gray-500">{expenses.length}</td>
-                                  <td className="px-4 py-2.5 text-right font-medium text-gray-900">
+                                  <td className="px-4 py-2.5 text-right text-slate-400">{expenses.length}</td>
+                                  <td className="px-4 py-2.5 text-right font-medium text-white">
                                     {money(totalAmount)}
                                   </td>
                                 </tr>
@@ -2149,12 +2149,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               return (
                 <Dialog open={isCalculatorModalOpen} onOpenChange={setIsCalculatorModalOpen}>
                   <DialogContent className="max-w-4xl w-[95vw] p-0 max-h-[90vh] overflow-hidden">
-                    <div className="p-5 border-b border-gray-200">
+                    <div className="p-5 border-b border-white/10">
                       <DialogHeader>
-                        <DialogTitle className="text-base font-semibold text-gray-900">
+                        <DialogTitle className="text-base font-semibold text-white">
                           Quarterly tax calculator
                         </DialogTitle>
-                        <DialogDescription className="text-sm text-gray-500">
+                        <DialogDescription className="text-sm text-slate-400">
                           Calculate and track your quarterly estimated tax payments
                         </DialogDescription>
                       </DialogHeader>
@@ -2213,16 +2213,16 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* City Selector */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors">
-                        <Globe className="w-3.5 h-3.5 text-gray-400" />
+                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors">
+                        <Globe className="w-3.5 h-3.5 text-slate-500" />
                         <span>
                           {selectedCities.length === 0 ? 'All cities' : selectedCities.length === 1 ? selectedCities[0] : `${selectedCities.length} cities`}
                         </span>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel className="text-gray-500 text-xs">Select cities</DropdownMenuLabel>
+                      <DropdownMenuLabel className="text-slate-400 text-xs">Select cities</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       {(['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Austin'] as City[]).map((city) => (
                         <DropdownMenuCheckboxItem
@@ -2244,7 +2244,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           <DropdownMenuSeparator />
                           <button
                             onClick={() => setSelectedCities([])}
-                            className="w-full px-2 py-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors text-center"
+                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
                           >
                             Clear all
                           </button>
@@ -2256,16 +2256,16 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* Gig Type Selector */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors">
-                        <Briefcase className="w-3.5 h-3.5 text-gray-400" />
+                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors">
+                        <Briefcase className="w-3.5 h-3.5 text-slate-500" />
                         <span>
                           {selectedGigTypes.length === 0 ? 'All gigs' : selectedGigTypes.length === 1 ? selectedGigTypes[0] : `${selectedGigTypes.length} types`}
                         </span>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel className="text-gray-500 text-xs">Select gig types</DropdownMenuLabel>
+                      <DropdownMenuLabel className="text-slate-400 text-xs">Select gig types</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       {(['rideshare', 'delivery', 'freelance', 'creator', 'rental'] as const).map((gigType) => (
                         <DropdownMenuCheckboxItem
@@ -2287,7 +2287,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           <DropdownMenuSeparator />
                           <button
                             onClick={() => setSelectedGigTypes([])}
-                            className="w-full px-2 py-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors text-center"
+                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
                           >
                             Clear all
                           </button>
@@ -2309,30 +2309,30 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     title={selectedCities.length > 0 || selectedGigTypes.length > 0 ? 'Filtered guides' : 'All guides'}
                     hint={`${guides.length} guide${guides.length !== 1 ? 's' : ''}${selectedCities.length > 0 ? ` in ${selectedCities.join(', ')}` : ''}${selectedGigTypes.length > 0 ? ` for ${selectedGigTypes.join(', ')}` : ''}`}
                   />
-                  <div className="rounded-lg border border-gray-200 divide-y divide-gray-100">
+                  <div className="rounded-lg border border-white/10 divide-y divide-white/5">
                     {guides.map((guide) => (
                       <Link
                         key={guide.id}
                         href={guide.actionLink || '#'}
-                        className="flex items-start justify-between gap-4 px-4 py-3.5 hover:bg-gray-50/75 transition-colors group"
+                        className="flex items-start justify-between gap-4 px-4 py-3.5 hover:bg-slate-800/60/75 transition-colors group"
                       >
                         <div className="flex items-start gap-3 min-w-0">
-                          <BookOpen className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" strokeWidth={1.75} />
+                          <BookOpen className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" strokeWidth={1.75} />
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-sm font-medium text-gray-900 group-hover:text-indigo-700 transition-colors">
+                              <p className="text-sm font-medium text-white group-hover:text-indigo-300 transition-colors">
                                 {guide.title}
                               </p>
                               {guide.cities.length > 0 && !guide.cities.includes('all') && (
-                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-gray-100 text-gray-600">
+                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-400">
                                   {guide.cities.join(', ')}
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-gray-500 mt-0.5">{guide.description}</p>
+                            <p className="text-xs text-slate-400 mt-0.5">{guide.description}</p>
                           </div>
                         </div>
-                        <span className="text-xs text-gray-400 shrink-0">{guide.readTime}</span>
+                        <span className="text-xs text-slate-500 shrink-0">{guide.readTime}</span>
                       </Link>
                     ))}
                   </div>
@@ -2350,49 +2350,49 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             />
 
             {/* Profile Settings */}
-            <section className="rounded-lg border border-gray-200 p-6">
+            <section className="rounded-lg border border-white/10 p-6">
               <div className="flex items-center gap-2.5 mb-5">
-                <User className="w-4 h-4 text-gray-400" strokeWidth={1.75} />
-                <h2 className="text-sm font-semibold text-gray-900">Profile</h2>
+                <User className="w-4 h-4 text-slate-500" strokeWidth={1.75} />
+                <h2 className="text-sm font-semibold text-white">Profile</h2>
               </div>
 
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[13px] font-medium text-gray-700 mb-1.5">First name</label>
+                    <label className="block text-[13px] font-medium text-slate-300 mb-1.5">First name</label>
                     <input
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
+                      className="w-full bg-slate-900 border border-white/20 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Last name</label>
+                    <label className="block text-[13px] font-medium text-slate-300 mb-1.5">Last name</label>
                     <input
                       type="text"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
+                      className="w-full bg-slate-900 border border-white/20 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Email</label>
+                  <label className="block text-[13px] font-medium text-slate-300 mb-1.5">Email</label>
                   <input
                     type="email"
                     value={email}
                     disabled
-                    className="w-full bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-400 cursor-not-allowed"
+                    className="w-full bg-slate-950 border border-white/10 rounded-md px-3 py-2 text-sm text-slate-500 cursor-not-allowed"
                   />
-                  <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+                  <p className="text-xs text-slate-500 mt-1">Email cannot be changed</p>
                 </div>
 
                 {profileMessage && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-sm">
+                  <div className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-md text-emerald-800 text-sm">
                     {profileMessage}
                   </div>
                 )}
@@ -2418,27 +2418,27 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </section>
 
             {/* Email Notifications */}
-            <section className="rounded-lg border border-gray-200 p-6">
+            <section className="rounded-lg border border-white/10 p-6">
               <div className="flex items-center gap-2.5 mb-5">
-                <Bell className="w-4 h-4 text-gray-400" strokeWidth={1.75} />
-                <h2 className="text-sm font-semibold text-gray-900">Email notifications</h2>
+                <Bell className="w-4 h-4 text-slate-500" strokeWidth={1.75} />
+                <h2 className="text-sm font-semibold text-white">Email notifications</h2>
               </div>
 
               <form onSubmit={handleUpdateNotifications} className="space-y-5">
-                <div className="divide-y divide-gray-100 border border-gray-200 rounded-md">
+                <div className="divide-y divide-white/5 border border-white/10 rounded-md">
                   <div className="flex items-start gap-3 p-4">
                     <input
                       type="checkbox"
                       id="weeklyReports"
                       checked={weeklyReports}
                       onChange={(e) => setWeeklyReports(e.target.checked)}
-                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-300"
+                      className="mt-0.5 w-4 h-4 rounded border-white/20 text-indigo-400 focus:ring-indigo-300"
                     />
                     <div className="flex-1">
-                      <label htmlFor="weeklyReports" className="block text-sm font-medium text-gray-900 cursor-pointer">
+                      <label htmlFor="weeklyReports" className="block text-sm font-medium text-white cursor-pointer">
                         Weekly earnings reports
                       </label>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         A summary of weekly income, platform breakdown, and insights every Monday morning.
                       </p>
                     </div>
@@ -2450,13 +2450,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       id="taxReminders"
                       checked={taxReminders}
                       onChange={(e) => setTaxReminders(e.target.checked)}
-                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-300"
+                      className="mt-0.5 w-4 h-4 rounded border-white/20 text-indigo-400 focus:ring-indigo-300"
                     />
                     <div className="flex-1">
-                      <label htmlFor="taxReminders" className="block text-sm font-medium text-gray-900 cursor-pointer">
+                      <label htmlFor="taxReminders" className="block text-sm font-medium text-white cursor-pointer">
                         Quarterly tax reminders
                       </label>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         Reminders before quarterly deadlines (April 15, June 15, September 15, January 15) with estimated amounts.
                       </p>
                     </div>
@@ -2464,12 +2464,12 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </div>
 
                 {notificationsMessage && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-sm">
+                  <div className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-md text-emerald-800 text-sm">
                     {notificationsMessage}
                   </div>
                 )}
 
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-slate-500">
                   Note: email notifications require SMTP to be configured on the Supabase project.
                   Until then, preferences are saved but emails won&apos;t be sent.
                 </p>
@@ -2495,38 +2495,38 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </section>
 
             {/* Password Settings */}
-            <section className="rounded-lg border border-gray-200 p-6">
+            <section className="rounded-lg border border-white/10 p-6">
               <div className="flex items-center gap-2.5 mb-5">
-                <Lock className="w-4 h-4 text-gray-400" strokeWidth={1.75} />
-                <h2 className="text-sm font-semibold text-gray-900">Change password</h2>
+                <Lock className="w-4 h-4 text-slate-500" strokeWidth={1.75} />
+                <h2 className="text-sm font-semibold text-white">Change password</h2>
               </div>
 
               <form onSubmit={handleUpdatePassword} className="space-y-4">
                 <div>
-                  <label className="block text-[13px] font-medium text-gray-700 mb-1.5">New password</label>
+                  <label className="block text-[13px] font-medium text-slate-300 mb-1.5">New password</label>
                   <input
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
+                    className="w-full bg-slate-900 border border-white/20 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                     placeholder="At least 8 characters"
                     minLength={8}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Confirm new password</label>
+                  <label className="block text-[13px] font-medium text-slate-300 mb-1.5">Confirm new password</label>
                   <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
+                    className="w-full bg-slate-900 border border-white/20 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400"
                     placeholder="Repeat password"
                   />
                 </div>
 
                 {passwordMessage && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-sm">
+                  <div className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-md text-emerald-800 text-sm">
                     {passwordMessage}
                   </div>
                 )}
@@ -2552,24 +2552,24 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </section>
 
             {/* Danger Zone */}
-            <section className="rounded-lg border border-red-200 p-6">
+            <section className="rounded-lg border border-red-500/30 p-6">
               <div className="flex items-center gap-2.5 mb-4">
                 <Trash2 className="w-4 h-4 text-red-500" strokeWidth={1.75} />
-                <h2 className="text-sm font-semibold text-gray-900">Danger zone</h2>
+                <h2 className="text-sm font-semibold text-white">Danger zone</h2>
               </div>
 
               {/* Delete Account Section */}
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-1">Delete account</h3>
-                <p className="text-sm text-gray-500 mb-4">
+                <h3 className="text-sm font-medium text-white mb-1">Delete account</h3>
+                <p className="text-sm text-slate-400 mb-4">
                   Once you delete your account, there is no going back. All your data will be
                   permanently deleted.
                 </p>
 
                 {showDeleteConfirm && (
-                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-md">
                     <p className="text-sm font-medium text-red-800 mb-1">Are you absolutely sure?</p>
-                    <p className="text-sm text-red-700">
+                    <p className="text-sm text-red-400">
                       This will permanently delete all your transactions, income data, and account settings.
                     </p>
                   </div>
@@ -2597,7 +2597,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {showDeleteConfirm && (
                     <button
                       onClick={() => setShowDeleteConfirm(false)}
-                      className="text-sm text-gray-500 hover:text-gray-900"
+                      className="text-sm text-slate-400 hover:text-white"
                     >
                       Cancel
                     </button>
@@ -2607,7 +2607,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             </section>
 
             {settingsError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-md text-red-400 text-sm">
                 {settingsError}
               </div>
             )}

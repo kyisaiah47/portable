@@ -160,15 +160,15 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
   return (
     <div className="space-y-4">
       {/* Upload Section */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-slate-900 rounded-lg border border-white/10 p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-base font-semibold text-gray-900">Upload bank statement</h3>
-            <p className="text-sm text-gray-500">CSV format: Date, Description, Amount, Type</p>
+            <h3 className="text-base font-semibold text-white">Upload bank statement</h3>
+            <p className="text-sm text-slate-400">CSV format: Date, Description, Amount, Type</p>
           </div>
           <button
             onClick={generateSampleCSV}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors"
           >
             <Download className="w-4 h-4" />
             <span>Sample CSV</span>
@@ -185,54 +185,54 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
           />
           <div className={`border border-dashed rounded-lg p-10 text-center transition-all ${
             uploading
-              ? 'border-indigo-300 bg-indigo-50/50'
-              : 'border-gray-300 hover:border-indigo-400 hover:bg-gray-50'
+              ? 'border-indigo-300 bg-indigo-500/10/50'
+              : 'border-white/20 hover:border-indigo-400 hover:bg-slate-800/60'
           }`}>
             {uploading ? (
               <>
-                <Loader2 className="w-8 h-8 text-indigo-600 mx-auto mb-3 animate-spin" />
-                <p className="text-sm font-medium text-gray-900">Processing your data…</p>
+                <Loader2 className="w-8 h-8 text-indigo-400 mx-auto mb-3 animate-spin" />
+                <p className="text-sm font-medium text-white">Processing your data…</p>
               </>
             ) : (
               <>
-                <Upload className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-                <p className="text-sm font-medium text-gray-900 mb-1">Drop a CSV here or click to browse</p>
-                <p className="text-sm text-gray-500">Supports standard bank export formats</p>
+                <Upload className="w-8 h-8 text-slate-500 mx-auto mb-3" />
+                <p className="text-sm font-medium text-white mb-1">Drop a CSV here or click to browse</p>
+                <p className="text-sm text-slate-400">Supports standard bank export formats</p>
               </>
             )}
           </div>
         </label>
 
         {error && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-md">
+            <p className="text-sm text-red-400">{error}</p>
           </div>
         )}
       </div>
 
       {/* Success Results */}
       {results && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-slate-900 rounded-lg border border-white/10 p-6">
           <div className="flex items-start gap-3 mb-5">
-            <div className="w-8 h-8 bg-emerald-50 rounded-full flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 bg-emerald-500/10 rounded-full flex items-center justify-center shrink-0">
               <Check className="w-4 h-4 text-emerald-600" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-gray-900">Upload successful</h3>
-              <p className="text-sm text-gray-500">Your transactions have been processed and saved.</p>
+              <h3 className="text-base font-semibold text-white">Upload successful</h3>
+              <p className="text-sm text-slate-400">Your transactions have been processed and saved.</p>
             </div>
           </div>
 
-          <dl className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-200 rounded-md overflow-hidden border border-gray-200">
+          <dl className="grid grid-cols-2 md:grid-cols-4 gap-px bg-slate-700 rounded-md overflow-hidden border border-white/10">
             {[
               ['Total income', `$${results.totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`],
               ['Platforms', String(results.platforms)],
               ['Transactions', String(results.transactions)],
               ['Stability', `${results.stabilityScore}/100`],
             ].map(([label, value]) => (
-              <div key={label} className="bg-white p-3">
-                <dt className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-1">{label}</dt>
-                <dd className="text-lg font-semibold text-gray-900">{value}</dd>
+              <div key={label} className="bg-slate-900 p-3">
+                <dt className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-1">{label}</dt>
+                <dd className="text-lg font-semibold text-white">{value}</dd>
               </div>
             ))}
           </dl>

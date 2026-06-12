@@ -181,44 +181,44 @@ export default function ReferralDashboard() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border-gray-200 shadow-none">
+        <Card className="border-white/10 shadow-none">
           <CardHeader className="pb-3">
-            <CardDescription className="text-[11px] font-medium uppercase tracking-wider text-gray-400">Total Earnings</CardDescription>
-            <CardTitle className="text-2xl font-semibold tracking-tight text-gray-900">
+            <CardDescription className="text-[11px] font-medium uppercase tracking-wider text-slate-500">Total Earnings</CardDescription>
+            <CardTitle className="text-2xl font-semibold tracking-tight text-white">
               ${displayStats.referralEarnings.toFixed(2)}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-gray-500">From {displayStats.completedReferrals} completed referrals</p>
+            <p className="text-xs text-slate-400">From {displayStats.completedReferrals} completed referrals</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 shadow-none">
+        <Card className="border-white/10 shadow-none">
           <CardHeader className="pb-3">
-            <CardDescription className="text-[11px] font-medium uppercase tracking-wider text-gray-400">Total Referrals</CardDescription>
-            <CardTitle className="text-2xl font-semibold tracking-tight text-gray-900">{displayStats.totalReferrals}</CardTitle>
+            <CardDescription className="text-[11px] font-medium uppercase tracking-wider text-slate-500">Total Referrals</CardDescription>
+            <CardTitle className="text-2xl font-semibold tracking-tight text-white">{displayStats.totalReferrals}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-gray-500">{displayStats.pendingReferrals} pending</p>
+            <p className="text-xs text-slate-400">{displayStats.pendingReferrals} pending</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 shadow-none">
+        <Card className="border-white/10 shadow-none">
           <CardHeader className="pb-3">
-            <CardDescription className="text-[11px] font-medium uppercase tracking-wider text-gray-400">Reward per Referral</CardDescription>
-            <CardTitle className="text-2xl font-semibold tracking-tight text-gray-900">$10</CardTitle>
+            <CardDescription className="text-[11px] font-medium uppercase tracking-wider text-slate-500">Reward per Referral</CardDescription>
+            <CardTitle className="text-2xl font-semibold tracking-tight text-white">$10</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-gray-500">You and your friend both get $10</p>
+            <p className="text-xs text-slate-400">You and your friend both get $10</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Referral Link Sharing */}
-      <Card className="border-gray-200 shadow-none">
+      <Card className="border-white/10 shadow-none">
         <CardHeader>
-          <CardTitle className="text-gray-900 text-sm font-semibold">Share Your Referral Link</CardTitle>
-          <CardDescription className="text-gray-500">Invite friends to Stub and earn $10 for each successful referral</CardDescription>
+          <CardTitle className="text-white text-sm font-semibold">Share Your Referral Link</CardTitle>
+          <CardDescription className="text-slate-400">Invite friends to Stub and earn $10 for each successful referral</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Copy Link */}
@@ -227,7 +227,7 @@ export default function ReferralDashboard() {
               type="text"
               readOnly
               value={referralUrl}
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-gray-700 text-sm"
+              className="flex-1 bg-slate-950 border border-white/10 rounded-md px-3 py-2 text-slate-300 text-sm"
             />
             <Button
               onClick={copyReferralLink}
@@ -272,10 +272,10 @@ export default function ReferralDashboard() {
           </div>
 
           {/* Referral Code Display */}
-          <div className="pt-4 border-t border-gray-200">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-2">Your referral code</p>
-            <div className="bg-gray-50 border border-gray-200 rounded-md px-4 py-3">
-              <code className="text-xl font-mono font-semibold text-indigo-700 tracking-widest">
+          <div className="pt-4 border-t border-white/10">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-2">Your referral code</p>
+            <div className="bg-slate-950 border border-white/10 rounded-md px-4 py-3">
+              <code className="text-xl font-mono font-semibold text-indigo-300 tracking-widest">
                 {displayStats.referralCode}
               </code>
             </div>
@@ -284,29 +284,29 @@ export default function ReferralDashboard() {
       </Card>
 
       {/* Referral History */}
-      <Card className="border-gray-200 shadow-none">
+      <Card className="border-white/10 shadow-none">
         <CardHeader>
-          <CardTitle className="text-gray-900 text-sm font-semibold">Referral History</CardTitle>
-          <CardDescription className="text-gray-500">Track the status of your referrals</CardDescription>
+          <CardTitle className="text-white text-sm font-semibold">Referral History</CardTitle>
+          <CardDescription className="text-slate-400">Track the status of your referrals</CardDescription>
         </CardHeader>
         <CardContent>
           {referrals.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm font-medium text-gray-700 mb-1">No referrals yet</p>
-              <p className="text-sm text-gray-500">When someone signs up using your link, they'll appear here.</p>
+              <p className="text-sm font-medium text-slate-300 mb-1">No referrals yet</p>
+              <p className="text-sm text-slate-400">When someone signs up using your link, they'll appear here.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {referrals.map((referral) => (
                 <div
                   key={referral.id}
-                  className="flex items-center justify-between p-3.5 rounded-md border border-gray-200 hover:bg-gray-50/75 transition-colors"
+                  className="flex items-center justify-between p-3.5 rounded-md border border-white/10 hover:bg-slate-800/60/75 transition-colors"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-white">
                       {referral.referee_email || 'Pending signup'}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-slate-400">
                       {new Date(referral.created_at).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -318,10 +318,10 @@ export default function ReferralDashboard() {
                     <span
                       className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-medium ${
                         referral.status === 'rewarded'
-                          ? 'bg-emerald-50 text-emerald-700'
+                          ? 'bg-emerald-500/10 text-emerald-400'
                           : referral.status === 'completed'
-                          ? 'bg-indigo-50 text-indigo-700'
-                          : 'bg-amber-50 text-amber-700'
+                          ? 'bg-indigo-500/10 text-indigo-300'
+                          : 'bg-amber-500/10 text-amber-400'
                       }`}
                     >
                       {referral.status === 'rewarded'
@@ -331,7 +331,7 @@ export default function ReferralDashboard() {
                         : 'Pending'}
                     </span>
                     {referral.status === 'rewarded' && (
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-slate-400 mt-1">
                         +${referral.reward_amount.toFixed(2)}
                       </p>
                     )}
@@ -344,32 +344,32 @@ export default function ReferralDashboard() {
       </Card>
 
       {/* How It Works */}
-      <Card className="border-gray-200 shadow-none">
+      <Card className="border-white/10 shadow-none">
         <CardHeader>
-          <CardTitle className="text-gray-900 text-sm font-semibold">How Referrals Work</CardTitle>
+          <CardTitle className="text-white text-sm font-semibold">How Referrals Work</CardTitle>
         </CardHeader>
         <CardContent>
-          <ol className="space-y-3 text-sm text-gray-600">
+          <ol className="space-y-3 text-sm text-slate-400">
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-semibold">
+              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-xs font-semibold">
                 1
               </span>
               <span>Share your unique referral link or code with friends</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-semibold">
+              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-xs font-semibold">
                 2
               </span>
               <span>They sign up and connect their bank account</span>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-semibold">
+              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-xs font-semibold">
                 3
               </span>
               <span>You both receive $10 credit once they complete setup</span>
             </li>
           </ol>
-          <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-200">
+          <p className="text-xs text-slate-500 mt-4 pt-4 border-t border-white/10">
             * Credits can be used towards premium features or withdrawn after accumulating $25
           </p>
         </CardContent>

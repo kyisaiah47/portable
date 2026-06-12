@@ -36,10 +36,10 @@ const VERDICT_STYLES: Record<
   DeductionVerdict['verdict'],
   { label: string; className: string; icon: typeof Check }
 > = {
-  yes: { label: 'Deductible', className: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: Check },
-  partially: { label: 'Partially deductible', className: 'bg-amber-50 text-amber-700 border-amber-200', icon: Scale },
-  no: { label: 'Not deductible', className: 'bg-red-50 text-red-700 border-red-200', icon: XIcon },
-  depends: { label: 'It depends', className: 'bg-indigo-50 text-indigo-700 border-indigo-200', icon: HelpCircle },
+  yes: { label: 'Deductible', className: 'bg-emerald-500/10 text-emerald-400 border-emerald-200', icon: Check },
+  partially: { label: 'Partially deductible', className: 'bg-amber-500/10 text-amber-400 border-amber-500/30', icon: Scale },
+  no: { label: 'Not deductible', className: 'bg-red-500/10 text-red-400 border-red-500/30', icon: XIcon },
+  depends: { label: 'It depends', className: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30', icon: HelpCircle },
 };
 
 export default function DeductionCheckDialog({
@@ -92,7 +92,7 @@ export default function DeductionCheckDialog({
       <button
         onClick={() => handleOpenChange(true)}
         title="Can I deduct this?"
-        className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium rounded-md text-indigo-700 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 transition-colors"
+        className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium rounded-md text-indigo-300 bg-indigo-500/10 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-500/30 transition-colors"
       >
         <Sparkles className="w-3 h-3" />
         <span>Deduct?</span>
@@ -101,28 +101,28 @@ export default function DeductionCheckDialog({
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="max-w-lg w-[95vw]">
           <DialogHeader>
-            <DialogTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-600" />
+            <DialogTitle className="text-base font-semibold text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-400" />
               Can I deduct this?
             </DialogTitle>
-            <DialogDescription className="text-sm text-gray-500">
+            <DialogDescription className="text-sm text-slate-400">
               {description} • ${Math.abs(amount).toFixed(2)}
             </DialogDescription>
           </DialogHeader>
 
           {loading && (
-            <div className="flex items-center gap-3 py-6 justify-center text-gray-500">
-              <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+            <div className="flex items-center gap-3 py-6 justify-center text-slate-400">
+              <Loader2 className="w-4 h-4 animate-spin text-indigo-400" />
               <span className="text-sm">Checking IRS deduction rules…</span>
             </div>
           )}
 
           {error && !loading && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-700 mb-2">{error}</p>
+            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-md">
+              <p className="text-sm text-red-400 mb-2">{error}</p>
               <button
                 onClick={fetchVerdict}
-                className="text-xs font-medium text-gray-700 bg-white border border-gray-200 px-2.5 py-1 rounded-md hover:border-gray-300 transition-colors"
+                className="text-xs font-medium text-slate-300 bg-slate-900 border border-white/10 px-2.5 py-1 rounded-md hover:border-white/25 transition-colors"
               >
                 Try again
               </button>
@@ -139,24 +139,24 @@ export default function DeductionCheckDialog({
                   {style!.label}
                 </span>
                 {verdict.deductionRate > 0 && (
-                  <span className="text-xs text-gray-500 font-medium">
+                  <span className="text-xs text-slate-400 font-medium">
                     {verdict.deductionRate}% deductible
                   </span>
                 )}
               </div>
 
               {verdict.category && (
-                <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-                  <div className="text-[11px] uppercase tracking-wider text-gray-400 font-medium mb-1">
+                <div className="bg-slate-950 rounded-md p-3 border border-white/10">
+                  <div className="text-[11px] uppercase tracking-wider text-slate-500 font-medium mb-1">
                     Deduction category
                   </div>
-                  <div className="text-sm font-medium text-gray-900">{verdict.category}</div>
+                  <div className="text-sm font-medium text-white">{verdict.category}</div>
                 </div>
               )}
 
-              <p className="text-sm text-gray-600 leading-relaxed">{verdict.explanation}</p>
+              <p className="text-sm text-slate-400 leading-relaxed">{verdict.explanation}</p>
 
-              <p className="text-[11px] text-gray-400">
+              <p className="text-[11px] text-slate-500">
                 AI confidence: {verdict.confidence}. General information, not personalized tax
                 advice.
               </p>

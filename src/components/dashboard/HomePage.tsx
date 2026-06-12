@@ -350,7 +350,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         {/* Earnings Stability Pillar */}
         <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/100/20 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-blue-400" />
             </div>
             <div>
@@ -370,7 +370,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         {/* Tax Readiness Pillar */}
         <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-purple-500/100/20 flex items-center justify-center">
               <Receipt className="w-5 h-5 text-purple-400" />
             </div>
             <div>
@@ -398,7 +398,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         {/* Expenses & Deductions Pillar */}
         <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-6 border border-white/10">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-green-500/100/20 flex items-center justify-center">
               <TrendingDown className="w-5 h-5 text-green-400" />
             </div>
             <div>
@@ -476,7 +476,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-500/100/20 rounded-lg flex items-center justify-center">
                   <Heart className="w-4 h-4 text-blue-400" />
                 </div>
                 <h3 className="text-base font-bold text-white font-space-grotesk">Get health insurance</h3>
@@ -490,7 +490,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-purple-500/100/20 rounded-lg flex items-center justify-center">
                   <PiggyBank className="w-4 h-4 text-purple-400" />
                 </div>
                 <h3 className="text-base font-bold text-white font-space-grotesk">Start a retirement fund</h3>
@@ -518,7 +518,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-green-500/100/20 rounded-lg flex items-center justify-center">
                   <Receipt className="w-4 h-4 text-green-400" />
                 </div>
                 <h3 className="text-base font-bold text-white font-space-grotesk">Tax deduction tracker</h3>
@@ -682,7 +682,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group">
-            <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3">
+            <div className="w-8 h-8 bg-blue-500/100/20 rounded-lg flex items-center justify-center mb-3">
               <BookOpen className="w-4 h-4 text-blue-400" />
             </div>
             <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-blue-400 transition-colors">Maximizing Uber earnings in your city</h3>
@@ -694,7 +694,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           </div>
 
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group">
-            <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mb-3">
+            <div className="w-8 h-8 bg-purple-500/100/20 rounded-lg flex items-center justify-center mb-3">
               <Heart className="w-4 h-4 text-purple-400" />
             </div>
             <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-purple-400 transition-colors">The gig worker&apos;s guide to health insurance</h3>
@@ -718,7 +718,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           </div>
 
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-green-500/50 transition-all cursor-pointer group">
-            <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center mb-3">
+            <div className="w-8 h-8 bg-green-500/100/20 rounded-lg flex items-center justify-center mb-3">
               <Wallet className="w-4 h-4 text-green-400" />
             </div>
             <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-green-400 transition-colors">Building an emergency fund on variable income</h3>
@@ -742,7 +742,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           </div>
 
           <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-indigo-500/50 transition-all cursor-pointer group">
-            <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-3">
+            <div className="w-8 h-8 bg-indigo-500/100/20 rounded-lg flex items-center justify-center mb-3">
               <Target className="w-4 h-4 text-indigo-400" />
             </div>
             <h3 className="text-sm font-bold text-white mb-2 font-space-grotesk group-hover:text-indigo-400 transition-colors">Retirement planning for freelancers</h3>
@@ -766,13 +766,13 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         </div>
         <div className="space-y-3">
           <div className="flex items-start space-x-3">
-            <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
+            <div className="w-2 h-2 bg-blue-500/100 rounded-full mt-1.5 flex-shrink-0"></div>
             <p className="text-sm text-slate-300">
               <span className="font-bold text-white">12,000 Uber drivers</span> on Stub average <span className="font-bold text-blue-400">$2,100/mo more</span> with multi-platform strategies
             </p>
           </div>
           <div className="flex items-start space-x-3">
-            <div className="w-2 h-2 bg-purple-500 rounded-full mt-1.5 flex-shrink-0"></div>
+            <div className="w-2 h-2 bg-purple-500/100 rounded-full mt-1.5 flex-shrink-0"></div>
             <p className="text-sm text-slate-300">
               <span className="font-bold text-white">Top earners in your area</span> work <span className="font-bold text-purple-400">3+ platforms simultaneously</span>
             </p>
@@ -791,18 +791,18 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
         <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-4">
           <div className={`rounded-lg p-4 shadow-lg backdrop-blur-xl border ${
             toast.type === 'success'
-              ? 'bg-green-500/20 border-green-500/50 text-green-400'
-              : 'bg-red-500/20 border-red-500/50 text-red-400'
+              ? 'bg-green-500/100/20 border-green-500/50 text-green-400'
+              : 'bg-red-500/100/20 border-red-500/50 text-red-400'
           }`}>
             <div className="flex items-center gap-3">
               {toast.type === 'success' ? (
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                <div className="w-5 h-5 rounded-full bg-green-500/100 flex items-center justify-center">
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
               ) : (
-                <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                <div className="w-5 h-5 rounded-full bg-red-500/100 flex items-center justify-center">
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
