@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('auth_user');
         }
-        router.push('/login');
+        router.push('/?auth=login');
         return;
       }
 
@@ -98,13 +98,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const { data: userProfile, error } = await supabase
+      let { data: userProfile, error } = await supabase
         .from('stub_users')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error) throw error;
+      // No profile row yet (account created in another app on the shared
+      // auth pool, or signup didn't finish) — create one from auth metadata.
+      if (error && error.code === 'PGRST116') {
+        const {
+          data: { user: authUser },
+        } = await supabase.auth.getUser();
+        if (!authUser) throw error;
+        const meta = (authUser.user_metadata ?? {}) as Record<string, string>;
+        const created = await supabase
+          .from('stub_users')
+          .insert({
+            id: authUser.id,
+            email: authUser.email,
+            first_name: meta.first_name ?? authUser.email?.split('@')[0] ?? 'There',
+            last_name: meta.last_name ?? '',
+          })
+          .select('*')
+          .single();
+        userProfile = created.data;
+        error = created.error;
+      }
+
+      if (error || !userProfile) throw error ?? new Error('No profile');
 
       const userData = {
         id: userProfile.id,
@@ -120,15 +142,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('auth_user', JSON.stringify(userData));
       }
     } catch (error) {
-      // Failed to fetch user profile
+      console.error('Profile load failed:', error);
       setUser(null);
       // Clear cache
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth_user');
       }
-      // If user profile doesn't exist, sign out
       await supabase.auth.signOut();
-      router.push('/login');
+      router.push('/?auth=login');
     } finally {
       setLoading(false);
     }
@@ -143,7 +164,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth_user');
       }
-      router.push('/login');
+      router.push('/?auth=login');
     } catch (error) {
       // Silent fail
     }
