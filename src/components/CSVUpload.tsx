@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Upload, Download, Check, X, Loader2 } from 'lucide-react';
-import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
+import { calculateStabilityScore, type Transaction } from '@/lib/income-parser';
+import { classifyTransactions, buildIncomeResults } from '@/lib/hybrid-classifier';
 import { supabase } from '@/lib/supabase';
 import { clearAllCaches } from '@/hooks/useSupabaseData';
 
@@ -73,8 +74,12 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
         }
       }
 
-      // Parse income from transactions
-      const parsed = parseTransactions(parsedTransactions);
+      // Hybrid classification: regex first pass (free), Claude for the remainder
+      const { classifications, aiError } = await classifyTransactions(parsedTransactions);
+      if (aiError) {
+        console.warn('AI classification unavailable, using pattern matching only:', aiError);
+      }
+      const parsed = buildIncomeResults(parsedTransactions, classifications);
       const stability = calculateStabilityScore(parsed.income);
 
       // Save transactions to database
@@ -88,6 +93,7 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
         amount: tx.type === 'credit' ? Math.abs(tx.amount) : -Math.abs(tx.amount),
         category: null,
         pending: false,
+        classification: classifications.get(tx.id) || null,
       }));
 
       const { error: txError } = await supabase

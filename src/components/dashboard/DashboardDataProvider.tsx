@@ -109,6 +109,7 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
         description: tx.name,
         amount: tx.amount,
         type: tx.amount > 0 ? 'credit' : 'debit' as 'credit' | 'debit',
+        classification: tx.classification ?? null,
       })),
     };
   }, [supabaseParsedIncome, transactions]);
@@ -123,6 +124,7 @@ export default function DashboardDataProvider({ user, children }: DashboardDataP
       description: tx.name,
       amount: tx.amount,
       type: tx.amount > 0 ? 'credit' : 'debit' as 'credit' | 'debit',
+      classification: tx.classification ?? null,
     })),
     isLoading,
   };

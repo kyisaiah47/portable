@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import type { TransactionClassification } from '@/lib/classification-types';
 
 export interface ParsedIncome {
   id: string;
@@ -32,6 +33,7 @@ export interface Transaction {
   merchant_name: string | null;
   category: string[] | null;
   pending: boolean;
+  classification: TransactionClassification | null;
   created_at: string;
 }
 

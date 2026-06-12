@@ -5,12 +5,16 @@
  * Supports Uber, Lyft, DoorDash, Instacart, Upwork, Fiverr, YouTube, Airbnb, and more.
  */
 
+import type { TransactionClassification } from './classification-types';
+
 export interface Transaction {
   id: string;
   date: Date;
   description: string;
   amount: number;
   type: 'credit' | 'debit';
+  /** Stored AI/regex classification, when available (e.g. loaded from the database) */
+  classification?: TransactionClassification | null;
 }
 
 export interface ParsedIncome {

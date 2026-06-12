@@ -1,4 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr';
+import type { TransactionClassification } from './classification-types';
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
   throw new Error('Missing Supabase environment variables. Please check your .env.local file.');
@@ -13,7 +14,7 @@ export const supabase = createBrowserClient(
 export type Database = {
   public: {
     Tables: {
-      users: {
+      portable_users: {
         Row: {
           id: string;
           email: string;
@@ -38,7 +39,7 @@ export type Database = {
           updated_at?: string;
         };
       };
-      plaid_items: {
+      portable_plaid_items: {
         Row: {
           id: string;
           user_id: string;
@@ -63,7 +64,7 @@ export type Database = {
           updated_at?: string;
         };
       };
-      transactions: {
+      portable_transactions: {
         Row: {
           id: string;
           user_id: string;
@@ -75,6 +76,7 @@ export type Database = {
           merchant_name: string | null;
           category: string[] | null;
           pending: boolean;
+          classification: TransactionClassification | null;
           created_at: string;
         };
         Insert: {
@@ -88,6 +90,7 @@ export type Database = {
           merchant_name?: string | null;
           category?: string[] | null;
           pending?: boolean;
+          classification?: TransactionClassification | null;
           created_at?: string;
         };
         Update: {
@@ -96,9 +99,10 @@ export type Database = {
           merchant_name?: string | null;
           category?: string[] | null;
           pending?: boolean;
+          classification?: TransactionClassification | null;
         };
       };
-      parsed_income: {
+      portable_parsed_income: {
         Row: {
           id: string;
           user_id: string;

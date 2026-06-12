@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
-import { Upload, Download, Check, X } from 'lucide-react';
+import { calculateStabilityScore, type Transaction } from '@/lib/income-parser';
+import { classifyTransactions, buildIncomeResults, buildExpenseResults } from '@/lib/hybrid-classifier';
+import { Upload, Download, Check, X, Loader2, Sparkles } from 'lucide-react';
 
 export default function TestParserPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [results, setResults] = useState<any>(null);
+  const [classifying, setClassifying] = useState(false);
 
   // Sample CSV data generator
   const generateSampleCSV = () => {
@@ -67,22 +69,40 @@ export default function TestParserPage() {
       }
 
       setTransactions(parsedTransactions);
+      setResults(null);
+      setClassifying(true);
 
-      // Parse transactions
-      const parsed = parseTransactions(parsedTransactions);
-      const stability = calculateStabilityScore(parsed.income);
+      try {
+        // Hybrid pipeline: regex first pass (free), Claude for the remainder
+        const { classifications, aiUsed, aiError, aiTransactionCount } =
+          await classifyTransactions(parsedTransactions);
+        const parsed = buildIncomeResults(parsedTransactions, classifications);
+        const expenses = buildExpenseResults(parsedTransactions, classifications);
+        const stability = calculateStabilityScore(parsed.income);
 
-      setResults({
-        parsed,
-        stability,
-      });
+        setResults({
+          parsed,
+          expenses,
+          stability,
+          classifications,
+          aiUsed,
+          aiError,
+          aiTransactionCount,
+        });
 
-      console.log('Test Parser Results (Not saved to database):', {
-        totalIncome: parsed.totalIncome,
-        platforms: parsed.byPlatform.size,
-        stabilityScore: stability.score,
-        stabilityRating: stability.rating,
-      });
+        console.log('Test Parser Results (Not saved to database):', {
+          totalIncome: parsed.totalIncome,
+          platforms: parsed.byPlatform.size,
+          deductions: expenses.totalDeductions,
+          aiUsed,
+          aiError,
+          aiTransactionCount,
+          stabilityScore: stability.score,
+          stabilityRating: stability.rating,
+        });
+      } finally {
+        setClassifying(false);
+      }
     };
 
     reader.readAsText(file);
@@ -138,9 +158,34 @@ export default function TestParserPage() {
           </label>
         </div>
 
+        {/* Classifying state */}
+        {classifying && (
+          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-8 border border-white/10 mb-8 flex items-center justify-center gap-3 text-slate-300">
+            <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
+            <span className="text-sm">Regex pass done — asking Claude about the unmatched transactions...</span>
+          </div>
+        )}
+
         {/* Results */}
         {results && (
           <>
+            {/* AI status banner */}
+            {results.aiError ? (
+              <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <p className="text-sm text-yellow-400">
+                  AI classification unavailable ({results.aiError}) — showing regex-only results.
+                </p>
+              </div>
+            ) : results.aiUsed ? (
+              <div className="mb-8 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                <p className="text-sm text-purple-300">
+                  Hybrid classification: regex matched the obvious hits for free, Claude classified the remaining{' '}
+                  {results.aiTransactionCount} transaction{results.aiTransactionCount === 1 ? '' : 's'}.
+                </p>
+              </div>
+            ) : null}
+
             {/* Summary Cards */}
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl rounded-lg p-6 border border-green-500/20">
@@ -218,29 +263,29 @@ export default function TestParserPage() {
               <h2 className="text-xl font-bold mb-6 font-space-grotesk">All Parsed Transactions</h2>
               <div className="space-y-2">
                 {transactions.map((transaction) => {
-                  const parsed = results.parsed.income.find((p: any) =>
-                    p.date.getTime() === transaction.date.getTime() &&
-                    p.amount === transaction.amount
-                  );
+                  const c = results.classifications.get(transaction.id);
+                  const matched = c && c.kind !== 'none';
 
                   return (
                     <div
                       key={transaction.id}
                       className={`p-4 rounded-lg border ${
-                        parsed
-                          ? 'bg-green-500/5 border-green-500/20'
+                        matched
+                          ? c.kind === 'income'
+                            ? 'bg-green-500/5 border-green-500/20'
+                            : 'bg-blue-500/5 border-blue-500/20'
                           : 'bg-slate-800/30 border-white/5'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                            parsed
-                              ? 'bg-green-500/20'
+                            matched
+                              ? c.kind === 'income' ? 'bg-green-500/20' : 'bg-blue-500/20'
                               : 'bg-slate-700/50'
                           }`}>
-                            {parsed ? (
-                              <Check className="w-4 h-4 text-green-400" />
+                            {matched ? (
+                              <Check className={`w-4 h-4 ${c.kind === 'income' ? 'text-green-400' : 'text-blue-400'}`} />
                             ) : (
                               <X className="w-4 h-4 text-slate-500" />
                             )}
@@ -251,9 +296,23 @@ export default function TestParserPage() {
                             </div>
                             <div className="text-xs text-slate-400">
                               {transaction.date.toLocaleDateString()} • {transaction.type}
-                              {parsed && (
+                              {matched && c.kind === 'income' && (
                                 <span className="ml-2 text-green-400">
-                                  → {parsed.platform} ({parsed.category})
+                                  → {c.platform} ({c.incomeCategory})
+                                </span>
+                              )}
+                              {matched && c.kind === 'expense' && (
+                                <span className="ml-2 text-blue-400" title={c.rationale}>
+                                  → {c.subcategory} ({c.deductionRate}% deductible)
+                                </span>
+                              )}
+                              {matched && (
+                                <span className={`ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                  c.source === 'ai'
+                                    ? 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+                                    : 'bg-slate-700/50 text-slate-400 border-white/10'
+                                }`}>
+                                  {c.source === 'ai' ? 'AI' : 'REGEX'}
                                 </span>
                               )}
                             </div>
@@ -262,7 +321,7 @@ export default function TestParserPage() {
                         <div className={`text-lg font-bold ${
                           transaction.type === 'credit' ? 'text-green-400' : 'text-red-400'
                         }`}>
-                          {transaction.type === 'credit' ? '+' : '-'}${transaction.amount.toFixed(2)}
+                          {transaction.type === 'credit' ? '+' : '-'}${Math.abs(transaction.amount).toFixed(2)}
                         </div>
                       </div>
                     </div>
