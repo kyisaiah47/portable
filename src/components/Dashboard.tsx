@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import WelcomeWizard from '@/components/WelcomeWizard';
+import MileageTracker from '@/components/MileageTracker';
+import { buildAccountantCsv, downloadAccountantCsv } from '@/lib/accountant-export';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -1804,13 +1806,31 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     title={money(taxCalc.quarterlyPayment)}
                     subtitle={`Estimated quarterly payment · ${(taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate`}
                     actions={
-                      <button
-                        onClick={() => setIsCalculatorModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
-                      >
-                        <Calculator className="w-3.5 h-3.5" />
-                        Tax calculator
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setIsCalculatorModalOpen(true)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
+                        >
+                          <Calculator className="w-3.5 h-3.5" />
+                          Tax calculator
+                        </button>
+                        <button
+                          onClick={() =>
+                            downloadAccountantCsv(
+                              buildAccountantCsv({
+                                totalIncome: parsedIncome.parsed.totalIncome,
+                                totalDeductions: expenseResults.totalDeductions,
+                                taxCalc,
+                                transactions: parsedIncome.rawTransactions || [],
+                              })
+                            )
+                          }
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          Export for accountant
+                        </button>
+                      </div>
                     }
                   />
 
@@ -2203,6 +2223,17 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
               return <PlatformInsights transactions={transactionsWithPlatform} />;
             })()}
+          </div>
+        )}
+
+        {activeTab === 'mileage' && (
+          <div className="space-y-8">
+            <PageHeader
+              eyebrow="Money"
+              title="Mileage"
+              subtitle="Log work miles — the IRS standard rate is usually your biggest deduction."
+            />
+            <MileageTracker userId={user.id} />
           </div>
         )}
 

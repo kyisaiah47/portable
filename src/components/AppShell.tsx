@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  CarIcon,
   LayoutGrid,
   DollarSign,
   Receipt,
@@ -42,6 +43,7 @@ const MAIN_NAV = [
   { id: 'income', label: 'Income', icon: DollarSign, path: '/dashboard/income' },
   { id: 'expenses', label: 'Expenses', icon: Receipt, path: '/dashboard/expenses' },
   { id: 'taxes', label: 'Taxes', icon: FileText, path: '/dashboard/taxes' },
+  { id: 'mileage', label: 'Mileage', icon: CarIcon, path: '/dashboard/mileage' },
 ];
 
 const SECONDARY_NAV = [

@@ -3,11 +3,17 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["iad1"],
+  "regions": [
+    "iad1"
+  ],
   "crons": [
     {
       "path": "/api/cron/weekly-reports",
       "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/tax-reminders",
+      "schedule": "0 14 * * *"
     }
   ]
 }
