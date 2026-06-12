@@ -86,7 +86,7 @@ function calculateFederalIncomeTax(taxableIncome: number): number {
 /**
  * Calculate self-employment tax
  */
-function calculateSelfEmploymentTax(netEarnings: number): {
+export function calculateSelfEmploymentTax(netEarnings: number): {
   total: number;
   socialSecurity: number;
   medicare: number;
