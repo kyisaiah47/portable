@@ -7,6 +7,7 @@ import HomeOverview from '@/components/home/HomeOverview';
 import ExpensesView from '@/components/expenses/ExpensesView';
 import IncomeView from '@/components/income/IncomeView';
 import TaxesView from '@/components/taxes/TaxesView';
+import AIAnalysisPanel from '@/components/insights/AIAnalysisPanel';
 import { buildAccountantCsv, downloadAccountantCsv } from '@/lib/accountant-export';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -982,20 +983,38 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           <div className="space-y-8">
             <PageHeader
               eyebrow="Workspace"
-              title="Platform insights"
-              subtitle="Compare platform performance and find where the next dollar comes from."
+              title="AI Insights"
+              subtitle="Claude's written analysis of your income, deductions, and tax exposure."
             />
 
-            {(() => {
-              const PlatformInsights = require('./PlatformInsights').default;
-              // Transform transactions to include platform info
-              const transactionsWithPlatform = parsedIncome?.rawTransactions?.map((tx: any) => ({
-                ...tx,
-                platform: tx.platform || 'Other',
-              })) || [];
-
-              return <PlatformInsights transactions={transactionsWithPlatform} />;
-            })()}
+            {!parsedIncome ? (
+              <EmptyState
+                icon={Target}
+                title="Nothing to analyze yet"
+                body="Upload a bank statement and Claude will write its read on your money — concentration risk, momentum, deduction gaps."
+                action={
+                  <button
+                    onClick={() => setShowWizard(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    Open setup guide
+                  </button>
+                }
+              />
+            ) : (
+              <>
+                <AIAnalysisPanel parsedIncome={parsedIncome} />
+                {(() => {
+                  const PlatformInsights = require('./PlatformInsights').default;
+                  const transactionsWithPlatform = parsedIncome?.rawTransactions?.map((tx: any) => ({
+                    ...tx,
+                    platform: tx.platform || 'Other',
+                  })) || [];
+                  return <PlatformInsights transactions={transactionsWithPlatform} />;
+                })()}
+              </>
+            )}
           </div>
         )}
 

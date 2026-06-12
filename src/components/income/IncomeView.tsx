@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { PLATFORM_ICONS } from '@/lib/platform-icons';
 import {
 	Card,
 	CardContent,
@@ -175,7 +176,13 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 						<Card key={m.platform} className="bg-slate-900 border-white/10">
 							<CardContent className="pt-5 flex items-start justify-between gap-3">
 								<div>
-									<p className="text-sm font-semibold text-white">{m.platform}</p>
+									<p className="text-sm font-semibold text-white inline-flex items-center gap-2">
+										{(() => {
+											const I = PLATFORM_ICONS[m.platform];
+											return I ? <I className="h-4 w-4 text-slate-400" /> : null;
+										})()}
+										{m.platform}
+									</p>
 									<p className="text-xs text-slate-400 mt-1">
 										{money(m.recent)} last 4 weeks vs {money(m.prior)} the 4 before
 									</p>
@@ -249,6 +256,10 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 										className="h-2.5 w-2.5 rounded-full"
 										style={{ background: colorFor(p.platform) }}
 									/>
+									{(() => {
+										const I = PLATFORM_ICONS[p.platform];
+										return I ? <I className="h-3.5 w-3.5 text-slate-400" /> : null;
+									})()}
 									{p.platform}
 									<span className="text-xs text-slate-500">{p.count} payments</span>
 								</span>
