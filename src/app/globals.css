@@ -3,26 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@keyframes blob {
-  0%, 100% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-}
-
-@keyframes gradient {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
   --font-inter: var(--font-inter);
   --font-space-grotesk: var(--font-space-grotesk);
@@ -61,45 +45,43 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-
-  --animate-blob: blob 7s infinite;
-  --animate-gradient: gradient 8s ease infinite;
-  --animate-marquee: marquee 30s linear infinite;
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
+  /* Calm, banking-grade light palette: white surfaces, hairline gray borders,
+     near-black ink, one muted indigo accent. */
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.21 0.015 270);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.21 0.015 270);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.21 0.015 270);
+  --primary: oklch(0.51 0.2 277); /* muted indigo */
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --secondary: oklch(0.975 0.002 270);
+  --secondary-foreground: oklch(0.3 0.02 270);
+  --muted: oklch(0.975 0.002 270);
+  --muted-foreground: oklch(0.55 0.015 270);
+  --accent: oklch(0.965 0.008 277);
+  --accent-foreground: oklch(0.35 0.06 277);
+  --destructive: oklch(0.55 0.2 25);
+  --border: oklch(0.925 0.004 270);
+  --input: oklch(0.925 0.004 270);
+  --ring: oklch(0.65 0.12 277);
+  --chart-1: oklch(0.51 0.2 277);
+  --chart-2: oklch(0.62 0.1 250);
+  --chart-3: oklch(0.66 0.12 165);
+  --chart-4: oklch(0.74 0.1 80);
+  --chart-5: oklch(0.6 0.1 20);
+  --sidebar: oklch(0.985 0.002 270);
+  --sidebar-foreground: oklch(0.21 0.015 270);
+  --sidebar-primary: oklch(0.51 0.2 277);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-accent: oklch(0.955 0.006 277);
+  --sidebar-accent-foreground: oklch(0.3 0.02 270);
+  --sidebar-border: oklch(0.925 0.004 270);
+  --sidebar-ring: oklch(0.65 0.12 277);
 }
 
 .dark {
@@ -142,26 +124,31 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "cv11";
   }
 
-  /* Custom scrollbar styles */
+  /* Money figures should always line up — tabular numerals everywhere. */
+  body {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Quiet, light scrollbars */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #1e293b;
-    border-radius: 4px;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #475569;
+    background: #d6d6dd;
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+    background: #b9b9c4;
   }
 
   /* Toast notifications */
