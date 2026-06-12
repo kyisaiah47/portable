@@ -315,7 +315,7 @@ export default function Home() {
       {/* Quiet CTA */}
       <section className="border-t border-gray-200">
         <div className="max-w-3xl mx-auto px-6 py-20 text-center">
-          <ShiftMark className="mx-auto mb-6 text-indigo-600" />
+          <ShiftMark className="mx-auto mb-6 h-9 text-indigo-600" />
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
             Your income is already complicated. Your books shouldn&apos;t be.
           </h2>
