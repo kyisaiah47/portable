@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import WelcomeWizard from '@/components/WelcomeWizard';
 import MileageTracker from '@/components/MileageTracker';
+import HomeOverview from '@/components/home/HomeOverview';
 import { buildAccountantCsv, downloadAccountantCsv } from '@/lib/accountant-export';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -819,206 +820,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
               />
             ) : (
               <>
-                <StatGrid
-                  stats={[
-                    {
-                      label: 'This month',
-                      value: money(parsedIncome.stability.weeklyAverage * 4),
-                      sub: 'Estimated from weekly average',
-                    },
-                    {
-                      label: 'Set aside for taxes',
-                      value: money(parsedIncome.parsed.totalIncome * 0.3),
-                      sub: '30% of tracked income',
-                    },
-                    {
-                      label: 'Weekly average',
-                      value: money(parsedIncome.stability.weeklyAverage),
-                      sub: `${parsedIncome.stability.variability}% variability`,
-                    },
-                    {
-                      label: 'Stability score',
-                      value: `${parsedIncome.stability.score}/100`,
-                      sub: parsedIncome.stability.rating,
-                    },
-                  ]}
-                />
-
-                {/* Platform summary table */}
-                <section>
-                  <SectionHeader title="Income by platform" hint="From your uploaded statements" />
-                  <div className="rounded-lg border border-white/10 overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-slate-950/60 border-b border-white/10">
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Platform</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Payments</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Share</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Array.from(parsedIncome.parsed.byPlatform.entries())
-                          .map(([platform, data]: [string, any]) => ({
-                            platform,
-                            total: data.total || 0,
-                            count: data.count || 0,
-                          }))
-                          .sort((a, b) => b.total - a.total)
-                          .map(({ platform, total, count }) => {
-                            const PIcon = PLATFORM_ICONS[platform];
-                            const share = parsedIncome.parsed.totalIncome
-                              ? (total / parsedIncome.parsed.totalIncome) * 100
-                              : 0;
-                            return (
-                              <tr key={platform} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
-                                <td className="px-4 py-2.5">
-                                  <span className="inline-flex items-center gap-2.5 text-white font-medium">
-                                    {PIcon ? (
-                                      <PIcon className="w-3.5 h-3.5 text-slate-500" />
-                                    ) : (
-                                      <span
-                                        className="w-2 h-2 rounded-full"
-                                        style={{ background: PLATFORM_COLORS[platform] || PLATFORM_COLORS.Other }}
-                                      />
-                                    )}
-                                    {platform}
-                                  </span>
-                                </td>
-                                <td className="px-4 py-2.5 text-right text-slate-400">{count}</td>
-                                <td className="px-4 py-2.5 text-right text-slate-400">{share.toFixed(1)}%</td>
-                                <td className="px-4 py-2.5 text-right font-medium text-white">{money2(total)}</td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
-
-                {/* Recent payouts */}
-                <section>
-                  <div className="flex items-baseline justify-between gap-4 mb-3">
-                    <h2 className="text-sm font-semibold text-white">Recent payouts</h2>
-                    <Link href="/dashboard/income" className="text-xs font-medium text-indigo-400 hover:text-indigo-300">
-                      View all →
-                    </Link>
-                  </div>
-                  <div className="rounded-lg border border-white/10 overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-slate-950/60 border-b border-white/10">
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Date</th>
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Description</th>
-                          <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Platform</th>
-                          <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {[...parsedIncome.parsed.income]
-                          .sort((a: any, b: any) => b.date.getTime() - a.date.getTime())
-                          .slice(0, 8)
-                          .map((item: any, idx: number) => (
-                            <tr key={idx} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
-                              <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
-                                {item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                              </td>
-                              <td className="px-4 py-2.5 text-white max-w-[260px] truncate">
-                                {item.description || `${item.platform} payout`}
-                              </td>
-                              <td className="px-4 py-2.5 hidden sm:table-cell">
-                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-400">
-                                  {item.platform}
-                                </span>
-                              </td>
-                              <td className="px-4 py-2.5 text-right font-medium text-emerald-400">
-                                +{money2(item.amount)}
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
-
-                {/* Personalized tips */}
-                {(() => {
-                  const tips = getTips(
-                    selectedCities.length > 0 ? selectedCities : [],
-                    selectedGigTypes
-                  );
-                  const topTips = tips.slice(0, 6);
-
-                  return (
-                    <section>
-                      <SectionHeader
-                        title="Suggestions"
-                        hint="Based on your income, platforms, and location"
-                      />
-                      <div className="rounded-lg border border-white/10 divide-y divide-white/5">
-                        {topTips.map((tip) => {
-                          const handleTipClick = () => {
-                            const actionMap: Record<string, () => void> = {
-                              'View tax calendar': () => router.push('/dashboard/taxes'),
-                              'Add a platform': () => toast.success('Platform connections coming soon!'),
-                              'Connect DoorDash': () => toast.success('Platform connections coming soon!'),
-                              
-                              'Set up tracking': () => toast.success('Mileage tracking coming soon!'),
-                            };
-
-                            if (tip.action && actionMap[tip.action]) {
-                              actionMap[tip.action]();
-                            }
-                          };
-
-                          return (
-                            <button
-                              key={tip.id}
-                              onClick={handleTipClick}
-                              className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left hover:bg-slate-800/60 transition-colors group"
-                            >
-                              <div className="min-w-0">
-                                <p className="text-sm font-medium text-white">{tip.title}</p>
-                                <p className="text-xs text-slate-400 mt-0.5 truncate">{tip.description}</p>
-                              </div>
-                              {tip.action && (
-                                <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-indigo-400 group-hover:text-indigo-300">
-                                  {tip.action}
-                                  <ArrowRight className="w-3 h-3" />
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </section>
-                  );
-                })()}
-
-                {/* Reading */}
-                <section>
-                  <SectionHeader title="Guides" hint="Reading for multi-platform workers" />
-                  <div className="rounded-lg border border-white/10 divide-y divide-white/5">
-                    {[
-                      { href: '/blog/quarterly-tax-guide-for-gig-workers', title: 'Quarterly tax estimates, explained', time: '10 min' },
-                      { href: '/blog/top-10-tax-deductions-for-uber-drivers', title: 'Top deductions for rideshare drivers', time: '6 min' },
-                      { href: '/blog/how-to-track-income-across-multiple-gig-platforms', title: 'Tracking income across multiple platforms', time: '8 min' },
-                      { href: '/blog/building-emergency-fund-as-freelancer', title: 'Building an emergency fund on variable income', time: '7 min' },
-                    ].map((article) => (
-                      <Link
-                        key={article.href}
-                        href={article.href}
-                        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-slate-800/60 transition-colors group"
-                      >
-                        <span className="inline-flex items-center gap-2.5 text-sm text-white min-w-0">
-                          <BookOpen className="w-3.5 h-3.5 text-slate-500 shrink-0" strokeWidth={1.75} />
-                          <span className="truncate group-hover:text-indigo-300 transition-colors">{article.title}</span>
-                        </span>
-                        <span className="text-xs text-slate-500 shrink-0">{article.time} read</span>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
+                <HomeOverview parsedIncome={parsedIncome} />
               </>
             )}
           </div>
@@ -1164,7 +966,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                 cx="50%"
                                 cy="50%"
                                 labelLine={false}
-                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                                 outerRadius={105}
                                 innerRadius={62}
                                 dataKey="value"
@@ -1174,7 +976,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                   <Cell key={`cell-${index}`} fill={entry.fill} />
                                 ))}
                               </Pie>
-                              <ChartLegend content={<ChartLegendContent />} />
+                              <ChartLegend content={(<ChartLegendContent />) as never} />
                             </PieChart>
                           </ChartContainer>
                         </div>
@@ -1244,7 +1046,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               tickFormatter={(value) => `$${value.toLocaleString()}`}
                             />
                             <ChartTooltip content={<ChartTooltipContent />} />
-                            <ChartLegend content={<ChartLegendContent />} />
+                            <ChartLegend content={(<ChartLegendContent />) as never} />
                             {platforms.map(([platform]) => (
                               <Bar
                                 key={platform}
@@ -1548,7 +1350,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                         cx="50%"
                                         cy="50%"
                                         labelLine={false}
-                                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                        label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                                         outerRadius={105}
                                         innerRadius={62}
                                         dataKey="value"
@@ -1558,7 +1360,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                           <Cell key={`cell-${index}`} fill={entry.fill} />
                                         ))}
                                       </Pie>
-                                      <ChartLegend content={<ChartLegendContent />} />
+                                      <ChartLegend content={(<ChartLegendContent />) as never} />
                                     </PieChart>
                                   </ChartContainer>
                                 </div>
@@ -1595,7 +1397,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                       <XAxis dataKey="month" stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} />
                                       <YAxis stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
                                       <ChartTooltip content={<ChartTooltipContent />} />
-                                      <ChartLegend content={<ChartLegendContent />} />
+                                      <ChartLegend content={(<ChartLegendContent />) as never} />
                                       {categories.map(cat => (
                                         <Bar key={cat.category} dataKey={cat.displayName} stackId="a" fill={cat.color} />
                                       ))}
@@ -1639,7 +1441,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                     <XAxis dataKey="date" stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} />
                                     <YAxis stroke={CHART_AXIS} tickLine={false} axisLine={false} style={{ fontSize: '12px' }} tickFormatter={(value) => `$${value}`} />
                                     <ChartTooltip content={<ChartTooltipContent />} />
-                                    <ChartLegend content={<ChartLegendContent />} />
+                                    <ChartLegend content={(<ChartLegendContent />) as never} />
                                     {categories.map(cat => (
                                       <Line key={cat.category} type="monotone" dataKey={cat.displayName} stroke={cat.color} strokeWidth={2} dot={false} />
                                     ))}
@@ -1998,7 +1800,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                   cx="50%"
                                   cy="50%"
                                   labelLine={false}
-                                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                  label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                                   outerRadius={105}
                                   innerRadius={62}
                                   dataKey="value"
@@ -2008,7 +1810,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                     <Cell key={`cell-${index}`} fill={entry.fill} />
                                   ))}
                                 </Pie>
-                                <ChartLegend content={<ChartLegendContent />} />
+                                <ChartLegend content={(<ChartLegendContent />) as never} />
                               </PieChart>
                             </ChartContainer>
                           </div>
@@ -2049,7 +1851,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                   tickFormatter={(value) => `$${value}`}
                                 />
                                 <ChartTooltip content={<ChartTooltipContent />} />
-                                <ChartLegend content={<ChartLegendContent />} />
+                                <ChartLegend content={(<ChartLegendContent />) as never} />
                                 <Bar dataKey="setAside" fill="#6fa287" />
                                 <Bar dataKey="owed" fill="#cf6f6f" />
                               </BarChart>
