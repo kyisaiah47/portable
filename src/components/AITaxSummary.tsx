@@ -76,10 +76,13 @@ export default function AITaxSummary({
   };
 
   return (
-    <div className="rounded-lg border border-indigo-100 bg-indigo-500/10/40 p-5">
+    <div className="relative overflow-hidden rounded-xl border border-purple-400/25 bg-slate-900 p-6">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-indigo-400" />
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600">
+            <Sparkles className="h-4 w-4 text-white" />
+          </span>
           <h2 className="text-sm font-semibold text-white">
             Your taxes, in plain English
           </h2>
@@ -104,7 +107,7 @@ export default function AITaxSummary({
           </p>
           <button
             onClick={generate}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-500/100 transition-colors flex-shrink-0"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium hover:opacity-90 transition-opacity flex-shrink-0"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Generate summary</span>
