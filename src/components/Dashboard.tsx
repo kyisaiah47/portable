@@ -8,6 +8,7 @@ import ExpensesView from '@/components/expenses/ExpensesView';
 import IncomeView from '@/components/income/IncomeView';
 import TaxesView from '@/components/taxes/TaxesView';
 import AIAnalysisPanel from '@/components/insights/AIAnalysisPanel';
+import AskDeduction from '@/components/ask/AskDeduction';
 import { GLOW_SURFACE } from '@/components/ui/glow-card';
 import { buildAccountantCsv, downloadAccountantCsv } from '@/lib/accountant-export';
 import { useRouter, usePathname } from 'next/navigation';
@@ -838,65 +839,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </div>
         )}
 
-        {activeTab === 'income' && (
-          <div className="space-y-10">
-            <PageHeader
-              eyebrow="Income"
-              title={parsedIncome ? money(parsedIncome.parsed.totalIncome) : 'Income'}
-              subtitle="Every platform, one ledger."
-              actions={uploadActions}
-            />
-            {!parsedIncome ? (
-              <EmptyState
-                icon={BarChart3}
-                title="No income data yet"
-                body="Upload a bank statement and Stub will recognize payouts from 50+ gig platforms automatically."
-                action={
-                  <button
-                    onClick={() => setShowWizard(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    Open setup guide
-                  </button>
-                }
-              />
-            ) : (
-              <IncomeView parsedIncome={parsedIncome} />
-            )}
-          </div>
-        )}
-
-        {activeTab === 'expenses' && (
-          <div className="space-y-10">
-            <PageHeader
-              eyebrow="Expenses"
-              title="Write-offs"
-              subtitle="Deductible business expenses, detected and explained automatically."
-              actions={uploadActions}
-            />
-            {!parsedIncome ? (
-              <EmptyState
-                icon={Receipt}
-                title="No expenses tracked yet"
-                body="Upload your bank statement and Stub will detect deductible business expenses — gas, equipment, software, phone bills — and write down the reason for each."
-                action={
-                  <button
-                    onClick={() => setShowWizard(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    Open setup guide
-                  </button>
-                }
-              />
-            ) : (
-              <ExpensesView parsedIncome={parsedIncome} />
-            )}
-          </div>
-        )}
-
-
         {activeTab === 'taxes' && (
           <div className="space-y-10">
             <PageHeader
@@ -953,7 +895,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 }
               />
             ) : (
-              <TaxesView parsedIncome={parsedIncome} />
+              <TaxesView parsedIncome={parsedIncome} userId={user.id} />
             )}
 
             {/* Tax Calculator Modal */}
@@ -987,15 +929,17 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </div>
         )}
 
-        {activeTab === 'insights' && (
+        {activeTab === 'ask' && (
           <div className="space-y-8">
             <PageHeader
               eyebrow="Workspace"
-              title="AI Insights"
-              subtitle="Claude's written analysis of your income, deductions, and tax exposure."
+              title="Ask AI"
+              subtitle="Deduction questions answered in seconds, plus Claude's written read on your money."
             />
-
-            {!parsedIncome ? (
+            <AskDeduction />
+            {parsedIncome ? (
+              <AIAnalysisPanel parsedIncome={parsedIncome} />
+            ) : (
               <EmptyState
                 icon={Target}
                 title="Nothing to analyze yet"
@@ -1010,172 +954,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   </button>
                 }
               />
-            ) : (
-              <>
-                <AIAnalysisPanel parsedIncome={parsedIncome} />
-                {(() => {
-                  const PlatformInsights = require('./PlatformInsights').default;
-                  const transactionsWithPlatform = parsedIncome?.rawTransactions?.map((tx: any) => ({
-                    ...tx,
-                    platform: tx.platform || 'Other',
-                  })) || [];
-                  return <PlatformInsights transactions={transactionsWithPlatform} />;
-                })()}
-              </>
             )}
           </div>
         )}
 
-        {activeTab === 'mileage' && (
-          <div className="space-y-8">
-            <PageHeader
-              eyebrow="Money"
-              title="Mileage"
-              subtitle="Log work miles — the IRS standard rate is usually your biggest deduction."
-            />
-            <MileageTracker userId={user.id} />
-          </div>
-        )}
-
-        {activeTab === 'learn' && (
-          <div className="space-y-10">
-            <PageHeader
-              eyebrow="Workspace"
-              title="Learn"
-              subtitle="City-specific guides, tax tips, and strategies from top earners."
-              actions={
-                <>
-                  {/* City Selector */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors">
-                        <Globe className="w-3.5 h-3.5 text-slate-500" />
-                        <span>
-                          {selectedCities.length === 0 ? 'All cities' : selectedCities.length === 1 ? selectedCities[0] : `${selectedCities.length} cities`}
-                        </span>
-                        <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel className="text-slate-400 text-xs">Select cities</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {(['New York', 'San Francisco', 'Los Angeles', 'Chicago', 'Austin'] as City[]).map((city) => (
-                        <DropdownMenuCheckboxItem
-                          key={city}
-                          checked={selectedCities.includes(city)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedCities([...selectedCities, city]);
-                            } else {
-                              setSelectedCities(selectedCities.filter(c => c !== city));
-                            }
-                          }}
-                        >
-                          {city}
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                      {selectedCities.length > 0 && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <button
-                            onClick={() => setSelectedCities([])}
-                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
-                          >
-                            Clear all
-                          </button>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  {/* Gig Type Selector */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors">
-                        <Briefcase className="w-3.5 h-3.5 text-slate-500" />
-                        <span>
-                          {selectedGigTypes.length === 0 ? 'All gigs' : selectedGigTypes.length === 1 ? selectedGigTypes[0] : `${selectedGigTypes.length} types`}
-                        </span>
-                        <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel className="text-slate-400 text-xs">Select gig types</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {(['rideshare', 'delivery', 'freelance', 'creator', 'rental'] as const).map((gigType) => (
-                        <DropdownMenuCheckboxItem
-                          key={gigType}
-                          checked={selectedGigTypes.includes(gigType)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedGigTypes([...selectedGigTypes, gigType]);
-                            } else {
-                              setSelectedGigTypes(selectedGigTypes.filter(t => t !== gigType));
-                            }
-                          }}
-                        >
-                          {gigType.charAt(0).toUpperCase() + gigType.slice(1)}
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                      {selectedGigTypes.length > 0 && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <button
-                            onClick={() => setSelectedGigTypes([])}
-                            className="w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white transition-colors text-center"
-                          >
-                            Clear all
-                          </button>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              }
-            />
-
-            {/* Filtered Guides */}
-            {(() => {
-              const guides = getGuides(selectedCities, selectedGigTypes);
-
-              return (
-                <section>
-                  <SectionHeader
-                    title={selectedCities.length > 0 || selectedGigTypes.length > 0 ? 'Filtered guides' : 'All guides'}
-                    hint={`${guides.length} guide${guides.length !== 1 ? 's' : ''}${selectedCities.length > 0 ? ` in ${selectedCities.join(', ')}` : ''}${selectedGigTypes.length > 0 ? ` for ${selectedGigTypes.join(', ')}` : ''}`}
-                  />
-                  <div className={`${GLOW_SURFACE} rounded-lg divide-y divide-white/5`}>
-                    {guides.map((guide) => (
-                      <Link
-                        key={guide.id}
-                        href={guide.actionLink || '#'}
-                        className="flex items-start justify-between gap-4 px-4 py-3.5 hover:bg-slate-800/60 transition-colors group"
-                      >
-                        <div className="flex items-start gap-3 min-w-0">
-                          <BookOpen className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" strokeWidth={1.75} />
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-sm font-medium text-white group-hover:text-indigo-300 transition-colors">
-                                {guide.title}
-                              </p>
-                              {guide.cities.length > 0 && !guide.cities.includes('all') && (
-                                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-400">
-                                  {guide.cities.join(', ')}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-xs text-slate-400 mt-0.5">{guide.description}</p>
-                          </div>
-                        </div>
-                        <span className="text-xs text-slate-500 shrink-0">{guide.readTime}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              );
-            })()}
-          </div>
-        )}
         {activeTab === 'settings' && (
           <div className="space-y-6 max-w-2xl">
             <PageHeader

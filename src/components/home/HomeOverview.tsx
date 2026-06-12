@@ -43,6 +43,7 @@ const chartConfig = {
 export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 	const [range, setRange] = React.useState<'90d' | '30d' | '7d'>('90d');
 	const [month, setMonth] = React.useState<string>('all');
+	const [kind, setKind] = React.useState<'all' | 'income' | 'writeoffs'>('all');
 
 	const computed = React.useMemo(() => {
 		const raw = parsedIncome.rawTransactions || [];
@@ -282,6 +283,18 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 
 			{/* Month tabs above the table — block anatomy */}
 			<div className="flex items-center justify-between gap-4">
+				<div className="flex flex-wrap items-center gap-3">
+				<ToggleGroup
+					type="single"
+					value={kind}
+					onValueChange={(v) => v && setKind(v as typeof kind)}
+					variant="outline"
+					size="sm"
+				>
+					<ToggleGroupItem value="all">All</ToggleGroupItem>
+					<ToggleGroupItem value="income">Income</ToggleGroupItem>
+					<ToggleGroupItem value="writeoffs">Write-offs</ToggleGroupItem>
+				</ToggleGroup>
 				<ToggleGroup
 					type="single"
 					value={month}
@@ -296,12 +309,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 						</ToggleGroupItem>
 					))}
 				</ToggleGroup>
-				<Link
-					href="/dashboard/income"
-					className="text-xs font-medium text-indigo-400 hover:text-indigo-300 shrink-0"
-				>
-					View all →
-				</Link>
+				</div>
 			</div>
 
 			{/* Recent activity with AI tags */}
@@ -317,13 +325,23 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 								<TableHead className="text-slate-500">Date</TableHead>
 								<TableHead className="text-slate-500">Description</TableHead>
 								<TableHead className="text-slate-500">AI tag</TableHead>
+								{kind === 'writeoffs' && (
+									<TableHead className="text-slate-500 w-[35%]">Why</TableHead>
+								)}
 								<TableHead className="text-right text-slate-500">Amount</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
 							{c.recent
 							.filter((t: any) => month === 'all' || new Date(t.date).toISOString().slice(0, 7) === month)
-							.slice(0, month === 'all' ? 12 : 100)
+							.filter((t: any) =>
+								kind === 'all'
+									? true
+									: kind === 'income'
+									? t.classification.kind === 'income'
+									: t.classification.kind === 'expense' && t.classification.deductible
+							)
+							.slice(0, month === 'all' && kind === 'all' ? 12 : 200)
 							.map((t: any, i: number) => {
 								const cls = t.classification;
 								const isIncome = cls.kind === 'income';
@@ -360,6 +378,11 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 												</Badge>
 											)}
 										</TableCell>
+										{kind === 'writeoffs' && (
+											<TableCell className="text-xs text-slate-400 leading-relaxed">
+												{cls.rationale || '—'}
+											</TableCell>
+										)}
 										<TableCell
 											className={`text-right tabular-nums font-medium ${
 												isIncome ? 'text-emerald-400' : 'text-slate-300'

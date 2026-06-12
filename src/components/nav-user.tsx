@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import {
+  IconBook2,
   IconDotsVertical,
   IconLogout,
   IconSettings,
@@ -84,6 +85,12 @@ export function NavUser({
                 <Link href="/dashboard/settings">
                   <IconSettings />
                   Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/blog">
+                  <IconBook2 />
+                  Learn
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>

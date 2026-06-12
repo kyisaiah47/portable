@@ -21,6 +21,7 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import AITaxSummary from '@/components/AITaxSummary';
+import MileageTracker from '@/components/MileageTracker';
 import { buildExpensesFromTransactions } from '@/lib/hybrid-classifier';
 import {
 	calculateTaxes,
@@ -30,7 +31,7 @@ import {
 
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 
-export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
+export default function TaxesView({ parsedIncome, userId }: { parsedIncome: any; userId: string }) {
 	const c = React.useMemo(() => {
 		const raw = parsedIncome.rawTransactions || [];
 		const expenseResults = buildExpensesFromTransactions(raw);
@@ -70,36 +71,38 @@ export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
 
 	return (
 		<div className="space-y-6">
-			{/* Hero cards */}
-			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<StatCard
-					label="Set aside each quarter"
-					gradientValue
-					value={money(c.taxCalc.quarterlyPayment)}
-					sub={<>{(c.taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate on projected income</>}
-				/>
-				<StatCard
-					label="Next deadline"
-					value={c.daysUntil !== null ? `${c.daysUntil} days` : '—'}
-					action={
-						c.next ? (
-							<Badge variant="outline" className="border-white/15 text-slate-300">
-								<CalendarClock className="w-3 h-3" />
-								{c.next.quarter}
-							</Badge>
-						) : undefined
-					}
-					sub={
-						c.next
-							? c.next.dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-							: 'No upcoming deadline this year'
-					}
-				/>
-				<StatCard
-					label="Deductions lowering your bill"
-					value={money(c.expenseResults.totalDeductions)}
-					sub={<>≈ {money(c.expenseResults.potentialTaxSavings ?? c.expenseResults.totalDeductions * 0.3)} in tax savings</>}
-				/>
+			{/* One line, not three cards */}
+			<div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 text-sm text-slate-300">
+				<span>
+					Set aside{' '}
+					<span className="font-space-grotesk font-bold text-2xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tabular-nums">
+						{money(c.taxCalc.quarterlyPayment)}
+					</span>{' '}
+					each quarter
+				</span>
+				<span className="text-slate-500">·</span>
+				<span>
+					{c.next ? (
+						<>
+							{c.next.quarter} due{' '}
+							<span className="font-semibold text-white">
+								{c.next.dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+							</span>{' '}
+							({c.daysUntil}d)
+						</>
+					) : (
+						'No upcoming deadline'
+					)}
+				</span>
+				<span className="text-slate-500">·</span>
+				<span>
+					{(c.taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate
+				</span>
+				<span className="text-slate-500">·</span>
+				<span>
+					<span className="font-semibold text-white">{money(c.expenseResults.totalDeductions)}</span>{' '}
+					in deductions working for you
+				</span>
 			</div>
 
 			{/* AI summary — the centerpiece */}
@@ -175,6 +178,15 @@ export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
 					</Table>
 				</CardContent>
 			</GlowCard>
+
+			{/* Mileage — it exists purely as a tax deduction, so it lives here */}
+			<div>
+				<h2 className="text-base font-semibold text-white mb-1">Mileage</h2>
+				<p className="text-sm text-slate-400 mb-4">
+					Log work miles — the IRS standard rate is usually the biggest write-off of all.
+				</p>
+				<MileageTracker userId={userId} />
+			</div>
 		</div>
 	);
 }

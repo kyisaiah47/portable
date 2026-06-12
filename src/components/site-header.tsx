@@ -6,13 +6,9 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
 const TITLES: Record<string, string> = {
-  "/dashboard": "Home",
-  "/dashboard/income": "Income",
-  "/dashboard/expenses": "Expenses",
+  "/dashboard": "Overview",
   "/dashboard/taxes": "Taxes",
-  "/dashboard/mileage": "Mileage",
-  "/dashboard/insights": "AI Insights",
-  "/dashboard/learn": "Learn",
+  "/dashboard/ask": "Ask AI",
   "/dashboard/settings": "Settings",
 }
 
