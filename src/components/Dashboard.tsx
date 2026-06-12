@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import FirstRunWizard from '@/components/FirstRunWizard';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -787,19 +788,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
             />
 
             {!parsedIncome ? (
-              <EmptyState
-                icon={BarChart3}
-                title="No income data yet"
-                body="Upload a CSV bank statement and Stub will classify every payout by platform, flag deductible expenses, and estimate your quarterly taxes."
-                action={
-                  <label
-                    htmlFor="csv-upload"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    Upload statement
-                  </label>
-                }
+              <FirstRunWizard
+                userId={user.id}
+                firstName={user.firstName}
+                onUploadComplete={() => window.location.reload()}
               />
             ) : (
               <>
