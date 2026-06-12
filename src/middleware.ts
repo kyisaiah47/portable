@@ -63,20 +63,17 @@ export async function middleware(req: NextRequest) {
   if (req.nextUrl.pathname.startsWith('/dashboard')) {
     if (!session) {
       const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/login';
-      redirectUrl.searchParams.set('redirectedFrom', req.nextUrl.pathname);
+      redirectUrl.pathname = '/';
+      redirectUrl.searchParams.set('auth', 'login');
       return NextResponse.redirect(redirectUrl);
     }
   }
 
-  // Redirect authenticated users away from login/signup
-  if (session && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
-  }
+
 
   return response;
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/signup'],
+  matcher: ['/dashboard/:path*'],
 };

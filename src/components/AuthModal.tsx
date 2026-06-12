@@ -24,15 +24,15 @@ export default function AuthModal({
 
 	return (
 		<Dialog open onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-md">
-				<DialogHeader>
-					<div className="flex items-center gap-2 mb-2">
-						<ShiftMark className="h-5 w-auto" />
-						<span className="text-[17px] font-semibold tracking-tight font-space-grotesk">
+			<DialogContent className="sm:max-w-md p-8 gap-6">
+				<DialogHeader className="space-y-1.5">
+					<div className="flex items-center gap-2 mb-4">
+						<ShiftMark className="h-6 w-auto" />
+						<span className="text-lg font-bold tracking-tight font-space-grotesk text-foreground">
 							Stub
 						</span>
 					</div>
-					<DialogTitle className="font-space-grotesk">
+					<DialogTitle className="font-space-grotesk text-xl">
 						{mode === 'signup' ? 'Create your account' : 'Welcome back'}
 					</DialogTitle>
 					<DialogDescription>

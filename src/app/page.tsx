@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ShiftMark } from '@/components/Logo';
@@ -41,8 +42,15 @@ function Circles({ size = 'w-6 h-6' }: { size?: string }) {
 	);
 }
 
-export default function Home() {
+function Home() {
 	const [auth, setAuth] = useState<'login' | 'signup' | null>(null);
+	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		const q = searchParams.get('auth');
+		if (q === 'login' || q === 'signup') setAuth(q);
+	}, [searchParams]);
+
 	return (
 		<div className="min-h-screen bg-slate-950 font-inter text-white">
 			{/* Navigation */}
@@ -383,5 +391,13 @@ function GlowCard({
 				<div className={`${bodyColor} text-sm leading-relaxed`}>{body}</div>
 			</div>
 		</div>
+	);
+}
+
+export default function Page() {
+	return (
+		<Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+			<Home />
+		</Suspense>
 	);
 }

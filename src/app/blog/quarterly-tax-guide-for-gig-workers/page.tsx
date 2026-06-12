@@ -31,7 +31,7 @@ export default function BlogPost() {
             <Link href="/blog" className="text-slate-300 hover:text-white text-sm">
               ← Back to Blog
             </Link>
-            <Link href="/signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+            <Link href="/?auth=signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
               Get Started
             </Link>
           </div>
@@ -128,7 +128,7 @@ export default function BlogPost() {
             <p className="text-slate-300 mb-4">
               Stub automatically calculates your quarterly tax estimates based on your actual income from all platforms. No more guesswork, no more spreadsheets.
             </p>
-            <Link href="/signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity">
+            <Link href="/?auth=signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity">
               Start Free Trial →
             </Link>
           </div>

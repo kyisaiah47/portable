@@ -27,7 +27,7 @@ export default function BlogPost() {
           <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Stub</Link>
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="text-slate-300 hover:text-white text-sm">Dashboard</Link>
-            <Link href="/signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Get Started</Link>
+            <Link href="/?auth=signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Get Started</Link>
           </div>
         </div>
       </nav>
@@ -96,7 +96,7 @@ export default function BlogPost() {
           <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-6 mt-12">
             <h3 className="text-purple-400 font-bold mb-3 mt-0">Track Deductions Automatically</h3>
             <p className="mb-4">Stub connects to your bank and auto-categorizes rideshare expenses. Never miss a deduction again.</p>
-            <Link href="/signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold">Start Free Trial →</Link>
+            <Link href="/?auth=signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold">Start Free Trial →</Link>
           </div>
         </div>
       </article>

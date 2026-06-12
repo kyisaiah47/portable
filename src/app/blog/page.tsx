@@ -75,11 +75,11 @@ export default function BlogPage() {
             Stub
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-slate-300 hover:text-white text-sm">
+            <Link href="/?auth=login" className="text-slate-300 hover:text-white text-sm">
               Login
             </Link>
             <Link
-              href="/signup"
+              href="/?auth=signup"
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               Get Started

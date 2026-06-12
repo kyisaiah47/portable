@@ -39,7 +39,7 @@ export default function BlogPost() {
               ← Back to Blog
             </Link>
             <Link
-              href="/signup"
+              href="/?auth=signup"
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               Get Started
@@ -241,7 +241,7 @@ export default function BlogPost() {
                 Stub automatically tracks income from 50+ gig platforms, calculates taxes, and helps you build savings. Free to start.
               </p>
               <Link
-                href="/signup"
+                href="/?auth=signup"
                 className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition-opacity text-lg"
               >
                 Get Started Free
