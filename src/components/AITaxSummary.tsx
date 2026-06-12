@@ -76,11 +76,11 @@ export default function AITaxSummary({
   };
 
   return (
-    <div className="bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-purple-500/10 backdrop-blur-xl rounded-lg p-6 border border-purple-500/20">
+    <div className="rounded-lg border border-indigo-100 bg-indigo-50/40 p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-400" />
-          <h2 className="text-lg font-bold text-white font-space-grotesk">
+          <Sparkles className="w-4 h-4 text-indigo-600" />
+          <h2 className="text-sm font-semibold text-gray-900">
             Your taxes, in plain English
           </h2>
         </div>
@@ -88,7 +88,7 @@ export default function AITaxSummary({
           <button
             onClick={generate}
             title="Regenerate"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-400 border border-white/10 hover:text-white hover:border-white/20 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md text-gray-500 border border-gray-200 bg-white hover:text-gray-900 hover:border-gray-300 transition-colors"
           >
             <RefreshCw className="w-3 h-3" />
             <span>Regenerate</span>
@@ -97,34 +97,34 @@ export default function AITaxSummary({
       </div>
 
       {!summary && !loading && !error && (
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-sm text-slate-300">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-gray-600">
             Get an AI-written breakdown of what you owe, why, and exactly how much to set aside
             from every payout.
           </p>
           <button
             onClick={generate}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity flex-shrink-0"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-500 transition-colors flex-shrink-0"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-3.5 h-3.5" />
             <span>Generate summary</span>
           </button>
         </div>
       )}
 
       {loading && (
-        <div className="flex items-center gap-3 py-4 text-slate-400">
-          <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
-          <span className="text-sm">Writing your summary from the computed numbers...</span>
+        <div className="flex items-center gap-3 py-3 text-gray-500">
+          <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+          <span className="text-sm">Writing your summary from the computed numbers…</span>
         </div>
       )}
 
       {error && !loading && (
-        <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-          <p className="text-sm text-red-400 mb-3">{error}</p>
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-sm text-red-700 mb-2">{error}</p>
           <button
             onClick={generate}
-            className="text-xs font-semibold text-white bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors"
+            className="text-xs font-medium text-gray-700 bg-white border border-gray-200 px-2.5 py-1 rounded-md hover:border-gray-300 transition-colors"
           >
             Try again
           </button>
@@ -134,7 +134,7 @@ export default function AITaxSummary({
       {summary && !loading && (
         <div className="space-y-3">
           {summary.split(/\n\s*\n/).map((paragraph, idx) => (
-            <p key={idx} className="text-sm text-slate-300 leading-relaxed">
+            <p key={idx} className="text-sm text-gray-600 leading-relaxed">
               {paragraph}
             </p>
           ))}

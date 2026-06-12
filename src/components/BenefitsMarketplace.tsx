@@ -137,12 +137,12 @@ export default function BenefitsMarketplace() {
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      health: 'bg-red-500/20 text-red-400 border-red-500/30',
-      retirement: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      emergency: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      tax: 'bg-green-500/20 text-green-400 border-green-500/30',
+      health: 'bg-red-50 text-red-600 border-red-200',
+      retirement: 'bg-indigo-50 text-indigo-600 border-indigo-200',
+      emergency: 'bg-amber-50 text-amber-600 border-amber-200',
+      tax: 'bg-emerald-50 text-emerald-600 border-emerald-200',
     };
-    return colors[category as keyof typeof colors] || 'bg-slate-700/50 text-slate-300 border-white/10';
+    return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-600 border-gray-200';
   };
 
   const getCategoryIcon = (category: string) => {
@@ -158,27 +158,27 @@ export default function BenefitsMarketplace() {
   return (
     <div className="space-y-8">
       {/* Hero message */}
-      <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/10 rounded-lg p-8">
+      <div className="bg-white border border-gray-200 rounded-lg p-8">
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1">
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 font-space-grotesk">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 ">
               Build your safety net
             </h1>
-            <p className="text-base md:text-lg text-slate-300">
+            <p className="text-base md:text-lg text-gray-600">
               Health coverage, retirement savings, and emergency funds designed for gig workers. No employer required.
             </p>
           </div>
           <div className="flex gap-3 flex-shrink-0">
             <button
               onClick={() => setIsHealthCalcModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
             >
               <Heart className="w-4 h-4" />
               <span>Health Calc</span>
             </button>
             <button
               onClick={() => setIsRetirementCalcModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-900 text-gray-900 hover:bg-gray-800 text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               <Building2 className="w-4 h-4" />
               <span>Retirement Calc</span>
@@ -188,10 +188,10 @@ export default function BenefitsMarketplace() {
       </div>
 
       {/* Progress Rings - Benefits Coverage */}
-      <div className="bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80 backdrop-blur-xl rounded-lg p-8 border border-white/10">
+      <div className="bg-white rounded-lg p-8 border border-gray-200">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-white font-space-grotesk">Your safety net progress</h2>
-          <p className="text-xs text-slate-400">Track your coverage across key areas</p>
+          <h2 className="text-base font-semibold text-gray-900 ">Your safety net progress</h2>
+          <p className="text-xs text-gray-500">Track your coverage across key areas</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -217,18 +217,18 @@ export default function BenefitsMarketplace() {
               </ChartContainer>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-3xl font-black text-green-400 font-space-grotesk">40%</div>
-                  <div className="text-xs text-slate-400">Complete</div>
+                  <div className="text-3xl font-semibold text-emerald-600 ">40%</div>
+                  <div className="text-xs text-gray-500">Complete</div>
                 </div>
               </div>
             </div>
             <div className="mt-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
-                <AlertTriangle className="w-4 h-4 text-green-400" />
-                <h3 className="text-sm font-bold text-white">Emergency Fund</h3>
+                <AlertTriangle className="w-4 h-4 text-emerald-600" />
+                <h3 className="text-sm font-medium text-gray-900">Emergency Fund</h3>
               </div>
-              <p className="text-xs text-slate-400">1.2 of 3 months covered</p>
-              <p className="text-xs text-green-400 mt-1 font-semibold">$3,600 saved</p>
+              <p className="text-xs text-gray-500">1.2 of 3 months covered</p>
+              <p className="text-xs text-emerald-600 mt-1 font-semibold">$3,600 saved</p>
             </div>
           </div>
 
@@ -254,18 +254,18 @@ export default function BenefitsMarketplace() {
               </ChartContainer>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-3xl font-black text-purple-400 font-space-grotesk">25%</div>
-                  <div className="text-xs text-slate-400">Complete</div>
+                  <div className="text-3xl font-semibold text-indigo-600 ">25%</div>
+                  <div className="text-xs text-gray-500">Complete</div>
                 </div>
               </div>
             </div>
             <div className="mt-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
-                <Building2 className="w-4 h-4 text-purple-400" />
-                <h3 className="text-sm font-bold text-white">Retirement</h3>
+                <Building2 className="w-4 h-4 text-indigo-600" />
+                <h3 className="text-sm font-medium text-gray-900">Retirement</h3>
               </div>
-              <p className="text-xs text-slate-400">Contributing $500/mo</p>
-              <p className="text-xs text-purple-400 mt-1 font-semibold">On track for 35 years</p>
+              <p className="text-xs text-gray-500">Contributing $500/mo</p>
+              <p className="text-xs text-indigo-600 mt-1 font-semibold">On track for 35 years</p>
             </div>
           </div>
 
@@ -291,47 +291,47 @@ export default function BenefitsMarketplace() {
               </ChartContainer>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-3xl font-black text-red-400 font-space-grotesk">100%</div>
-                  <div className="text-xs text-slate-400">Complete</div>
+                  <div className="text-3xl font-semibold text-red-600 ">100%</div>
+                  <div className="text-xs text-gray-500">Complete</div>
                 </div>
               </div>
             </div>
             <div className="mt-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
-                <Heart className="w-4 h-4 text-red-400" />
-                <h3 className="text-sm font-bold text-white">Health Insurance</h3>
+                <Heart className="w-4 h-4 text-red-600" />
+                <h3 className="text-sm font-medium text-gray-900">Health Insurance</h3>
               </div>
-              <p className="text-xs text-slate-400">ACA Marketplace</p>
-              <p className="text-xs text-red-400 mt-1 font-semibold">$180/mo with subsidy</p>
+              <p className="text-xs text-gray-500">ACA Marketplace</p>
+              <p className="text-xs text-red-600 mt-1 font-semibold">$180/mo with subsidy</p>
             </div>
           </div>
         </div>
 
         {/* Overall Summary */}
-        <div className="mt-8 pt-6 border-t border-white/10">
+        <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-400">Overall Benefits Coverage</p>
-              <p className="text-xs text-slate-500 mt-1">You're covering 2 of 3 core areas</p>
+              <p className="text-sm text-gray-500">Overall Benefits Coverage</p>
+              <p className="text-xs text-gray-400 mt-1">You're covering 2 of 3 core areas</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-black text-blue-400 font-space-grotesk">67%</div>
-              <p className="text-xs text-slate-400">Safety net strength</p>
+              <div className="text-2xl font-semibold text-indigo-600 ">67%</div>
+              <p className="text-xs text-gray-500">Safety net strength</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Explainer text */}
-      <div className="space-y-4 text-base text-slate-300 leading-relaxed">
+      <div className="space-y-4 text-base text-gray-600 leading-relaxed">
         <p>
-          Traditional benefits are tied to full-time jobs. You get health insurance, a 401(k), paid time off, and life insurance because your employer sponsors them. But when you&apos;re working for yourself, <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent font-semibold">you lose access to all of that</span>. It&apos;s not because you don&apos;t qualify—it&apos;s because the system wasn&apos;t built for independent workers.
+          Traditional benefits are tied to full-time jobs. You get health insurance, a 401(k), paid time off, and life insurance because your employer sponsors them. But when you&apos;re working for yourself, <span className="font-medium text-gray-900">you lose access to all of that</span>. It&apos;s not because you don&apos;t qualify—it&apos;s because the system wasn&apos;t built for independent workers.
         </p>
         <p>
-          That&apos;s where Stub comes in. We&apos;ve curated trusted providers for <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">health insurance</span> (HealthCare.gov), <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">retirement savings</span> (Vanguard, Fidelity, Betterment IRAs), <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent font-semibold">emergency funds</span> (high-yield savings), and <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">tax tools</span> (TurboTax, H&R Block, IRS guides).
+          That&apos;s where Stub comes in. We&apos;ve curated trusted providers for <span className="font-medium text-gray-900">health insurance</span> (HealthCare.gov), <span className="font-medium text-gray-900">retirement savings</span> (Vanguard, Fidelity, Betterment IRAs), <span className="font-medium text-gray-900">emergency funds</span> (high-yield savings), and <span className="font-medium text-gray-900">tax tools</span> (TurboTax, H&R Block, IRS guides).
         </p>
         <p>
-          <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">We&apos;re not selling you anything</span> — just pointing you to the best current tools. We don&apos;t charge fees, and we don&apos;t have referral partnerships (yet). This is just honest guidance for what works. Most gig workers start with health insurance, then add emergency savings and retirement as their income stabilizes.
+          <span className="font-medium text-gray-900">We&apos;re not selling you anything</span> — just pointing you to the best current tools. We don&apos;t charge fees, and we don&apos;t have referral partnerships (yet). This is just honest guidance for what works. Most gig workers start with health insurance, then add emergency savings and retirement as their income stabilizes.
         </p>
         <p>
           You shouldn&apos;t have to choose between flexibility and security. With Stub, you can have both.
@@ -339,144 +339,144 @@ export default function BenefitsMarketplace() {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-white/10 mt-8"></div>
+      <div className="border-t border-gray-200 mt-8"></div>
 
 
       {/* Retirement Account Comparison */}
       <div>
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-white font-space-grotesk">Retirement account comparison</h2>
-          <p className="text-xs text-slate-400">Choose the right account for your situation</p>
+          <h2 className="text-base font-semibold text-gray-900 ">Retirement account comparison</h2>
+          <p className="text-xs text-gray-500">Choose the right account for your situation</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
           {/* Traditional IRA */}
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-            <h3 className="text-lg font-bold text-white mb-2 font-space-grotesk">Traditional IRA</h3>
-            <p className="text-sm text-slate-400 mb-4">Tax deduction now, pay taxes in retirement</p>
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-base font-semibold text-gray-900 mb-2 ">Traditional IRA</h3>
+            <p className="text-sm text-gray-500 mb-4">Tax deduction now, pay taxes in retirement</p>
 
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Tax deduction today</p>
-                  <p className="text-xs text-slate-400">Lower your taxable income now</p>
+                  <p className="text-sm text-gray-700">Tax deduction today</p>
+                  <p className="text-xs text-gray-500">Lower your taxable income now</p>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Tax-deferred growth</p>
-                  <p className="text-xs text-slate-400">No taxes on gains until withdrawal</p>
+                  <p className="text-sm text-gray-700">Tax-deferred growth</p>
+                  <p className="text-xs text-gray-500">No taxes on gains until withdrawal</p>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
-                <AlertTriangle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Taxes in retirement</p>
-                  <p className="text-xs text-slate-400">Withdrawals taxed as income</p>
+                  <p className="text-sm text-gray-700">Taxes in retirement</p>
+                  <p className="text-xs text-gray-500">Withdrawals taxed as income</p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-white/10">
+            <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-slate-400">2024 Contribution Limit</span>
-                <span className="text-sm font-bold text-white">$7,000</span>
+                <span className="text-xs text-gray-500">2024 Contribution Limit</span>
+                <span className="text-sm font-medium text-gray-900">$7,000</span>
               </div>
-              <p className="text-xs text-slate-400">Best for: High earners who want tax deductions now</p>
+              <p className="text-xs text-gray-500">Best for: High earners who want tax deductions now</p>
             </div>
           </div>
 
           {/* Roth IRA */}
-          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-lg p-6 border border-purple-500/20">
+          <div className="bg-indigo-50/40 rounded-lg p-6 border border-indigo-100">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-lg font-bold text-white font-space-grotesk">Roth IRA</h3>
-              <div className="text-xs font-bold text-purple-400 bg-purple-500/20 px-2 py-1 rounded">RECOMMENDED</div>
+              <h3 className="text-base font-semibold text-gray-900 ">Roth IRA</h3>
+              <div className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">RECOMMENDED</div>
             </div>
-            <p className="text-sm text-slate-400 mb-4">Pay taxes now, tax-free withdrawals forever</p>
+            <p className="text-sm text-gray-500 mb-4">Pay taxes now, tax-free withdrawals forever</p>
 
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Tax-free growth</p>
-                  <p className="text-xs text-slate-400">Never pay taxes on gains</p>
+                  <p className="text-sm text-gray-700">Tax-free growth</p>
+                  <p className="text-xs text-gray-500">Never pay taxes on gains</p>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Tax-free withdrawals</p>
-                  <p className="text-xs text-slate-400">All money yours in retirement</p>
+                  <p className="text-sm text-gray-700">Tax-free withdrawals</p>
+                  <p className="text-xs text-gray-500">All money yours in retirement</p>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Withdraw contributions anytime</p>
-                  <p className="text-xs text-slate-400">Emergency access if needed</p>
+                  <p className="text-sm text-gray-700">Withdraw contributions anytime</p>
+                  <p className="text-xs text-gray-500">Emergency access if needed</p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-purple-500/20">
+            <div className="mt-4 pt-4 border-t border-indigo-100">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-slate-400">2024 Contribution Limit</span>
-                <span className="text-sm font-bold text-white">$7,000</span>
+                <span className="text-xs text-gray-500">2024 Contribution Limit</span>
+                <span className="text-sm font-medium text-gray-900">$7,000</span>
               </div>
-              <p className="text-xs text-slate-400">Best for: Gig workers expecting higher income later</p>
+              <p className="text-xs text-gray-500">Best for: Gig workers expecting higher income later</p>
             </div>
           </div>
 
           {/* SEP IRA */}
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-6 border border-white/10">
-            <h3 className="text-lg font-bold text-white mb-2 font-space-grotesk">SEP IRA</h3>
-            <p className="text-sm text-slate-400 mb-4">Self-employed, higher contribution limits</p>
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-base font-semibold text-gray-900 mb-2 ">SEP IRA</h3>
+            <p className="text-sm text-gray-500 mb-4">Self-employed, higher contribution limits</p>
 
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Much higher limits</p>
-                  <p className="text-xs text-slate-400">Up to 25% of net income</p>
+                  <p className="text-sm text-gray-700">Much higher limits</p>
+                  <p className="text-xs text-gray-500">Up to 25% of net income</p>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Tax deductible</p>
-                  <p className="text-xs text-slate-400">Lower taxable income</p>
+                  <p className="text-sm text-gray-700">Tax deductible</p>
+                  <p className="text-xs text-gray-500">Lower taxable income</p>
                 </div>
               </div>
               <div className="flex items-start space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-white font-semibold">Easy setup</p>
-                  <p className="text-xs text-slate-400">Less paperwork than 401(k)</p>
+                  <p className="text-sm text-gray-700">Easy setup</p>
+                  <p className="text-xs text-gray-500">Less paperwork than 401(k)</p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-white/10">
+            <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-slate-400">2024 Contribution Limit</span>
-                <span className="text-sm font-bold text-white">$69,000</span>
+                <span className="text-xs text-gray-500">2024 Contribution Limit</span>
+                <span className="text-sm font-medium text-gray-900">$69,000</span>
               </div>
-              <p className="text-xs text-slate-400">Best for: High-earning freelancers</p>
+              <p className="text-xs text-gray-500">Best for: High-earning freelancers</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="border-t border-white/10"></div>
+      <div className="border-t border-gray-200"></div>
 
       {/* Emergency Fund Tracker */}
       <div>
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-white font-space-grotesk">Emergency fund goal</h2>
-          <p className="text-xs text-slate-400">Aim for 3-6 months of expenses</p>
+          <h2 className="text-base font-semibold text-gray-900 ">Emergency fund goal</h2>
+          <p className="text-xs text-gray-500">Aim for 3-6 months of expenses</p>
         </div>
 
         {(() => {
@@ -486,26 +486,26 @@ export default function BenefitsMarketplace() {
           const progress = (currentSavings / goalAmount) * 100;
 
           return (
-            <div className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 backdrop-blur-xl rounded-lg p-6 border border-orange-500/20">
+            <div className="bg-amber-50/60 rounded-lg p-6 border border-amber-200">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-sm text-slate-400">Target: 6 months expenses</p>
-                  <p className="text-3xl font-black text-white font-space-grotesk">${Math.round(goalAmount).toLocaleString()}</p>
+                  <p className="text-sm text-gray-500">Target: 6 months expenses</p>
+                  <p className="text-3xl font-semibold text-gray-900 ">${Math.round(goalAmount).toLocaleString()}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-slate-400">Current Savings</p>
-                  <p className="text-2xl font-bold text-orange-400 font-space-grotesk">${currentSavings.toLocaleString()}</p>
+                  <p className="text-sm text-gray-500">Current Savings</p>
+                  <p className="text-2xl font-bold text-amber-600 ">${currentSavings.toLocaleString()}</p>
                 </div>
               </div>
 
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-slate-300">Progress</span>
-                  <span className="text-sm font-bold text-white">{progress.toFixed(1)}%</span>
+                  <span className="text-sm text-gray-600">Progress</span>
+                  <span className="text-sm font-medium text-gray-900">{progress.toFixed(1)}%</span>
                 </div>
-                <div className="h-4 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-orange-500 to-yellow-600 rounded-full transition-all"
+                    className="h-full bg-amber-400/80 rounded-full transition-all"
                     style={{ width: `${Math.min(progress, 100)}%` }}
                   ></div>
                 </div>
@@ -513,22 +513,22 @@ export default function BenefitsMarketplace() {
 
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div>
-                  <p className="text-xs text-slate-400 mb-1">Monthly Goal</p>
-                  <p className="text-lg font-bold text-white font-space-grotesk">${Math.round(monthlyExpenses).toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mb-1">Monthly Goal</p>
+                  <p className="text-base font-semibold text-gray-900 ">${Math.round(monthlyExpenses).toLocaleString()}</p>
                 </div>
                 <div>
                   <div>
-                  <p className="text-xs text-slate-400 mb-1">Remaining</p>
-                  <p className="text-lg font-bold text-white font-space-grotesk">${Math.round(goalAmount - currentSavings).toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mb-1">Remaining</p>
+                  <p className="text-base font-semibold text-gray-900 ">${Math.round(goalAmount - currentSavings).toLocaleString()}</p>
                 </div>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400 mb-1">Months Covered</p>
-                  <p className="text-lg font-bold text-green-400 font-space-grotesk">{(currentSavings / monthlyExpenses).toFixed(1)}</p>
+                  <p className="text-xs text-gray-500 mb-1">Months Covered</p>
+                  <p className="text-lg font-bold text-emerald-600 ">{(currentSavings / monthlyExpenses).toFixed(1)}</p>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-400 mt-4">
+              <p className="text-xs text-gray-500 mt-4">
                 💡 Save ${Math.round((goalAmount - currentSavings) / 12).toLocaleString()}/mo for 12 months to reach your goal
               </p>
             </div>
@@ -537,13 +537,13 @@ export default function BenefitsMarketplace() {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-white/10"></div>
+      <div className="border-t border-gray-200"></div>
 
       {/* Marketplace */}
       <div>
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-white font-space-grotesk">Trusted providers</h2>
-          <p className="text-xs text-slate-400">Curated tools to build your safety net - {filteredBenefits.length} resources</p>
+          <h2 className="text-base font-semibold text-gray-900 ">Trusted providers</h2>
+          <p className="text-xs text-gray-500">Curated tools to build your safety net - {filteredBenefits.length} resources</p>
         </div>
 
         {/* Category Filters */}
@@ -556,8 +556,8 @@ export default function BenefitsMarketplace() {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                   selectedCategory === category.id
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                    : 'bg-slate-800/50 text-slate-400 hover:text-white border border-white/10 hover:bg-slate-800'
+                    ? 'bg-gray-900 text-gray-900 hover:bg-gray-800'
+                    : 'bg-gray-50 text-gray-500 hover:text-gray-900 border border-gray-200 hover:bg-gray-100'
                 }`}
               >
                 <CategoryIcon className="w-4 h-4" />
@@ -572,36 +572,36 @@ export default function BenefitsMarketplace() {
           {filteredBenefits.map((benefit) => {
             const CategoryIcon = getCategoryIcon(benefit.category);
             return (
-              <div key={benefit.id} className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-5 border border-white/10 hover:border-purple-500/50 transition-all">
+              <div key={benefit.id} className="bg-white rounded-lg p-5 border border-gray-200 hover:border-gray-300 transition-all">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                      <CategoryIcon className="w-4 h-4 text-purple-400" />
+                    <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
+                      <CategoryIcon className="w-4 h-4 text-indigo-600" />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-white font-space-grotesk mb-1">{benefit.name}</h3>
-                      <p className="text-xs text-slate-400 mb-2">{benefit.provider}</p>
+                      <h3 className="text-sm font-semibold text-gray-900 mb-1">{benefit.name}</h3>
+                      <p className="text-xs text-gray-500 mb-2">{benefit.provider}</p>
                       <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold border ${getCategoryColor(benefit.category)}`}>
                         {benefit.category}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-black bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent font-space-grotesk">
+                    <div className="text-lg font-semibold text-gray-900">
                       {benefit.monthlyCost === 0 ? 'Free' : `$${benefit.monthlyCost}`}
                     </div>
                     {benefit.monthlyCost > 0 && (
-                      <div className="text-xs text-slate-400">/month</div>
+                      <div className="text-xs text-gray-500">/month</div>
                     )}
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-400 mb-4">{benefit.description}</p>
+                <p className="text-sm text-gray-500 mb-4">{benefit.description}</p>
 
                 <div className="space-y-2 mb-4">
                   {benefit.features.map((feature, index) => (
-                    <div key={index} className="flex items-center text-xs text-slate-400">
-                      <CheckCircle className="w-3 h-3 text-slate-500 mr-2 flex-shrink-0" />
+                    <div key={index} className="flex items-center text-xs text-gray-500">
+                      <CheckCircle className="w-3 h-3 text-gray-400 mr-2 flex-shrink-0" />
                       <span>{feature}</span>
                     </div>
                   ))}
@@ -611,7 +611,7 @@ export default function BenefitsMarketplace() {
                   href={benefit.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
+                  className="w-full bg-gray-900 text-gray-900 py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"
                 >
                   <span>Visit {benefit.provider}</span>
                   <ExternalLink className="w-4 h-4" />
@@ -622,10 +622,10 @@ export default function BenefitsMarketplace() {
         </div>
 
         {filteredBenefits.length === 0 && (
-          <div className="bg-slate-900/50 backdrop-blur-xl rounded-lg p-8 border border-white/10 text-center">
-            <Shield className="w-8 h-8 text-slate-500 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-white mb-2 font-space-grotesk">No benefits found</h3>
-            <p className="text-sm text-slate-400">Try selecting a different category to see more options</p>
+          <div className="bg-white rounded-lg p-8 border border-gray-200 text-center">
+            <Shield className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+            <h3 className="text-sm font-semibold text-gray-900 mb-2 ">No benefits found</h3>
+            <p className="text-sm text-gray-500">Try selecting a different category to see more options</p>
           </div>
         )}
       </div>
@@ -634,8 +634,8 @@ export default function BenefitsMarketplace() {
       <Dialog open={isHealthCalcModalOpen} onOpenChange={setIsHealthCalcModalOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white font-space-grotesk flex items-center gap-2">
-              <Heart className="w-6 h-6 text-red-400" />
+            <DialogTitle className="text-xl font-semibold tracking-tight text-gray-900 flex items-center gap-2">
+              <Heart className="w-6 h-6 text-red-600" />
               Health Insurance Calculator
             </DialogTitle>
             <DialogDescription>
@@ -644,12 +644,12 @@ export default function BenefitsMarketplace() {
           </DialogHeader>
           <div className="mt-4 space-y-4">
             <div>
-              <label className="text-sm text-slate-300 mb-2 block">Annual Income</label>
+              <label className="text-sm text-gray-600 mb-2 block">Annual Income</label>
               <input
                 type="number"
                 value={annualIncome}
                 onChange={(e) => setAnnualIncome(Number(e.target.value))}
-                className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
               />
             </div>
 
@@ -672,39 +672,39 @@ export default function BenefitsMarketplace() {
               const finalMonthlyPremium = avgMarketplacePremium - monthlySubsidy;
 
               return (
-                <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
+                <div className="bg-gray-50 rounded-md p-4 border border-gray-200">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-400">Marketplace Premium</span>
-                      <span className="text-sm font-bold text-white">${avgMarketplacePremium}/mo</span>
+                      <span className="text-sm text-gray-500">Marketplace Premium</span>
+                      <span className="text-sm font-medium text-gray-900">${avgMarketplacePremium}/mo</span>
                     </div>
                     {isEligibleForSubsidy ? (
                       <>
-                        <div className="flex items-center justify-between text-green-400">
+                        <div className="flex items-center justify-between text-emerald-600">
                           <span className="text-sm">ACA Subsidy</span>
                           <span className="text-sm font-bold">-${Math.round(monthlySubsidy)}/mo</span>
                         </div>
-                        <div className="border-t border-white/10 pt-2 mt-2">
+                        <div className="border-t border-gray-200 pt-2 mt-2">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-white">Your Cost</span>
-                            <span className="text-lg font-black text-green-400 font-space-grotesk">
+                            <span className="text-sm font-medium text-gray-900">Your Cost</span>
+                            <span className="text-base font-semibold text-emerald-700 ">
                               ${Math.round(finalMonthlyPremium)}/mo
                             </span>
                           </div>
                         </div>
-                        <p className="text-xs text-slate-400 mt-2">
+                        <p className="text-xs text-gray-500 mt-2">
                           ✅ You qualify for subsidies! Your max premium is {(maxPremiumPercent * 100).toFixed(1)}% of income.
                         </p>
                       </>
                     ) : (
                       <>
-                        <div className="border-t border-white/10 pt-2 mt-2">
+                        <div className="border-t border-gray-200 pt-2 mt-2">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-white">Your Cost</span>
-                            <span className="text-lg font-black text-white font-space-grotesk">${avgMarketplacePremium}/mo</span>
+                            <span className="text-sm font-medium text-gray-900">Your Cost</span>
+                            <span className="text-base font-semibold text-gray-900 ">${avgMarketplacePremium}/mo</span>
                           </div>
                         </div>
-                        <p className="text-xs text-slate-400 mt-2">
+                        <p className="text-xs text-gray-500 mt-2">
                           {incomeAsPercentOfFPL < 1.0
                             ? '⚠️ Income too low for ACA subsidies. Check Medicaid eligibility in your state.'
                             : '⚠️ Income above 400% FPL. No subsidies available, but you can still enroll.'}
@@ -723,8 +723,8 @@ export default function BenefitsMarketplace() {
       <Dialog open={isRetirementCalcModalOpen} onOpenChange={setIsRetirementCalcModalOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white font-space-grotesk flex items-center gap-2">
-              <Building2 className="w-6 h-6 text-blue-400" />
+            <DialogTitle className="text-xl font-semibold tracking-tight text-gray-900 flex items-center gap-2">
+              <Building2 className="w-6 h-6 text-indigo-600" />
               Retirement Calculator
             </DialogTitle>
             <DialogDescription>
@@ -734,32 +734,32 @@ export default function BenefitsMarketplace() {
           <div className="mt-4 space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-sm text-slate-300 mb-2 block">Current Age</label>
+                <label className="text-sm text-gray-600 mb-2 block">Current Age</label>
                 <input
                   type="number"
                   value={currentAge}
                   onChange={(e) => setCurrentAge(Number(e.target.value))}
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-300 mb-2 block">Retirement Age</label>
+                <label className="text-sm text-gray-600 mb-2 block">Retirement Age</label>
                 <input
                   type="number"
                   value={retirementAge}
                   onChange={(e) => setRetirementAge(Number(e.target.value))}
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-sm text-slate-300 mb-2 block">Monthly Contribution</label>
+              <label className="text-sm text-gray-600 mb-2 block">Monthly Contribution</label>
               <input
                 type="number"
                 value={monthlyContribution}
                 onChange={(e) => setMonthlyContribution(Number(e.target.value))}
-                className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white"
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
               />
             </div>
 
@@ -777,29 +777,29 @@ export default function BenefitsMarketplace() {
               const investmentGains = futureValue - totalContributions;
 
               return (
-                <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
+                <div className="bg-gray-50 rounded-md p-4 border border-gray-200">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-400">Years to Retirement</span>
-                      <span className="text-sm font-bold text-white">{yearsToRetirement} years</span>
+                      <span className="text-sm text-gray-500">Years to Retirement</span>
+                      <span className="text-sm font-medium text-gray-900">{yearsToRetirement} years</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-400">Total Contributions</span>
-                      <span className="text-sm font-bold text-white">${totalContributions.toLocaleString()}</span>
+                      <span className="text-sm text-gray-500">Total Contributions</span>
+                      <span className="text-sm font-medium text-gray-900">${totalContributions.toLocaleString()}</span>
                     </div>
-                    <div className="flex items-center justify-between text-green-400">
+                    <div className="flex items-center justify-between text-emerald-600">
                       <span className="text-sm">Investment Gains (7%)</span>
                       <span className="text-sm font-bold">+${Math.round(investmentGains).toLocaleString()}</span>
                     </div>
-                    <div className="border-t border-white/10 pt-2 mt-2">
+                    <div className="border-t border-gray-200 pt-2 mt-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-white">Projected Balance</span>
-                        <span className="text-lg font-black text-green-400 font-space-grotesk">
+                        <span className="text-sm font-medium text-gray-900">Projected Balance</span>
+                        <span className="text-base font-semibold text-emerald-700 ">
                           ${Math.round(futureValue).toLocaleString()}
                         </span>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-400 mt-2">
+                    <p className="text-xs text-gray-500 mt-2">
                       💡 At ${monthlyContribution}/mo, you'll have ${Math.round(futureValue / 12 / 30).toLocaleString()}/mo in retirement
                       (assuming 30-year withdrawal).
                     </p>
