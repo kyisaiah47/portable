@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
-        fetchUserProfile(session.user.id);
+        fetchUserProfile(session.user);
       } else {
         setLoading(false);
         setUser(null);
@@ -84,7 +84,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (session?.user) {
-        await fetchUserProfile(session.user.id);
+        // IMPORTANT: defer out of the onAuthStateChange callback — awaiting
+        // supabase calls inside it deadlocks the auth lock and hangs every
+        // subsequent query (eternal skeletons).
+        const u = session.user;
+        setTimeout(() => fetchUserProfile(u), 0);
       } else {
         setUser(null);
         setLoading(false);
@@ -96,21 +100,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const fetchUserProfile = async (userId: string) => {
+  const fetchUserProfile = async (authUser: SupabaseUser) => {
     try {
       let { data: userProfile, error } = await supabase
         .from('stub_users')
         .select('*')
-        .eq('id', userId)
+        .eq('id', authUser.id)
         .single();
 
       // No profile row yet (account created in another app on the shared
       // auth pool, or signup didn't finish) — create one from auth metadata.
+      // Never call supabase.auth.* here: this can run near the auth
+      // callback and grabbing the auth lock deadlocks all queries.
       if (error && error.code === 'PGRST116') {
-        const {
-          data: { user: authUser },
-        } = await supabase.auth.getUser();
-        if (!authUser) throw error;
         const meta = (authUser.user_metadata ?? {}) as Record<string, string>;
         const created = await supabase
           .from('stub_users')

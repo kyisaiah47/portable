@@ -305,7 +305,7 @@ export default function ReferralDashboard() {
               {referrals.map((referral) => (
                 <div
                   key={referral.id}
-                  className="flex items-center justify-between p-3.5 rounded-md border border-white/10 hover:bg-slate-800/60/75 transition-colors"
+                  className="flex items-center justify-between p-3.5 rounded-md border border-white/10 hover:bg-slate-800/60 transition-colors"
                 >
                   <div>
                     <p className="text-sm font-medium text-white">

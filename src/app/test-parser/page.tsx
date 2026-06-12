@@ -232,7 +232,7 @@ export default function TestParserPage() {
                   })
                   .sort((a, b) => b.total - a.total)
                   .map(({ platform, total, count }) => (
-                    <div key={platform} className="flex items-center justify-between py-3 px-1 border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                    <div key={platform} className="flex items-center justify-between py-3 px-1 border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
                       <div className="flex items-center space-x-4">
                         <div>
                         <div className="text-sm font-medium text-white">{platform}</div>
@@ -263,7 +263,7 @@ export default function TestParserPage() {
                   return (
                     <div
                       key={transaction.id}
-                      className="py-3 px-1 border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors"
+                      className="py-3 px-1 border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">

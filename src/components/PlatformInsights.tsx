@@ -120,7 +120,7 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
               return (
                 <div
                   key={platform.platform}
-                  className="rounded-md border border-white/10 p-4 hover:bg-slate-800/60/75 transition-colors"
+                  className="rounded-md border border-white/10 p-4 hover:bg-slate-800/60 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="flex items-center gap-3 flex-1">

@@ -1,69 +1,59 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="banner" width="100%" />
+# Stub
 
-# 🎒 Portable
-
-**Benefits that move with you — portable health, retirement, and insurance for gig workers**
+**The books your gig work never came with — upload a bank statement, get your income, write-offs, and quarterly taxes sorted.**
 
 ![Next.js](https://img.shields.io/badge/Next.js_15-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-
-*HackNomics 2025*
+![Claude](https://img.shields.io/badge/Claude_Sonnet-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
 
 </div>
 
 <br/>
 
-Portable is a financial platform built from the ground up for the 70 million Americans working in the gig economy. Upload a bank statement once and Portable automatically detects income from 50+ platforms, categorizes deductible expenses, and calculates your real-time quarterly tax liability — turning financial chaos into clarity. Where traditional finance tools treat gig work as a side hustle, Portable treats it as the full-time career it is.
+Stub is a financial platform for independent workers. Upload a bank-statement CSV and it recognizes gig income across 50+ platforms (Uber, DoorDash, Upwork, YouTube, Airbnb…), catches deductible expenses with the IRS-grade reason behind each one, and computes what to set aside for quarterly self-employment taxes.
 
-## ✨ Features
+## How the classification works
 
-- **Automatic Income Tracking** — Recognizes income from 50+ platforms including Uber, Lyft, DoorDash, Instacart, Upwork, Fiverr, YouTube, and Patreon; broken down by platform, week, and month
-- **Smart Expense Categorization** — Applies IRS-approved deduction rates to every transaction automatically — gas, phone bills, subscriptions, and more — so you stop leaving $3,000–$5,000 on the table each year
-- **Real-Time Tax Calculator** — Computes self-employment tax (15.3%), federal income tax, and state estimates with quarterly deadlines and a full-year projection based on current earnings
-- **Income Stability Score** — Proprietary algorithm that translates variable gig income into a consistency score that landlords and lenders actually understand
-- **Benefits & Services Hub** — Connects gig workers with health insurance, retirement accounts, and financial products designed for self-employed income
-- **Hyper-Personalized Guidance** — Platform- and city-specific advice on maximizing earnings, surge opportunities, and tax strategies tailored to your income mix
+A hybrid pipeline keeps it fast and nearly free:
 
-## 🎥 Demo
+1. **Regex first pass** — 20+ platform patterns classify the obvious transactions instantly, at zero cost
+2. **Claude for the rest** — anything ambiguous is batched to `claude-sonnet-4-6`, which returns structured JSON: platform, income category, deductibility, rationale, confidence
+3. **Math stays deterministic** — self-employment tax (15.3%), federal estimates, and quarterly set-asides are computed in plain TypeScript (`tax-calculator.ts`); the model narrates numbers, it never does arithmetic
 
-[![Watch Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=9AjgeyStgtI)
+A typical statement costs a few cents to classify; most cost less than one.
 
-**Live App**: [portable-buwubjqtb-kyisaiah47s-projects.vercel.app](https://portable-buwubjqtb-kyisaiah47s-projects.vercel.app)
+## Features
 
-Demo credentials: `sarah.driver@email.com` / `demo123` — or upload `public/sample-bank-statement.csv` to try it with sample data.
+- **First-run wizard** — new accounts are walked straight into their first upload
+- **"Can I deduct this?"** — ask about any transaction, get a grounded answer with the deduction category and why
+- **AI quarterly summary** — a plain-English read of what you owe and what to set aside
+- **Platform insights** — compare earnings across platforms and spot where the next dollar comes from
+- **Income stability score** — translates variable gig income into a number landlords and lenders understand
+- **Referrals, benefits hub, tax learn center**
 
-## 🛠️ Tech Stack
+## Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 |
-| Database / Auth | Supabase (PostgreSQL + Realtime) |
-| UI Components | Shadcn UI + Radix |
-| Charts | Recharts |
-| Icons | Lucide React + React Icons |
-| Notifications | Sonner |
-| Fonts | Space Grotesk, Inter, Outfit, Sora |
+Next.js 15 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Supabase (Postgres + Auth, RLS per user) · Anthropic API
 
-## 🚀 Getting Started
-
-**Prerequisites**: Node.js 18+, Supabase account (free tier)
+## Running locally
 
 ```bash
-git clone https://github.com/kyisaiah47/portable.git
-cd portable
 npm install
-cp .env.example .env.local   # add your Supabase URL and anon key
-# run database/supabase-migration-portable.sql in your Supabase SQL editor
+cp .env.example .env.local   # Supabase URL/keys + ANTHROPIC_API_KEY
 npm run dev
-# visit http://localhost:3000
 ```
 
-## 📄 License
+Try it without real data: sign up, then upload `public/sample-bank-statement.csv` (76 fake transactions across 7 platforms).
+
+```bash
+npm test        # vitest — parser, hybrid classifier, tax calculator
+npm run build
+```
+
+## License
 
 MIT

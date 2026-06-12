@@ -855,7 +855,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               ? (total / parsedIncome.parsed.totalIncome) * 100
                               : 0;
                             return (
-                              <tr key={platform} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                              <tr key={platform} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
                                 <td className="px-4 py-2.5">
                                   <span className="inline-flex items-center gap-2.5 text-white font-medium">
                                     {PIcon ? (
@@ -903,7 +903,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                           .sort((a: any, b: any) => b.date.getTime() - a.date.getTime())
                           .slice(0, 8)
                           .map((item: any, idx: number) => (
-                            <tr key={idx} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                            <tr key={idx} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
                               <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
                                 {item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                               </td>
@@ -959,7 +959,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             <button
                               key={tip.id}
                               onClick={handleTipClick}
-                              className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left hover:bg-slate-800/60/75 transition-colors group"
+                              className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left hover:bg-slate-800/60 transition-colors group"
                             >
                               <div className="min-w-0">
                                 <p className="text-sm font-medium text-white">{tip.title}</p>
@@ -992,7 +992,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       <Link
                         key={article.href}
                         href={article.href}
-                        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-slate-800/60/75 transition-colors group"
+                        className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-slate-800/60 transition-colors group"
                       >
                         <span className="inline-flex items-center gap-2.5 text-sm text-white min-w-0">
                           <BookOpen className="w-3.5 h-3.5 text-slate-500 shrink-0" strokeWidth={1.75} />
@@ -1353,7 +1353,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                             const percentOfTotal = ((total / totalIncome) * 100).toFixed(1);
 
                             return (
-                              <tr key={platform} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                              <tr key={platform} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
                                 <td className="px-4 py-2.5">
                                   <span className="inline-flex items-center gap-2.5 font-medium text-white">
                                     {PIcon ? (
@@ -1673,7 +1673,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                                       </td>
                                     </tr>
                                     {categoryExpenses.slice(0, 5).map((expense, idx) => (
-                                      <tr key={idx} className="border-b border-white/5 hover:bg-slate-800/60/75 transition-colors">
+                                      <tr key={idx} className="border-b border-white/5 hover:bg-slate-800/60 transition-colors">
                                         <td className="px-4 py-2.5 text-white max-w-[260px] truncate">
                                           {expense.description}
                                           {expense.source === 'ai' && (
@@ -2047,7 +2047,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         </thead>
                         <tbody>
                           {deadlines.map((deadline) => (
-                            <tr key={deadline.quarter} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                            <tr key={deadline.quarter} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
                               <td className="px-4 py-2.5 font-medium text-white">{deadline.quarter} 2024</td>
                               <td className="px-4 py-2.5 text-slate-400 hidden sm:table-cell">{deadline.period}</td>
                               <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
@@ -2115,7 +2115,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                               const totalAmount = expenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
 
                               return (
-                                <tr key={category} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60/75 transition-colors">
+                                <tr key={category} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
                                   <td className="px-4 py-2.5">
                                     <span className="inline-flex items-center gap-2.5 font-medium text-white capitalize">
                                       <span
@@ -2314,7 +2314,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       <Link
                         key={guide.id}
                         href={guide.actionLink || '#'}
-                        className="flex items-start justify-between gap-4 px-4 py-3.5 hover:bg-slate-800/60/75 transition-colors group"
+                        className="flex items-start justify-between gap-4 px-4 py-3.5 hover:bg-slate-800/60 transition-colors group"
                       >
                         <div className="flex items-start gap-3 min-w-0">
                           <BookOpen className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" strokeWidth={1.75} />
