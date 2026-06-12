@@ -179,3 +179,19 @@
 .animate-gradient { background-size: 200% 200%; animation: gradient 8s ease infinite; }
 .animation-delay-2000 { animation-delay: 2s; }
 .animation-delay-4000 { animation-delay: 4s; }
+
+/* App is dark everywhere — kill the white body flash on overscroll. */
+html {
+  color-scheme: dark;
+  background: #020617;
+}
+body {
+  background: #020617;
+  color: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
