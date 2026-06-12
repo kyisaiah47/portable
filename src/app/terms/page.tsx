@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Portable's terms of service. Understand your rights and responsibilities when using our financial platform for gig workers.",
+  description: "Stub's terms of service. Understand your rights and responsibilities when using our financial platform for gig workers.",
 };
 
 export default function TermsOfServicePage() {
@@ -12,7 +12,7 @@ export default function TermsOfServicePage() {
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <Link href="/" className="text-white font-bold text-xl font-space-grotesk hover:text-slate-300 transition-colors">
-            Portable
+            Stub
           </Link>
         </div>
       </nav>
@@ -25,7 +25,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">1. Agreement to Terms</h2>
             <p className="mb-4">
-              By accessing or using Portable ("Service," "we," "us," or "our"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.
+              By accessing or using Stub ("Service," "we," "us," or "our"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.
             </p>
             <p>
               These Terms apply to all visitors, users, and others who access or use the Service.
@@ -35,7 +35,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">2. Description of Service</h2>
             <p className="mb-4">
-              Portable is a financial management platform designed specifically for gig workers and independent contractors. Our Service provides:
+              Stub is a financial management platform designed specifically for gig workers and independent contractors. Our Service provides:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Income tracking and analysis across multiple gig platforms</li>
@@ -61,7 +61,7 @@ export default function TermsOfServicePage() {
             </ul>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">3.2 Eligibility</h3>
-            <p>You must be at least 18 years old to use Portable. By agreeing to these Terms, you represent and warrant that you are at least 18 years of age.</p>
+            <p>You must be at least 18 years old to use Stub. By agreeing to these Terms, you represent and warrant that you are at least 18 years of age.</p>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">3.3 Account Termination</h3>
             <p className="mb-4">We reserve the right to suspend or terminate your account if:</p>
@@ -102,7 +102,7 @@ export default function TermsOfServicePage() {
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">5.1 Subscription Plans</h3>
             <p className="mb-4">
-              Portable offers both free and premium subscription plans. Premium features may include advanced analytics, unlimited bank connections, priority support, and tax filing assistance.
+              Stub offers both free and premium subscription plans. Premium features may include advanced analytics, unlimited bank connections, priority support, and tax filing assistance.
             </p>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">5.2 Billing</h3>
@@ -142,7 +142,7 @@ export default function TermsOfServicePage() {
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">7.1 Our Rights</h3>
             <p className="mb-4">
-              The Service and its original content, features, and functionality are owned by Portable and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
+              The Service and its original content, features, and functionality are owned by Stub and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
             </p>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">7.2 Your Content</h3>
@@ -161,12 +161,12 @@ export default function TermsOfServicePage() {
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">8.1 Financial Advice</h3>
             <p className="mb-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-              <strong className="text-yellow-400">Important:</strong> Portable is not a financial advisor. Our Service provides tools and information but does not constitute financial, tax, legal, or investment advice. You should consult with qualified professionals before making financial decisions.
+              <strong className="text-yellow-400">Important:</strong> Stub is not a financial advisor. Our Service provides tools and information but does not constitute financial, tax, legal, or investment advice. You should consult with qualified professionals before making financial decisions.
             </p>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">8.2 Tax Calculations</h3>
             <p className="mb-4">
-              Tax estimates provided by Portable are for informational purposes only. Actual tax liability may differ based on your specific circumstances. Always consult a tax professional for accurate tax advice.
+              Tax estimates provided by Stub are for informational purposes only. Actual tax liability may differ based on your specific circumstances. Always consult a tax professional for accurate tax advice.
             </p>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">8.3 Service "As Is"</h3>
@@ -184,7 +184,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">9. Limitation of Liability</h2>
             <p className="mb-4">
-              To the maximum extent permitted by law, Portable shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to:
+              To the maximum extent permitted by law, Stub shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Loss of profits, data, use, or goodwill</li>
@@ -201,7 +201,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">10. Indemnification</h2>
             <p>
-              You agree to indemnify and hold harmless Portable, its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from:
+              You agree to indemnify and hold harmless Stub, its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Your use of the Service</li>
@@ -283,7 +283,7 @@ export default function TermsOfServicePage() {
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">16. Miscellaneous</h2>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">16.1 Entire Agreement</h3>
-            <p>These Terms, along with our Privacy Policy, constitute the entire agreement between you and Portable.</p>
+            <p>These Terms, along with our Privacy Policy, constitute the entire agreement between you and Stub.</p>
 
             <h3 className="text-xl font-semibold text-white mb-3 mt-6">16.2 Severability</h3>
             <p>If any provision of these Terms is found to be unenforceable, the remaining provisions will remain in full effect.</p>
@@ -306,7 +306,7 @@ export default function TermsOfServicePage() {
 
           <section className="pt-8 border-t border-white/10">
             <p className="text-slate-400 text-sm">
-              By using Portable, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our <Link href="/privacy" className="text-blue-400 hover:text-blue-300">Privacy Policy</Link>.
+              By using Stub, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our <Link href="/privacy" className="text-blue-400 hover:text-blue-300">Privacy Policy</Link>.
             </p>
           </section>
         </div>

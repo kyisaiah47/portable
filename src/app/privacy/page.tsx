@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Portable's privacy policy. Learn how we collect, use, and protect your financial data with bank-level security.",
+  description: "Stub's privacy policy. Learn how we collect, use, and protect your financial data with bank-level security.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <Link href="/" className="text-white font-bold text-xl font-space-grotesk hover:text-slate-300 transition-colors">
-            Portable
+            Stub
           </Link>
         </div>
       </nav>
@@ -25,10 +25,10 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">1. Introduction</h2>
             <p className="mb-4">
-              Welcome to Portable ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our financial management platform designed for gig workers.
+              Welcome to Stub ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our financial management platform designed for gig workers.
             </p>
             <p>
-              By using Portable, you agree to the collection and use of information in accordance with this policy. If you do not agree with our policies and practices, please do not use our service.
+              By using Stub, you agree to the collection and use of information in accordance with this policy. If you do not agree with our policies and practices, please do not use our service.
             </p>
           </section>
 
@@ -154,21 +154,21 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">9. Children's Privacy</h2>
             <p>
-              Portable is not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you believe we have collected information from a child under 18, please contact us immediately and we will delete that information.
+              Stub is not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you believe we have collected information from a child under 18, please contact us immediately and we will delete that information.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">10. International Data Transfers</h2>
             <p>
-              Your information may be transferred to and maintained on servers located outside of your state, province, or country. By using Portable, you consent to the transfer of information to the United States and other countries where our service providers operate.
+              Your information may be transferred to and maintained on servers located outside of your state, province, or country. By using Stub, you consent to the transfer of information to the United States and other countries where our service providers operate.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-white mb-4 font-space-grotesk">11. Changes to This Privacy Policy</h2>
             <p>
-              We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last updated" date. Continued use of Portable after changes become effective constitutes acceptance of the updated policy.
+              We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last updated" date. Continued use of Stub after changes become effective constitutes acceptance of the updated policy.
             </p>
           </section>
 
@@ -177,7 +177,7 @@ export default function PrivacyPolicyPage() {
             <p className="mb-4">If you have questions or concerns about this Privacy Policy, please contact us:</p>
             <ul className="space-y-2">
               <li><strong>Email:</strong> privacy@portable.app</li>
-              <li><strong>Address:</strong> Portable Financial Ltd., 123 Tech Square, San Francisco, CA 94105</li>
+              <li><strong>Address:</strong> Stub Financial Ltd., 123 Tech Square, San Francisco, CA 94105</li>
             </ul>
           </section>
 

@@ -21,7 +21,7 @@ export default function Home() {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
               </div>
-              <span className="text-2xl font-bold text-white font-space-grotesk">Portable</span>
+              <span className="text-2xl font-bold text-white font-space-grotesk">Stub</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link
@@ -87,7 +87,7 @@ export default function Home() {
                 href="/signup"
                 className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-14 py-6 rounded-full text-lg font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-3"
               >
-                <span>Get Portable</span>
+                <span>Get Stub</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <button className="text-white px-14 py-6 rounded-full text-lg font-semibold hover:bg-white/5 transition-colors border-2 border-white/20 inline-flex items-center gap-3">
@@ -113,7 +113,7 @@ export default function Home() {
               <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-10 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
                 <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">Retirement</div>
                 <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Building</div>
-                <div className="text-purple-200 text-lg">Portable 401(k) that moves with you</div>
+                <div className="text-purple-200 text-lg">Stub 401(k) that moves with you</div>
               </div>
             </div>
 
@@ -211,7 +211,7 @@ export default function Home() {
             </p>
 
             <p>
-              Portable was built to answer these questions. We bring together everything gig workers need to thrive: <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">affordable health insurance</span> that doesn't require an employer, <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">portable retirement accounts</span> that follow you from gig to gig, <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">income tracking</span> across all your platforms, and <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">tax tools</span> that actually understand 1099 life.
+              Stub was built to answer these questions. We bring together everything gig workers need to thrive: <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">affordable health insurance</span> that doesn't require an employer, <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">portable retirement accounts</span> that follow you from gig to gig, <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">income tracking</span> across all your platforms, and <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">tax tools</span> that actually understand 1099 life.
             </p>
 
             <p>
@@ -319,10 +319,10 @@ export default function Home() {
             Built by gig workers, for gig workers
           </h2>
           <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-            We started Portable because we know what it's like to juggle multiple income streams, worry about taxes, and wish you had the same benefits as traditional employees. The gig economy has 60 million workers in the U.S. alone, and it's time we had financial tools that actually work for us.
+            We started Stub because we know what it's like to juggle multiple income streams, worry about taxes, and wish you had the same benefits as traditional employees. The gig economy has 60 million workers in the U.S. alone, and it's time we had financial tools that actually work for us.
           </p>
           <p className="text-lg text-slate-400 leading-relaxed">
-            Portable brings together everything independent workers need: health insurance, retirement planning, tax preparation, and income tracking—all in one place. No more spreadsheets, no more guesswork, no more feeling like you're on your own.
+            Stub brings together everything independent workers need: health insurance, retirement planning, tax preparation, and income tracking—all in one place. No more spreadsheets, no more guesswork, no more feeling like you're on your own.
           </p>
         </div>
       </section>
@@ -361,7 +361,7 @@ export default function Home() {
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
                 </div>
-                <span className="text-xl font-bold text-white font-space-grotesk">Portable</span>
+                <span className="text-xl font-bold text-white font-space-grotesk">Stub</span>
               </div>
               <p className="text-sm text-slate-400">Financial tools built for gig workers and independent contractors.</p>
             </div>
@@ -397,7 +397,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-slate-500">© 2025 Portable Financial Ltd. All rights reserved.</div>
+            <div className="text-sm text-slate-500">© 2025 Stub Financial Ltd. All rights reserved.</div>
             <div className="flex items-center gap-6 text-sm text-slate-400">
               <Link href="/privacy" className="hover:text-white">Privacy</Link>
               <Link href="/terms" className="hover:text-white">Terms</Link>

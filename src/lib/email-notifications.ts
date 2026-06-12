@@ -18,7 +18,7 @@ export async function sendWeeklyEarningsReport(userId: string): Promise<boolean>
   try {
     // Get user info
     const { data: user, error: userError } = await supabase
-      .from('portable_users')
+      .from('stub_users')
       .select('email, first_name, last_name')
       .eq('id', userId)
       .single();
@@ -35,14 +35,14 @@ export async function sendWeeklyEarningsReport(userId: string): Promise<boolean>
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
     const { data: thisWeekTransactions } = await supabase
-      .from('portable_transactions')
+      .from('stub_transactions')
       .select('*')
       .eq('user_id', userId)
       .gte('date', oneWeekAgo.toISOString())
       .order('date', { ascending: false });
 
     const { data: lastWeekTransactions } = await supabase
-      .from('portable_transactions')
+      .from('stub_transactions')
       .select('*')
       .eq('user_id', userId)
       .gte('date', twoWeeksAgo.toISOString())
@@ -176,7 +176,7 @@ export async function sendTaxDeadlineReminders(): Promise<void> {
 
     // Get all users
     const { data: users, error: usersError } = await supabase
-      .from('portable_users')
+      .from('stub_users')
       .select('id, email, first_name');
 
     if (usersError || !users) {
@@ -204,7 +204,7 @@ async function sendTaxReminderForUser(
   try {
     // Get parsed income data
     const { data: parsedIncome } = await supabase
-      .from('portable_parsed_income')
+      .from('stub_parsed_income')
       .select('*')
       .eq('user_id', userId)
       .single();
@@ -242,7 +242,7 @@ async function sendTaxReminderForUser(
     // Calculate YTD income
     const startOfYear = new Date(year, 0, 1);
     const { data: ytdTransactions } = await supabase
-      .from('portable_transactions')
+      .from('stub_transactions')
       .select('amount')
       .eq('user_id', userId)
       .gte('date', startOfYear.toISOString());
@@ -289,7 +289,7 @@ async function sendTaxReminderForUser(
  */
 export async function scheduleWeeklyReports(): Promise<void> {
   const { data: users } = await supabase
-    .from('portable_users')
+    .from('stub_users')
     .select('id');
 
   if (!users) return;

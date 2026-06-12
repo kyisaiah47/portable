@@ -97,7 +97,7 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
       }));
 
       const { error: txError } = await supabase
-        .from('portable_transactions')
+        .from('stub_transactions')
         .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
 
       if (txError) throw txError;
@@ -122,7 +122,7 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
       };
 
       const { error: incomeError } = await supabase
-        .from('portable_parsed_income')
+        .from('stub_parsed_income')
         .upsert({
           user_id: userId,
           total_income: parsed.totalIncome,

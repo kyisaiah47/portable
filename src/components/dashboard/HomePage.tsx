@@ -152,7 +152,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
                       console.log('Uploading', transactionsToInsert.length, 'transactions...');
 
                       const { error: txError } = await supabase
-                        .from('portable_transactions')
+                        .from('stub_transactions')
                         .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
 
                       if (txError) {
@@ -183,7 +183,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
                       };
 
                       const { error: incomeError } = await supabase
-                        .from('portable_parsed_income')
+                        .from('stub_parsed_income')
                         .upsert({
                           user_id: user.id,
                           total_income: parsed.totalIncome,
@@ -768,7 +768,7 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
           <div className="flex items-start space-x-3">
             <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
             <p className="text-sm text-slate-300">
-              <span className="font-bold text-white">12,000 Uber drivers</span> on Portable average <span className="font-bold text-blue-400">$2,100/mo more</span> with multi-platform strategies
+              <span className="font-bold text-white">12,000 Uber drivers</span> on Stub average <span className="font-bold text-blue-400">$2,100/mo more</span> with multi-platform strategies
             </p>
           </div>
           <div className="flex items-start space-x-3">

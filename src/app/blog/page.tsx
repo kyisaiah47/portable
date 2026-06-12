@@ -72,7 +72,7 @@ export default function BlogPage() {
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-white font-bold text-xl font-space-grotesk hover:text-slate-300 transition-colors">
-            Portable
+            Stub
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-slate-300 hover:text-white text-sm">
@@ -202,7 +202,7 @@ export default function BlogPage() {
       <footer className="border-t border-white/10 mt-24">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-400 text-sm">© 2025 Portable. All rights reserved.</p>
+            <p className="text-slate-400 text-sm">© 2025 Stub. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/privacy" className="text-slate-400 hover:text-white text-sm">
                 Privacy

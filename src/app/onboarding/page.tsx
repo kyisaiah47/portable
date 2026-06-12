@@ -80,7 +80,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-space-grotesk">
-                Welcome to Portable, {user.firstName}! 🎉
+                Welcome to Stub, {user.firstName}! 🎉
               </h1>
               <p className="text-xl text-slate-300">
                 Let's get your income tracked so we can show you insights that actually matter
@@ -131,7 +131,7 @@ export default function OnboardingPage() {
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2 font-space-grotesk">Try Demo Data</h3>
                 <p className="text-slate-300 mb-4">
-                  Explore Portable with sample gig worker data. Perfect for testing before connecting real accounts.
+                  Explore Stub with sample gig worker data. Perfect for testing before connecting real accounts.
                 </p>
                 <div className="flex items-center gap-2 text-green-400 font-semibold">
                   <span>Just testing</span>

@@ -328,13 +328,13 @@ export default function BenefitsMarketplace() {
           Traditional benefits are tied to full-time jobs. You get health insurance, a 401(k), paid time off, and life insurance because your employer sponsors them. But when you&apos;re working for yourself, <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent font-semibold">you lose access to all of that</span>. It&apos;s not because you don&apos;t qualify—it&apos;s because the system wasn&apos;t built for independent workers.
         </p>
         <p>
-          That&apos;s where Portable comes in. We&apos;ve curated trusted providers for <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">health insurance</span> (HealthCare.gov), <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">retirement savings</span> (Vanguard, Fidelity, Betterment IRAs), <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent font-semibold">emergency funds</span> (high-yield savings), and <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">tax tools</span> (TurboTax, H&R Block, IRS guides).
+          That&apos;s where Stub comes in. We&apos;ve curated trusted providers for <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-semibold">health insurance</span> (HealthCare.gov), <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">retirement savings</span> (Vanguard, Fidelity, Betterment IRAs), <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent font-semibold">emergency funds</span> (high-yield savings), and <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">tax tools</span> (TurboTax, H&R Block, IRS guides).
         </p>
         <p>
           <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">We&apos;re not selling you anything</span> — just pointing you to the best current tools. We don&apos;t charge fees, and we don&apos;t have referral partnerships (yet). This is just honest guidance for what works. Most gig workers start with health insurance, then add emergency savings and retirement as their income stabilizes.
         </p>
         <p>
-          You shouldn&apos;t have to choose between flexibility and security. With Portable, you can have both.
+          You shouldn&apos;t have to choose between flexibility and security. With Stub, you can have both.
         </p>
       </div>
 

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "No employer benefits? Compare your options: ACA marketplace, health sharing, and catastrophic plans. Find affordable coverage as an independent worker.",
     type: "article",
     publishedTime: "2024-12-25T00:00:00.000Z",
-    authors: ["Portable"],
+    authors: ["Stub"],
   },
   twitter: {
     card: "summary_large_image",
@@ -24,7 +24,7 @@ export default function BlogPost() {
     <div className="min-h-screen bg-slate-950 font-inter">
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Portable</Link>
+          <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Stub</Link>
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="text-slate-300 hover:text-white text-sm">Dashboard</Link>
             <Link href="/signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Get Started</Link>
@@ -198,7 +198,7 @@ export default function BlogPost() {
 
           <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-6 mt-12">
             <h3 className="text-purple-400 font-bold mb-3 mt-0">Track Health Costs as a Business Expense</h3>
-            <p className="mb-4">Portable automatically categorizes health insurance premiums as deductible expenses. Maximum tax savings, zero manual tracking.</p>
+            <p className="mb-4">Stub automatically categorizes health insurance premiums as deductible expenses. Maximum tax savings, zero manual tracking.</p>
             <Link href="/signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold">Optimize Your Benefits →</Link>
           </div>
         </div>

@@ -46,7 +46,7 @@ export default function LoginForm({ isLogin, onSuccess, referralCode }: LoginFor
         let referrerId = null;
         if (referralCode) {
           const { data: referrer, error: referrerError } = await supabase
-            .from('portable_users')
+            .from('stub_users')
             .select('id')
             .eq('referral_code', referralCode.toUpperCase())
             .single();

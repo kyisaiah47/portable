@@ -212,7 +212,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
     try {
       const { error } = await supabase
-        .from('portable_users')
+        .from('stub_users')
         .update({
           first_name: firstName,
           last_name: lastName,
@@ -274,7 +274,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
     try {
       const { error } = await supabase
-        .from('portable_users')
+        .from('stub_users')
         .update({
           email_preferences: {
             weeklyReports,
@@ -305,10 +305,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
     try {
       // Delete user data
-      await supabase.from('portable_transactions').delete().eq('user_id', user.id);
-      await supabase.from('portable_parsed_income').delete().eq('user_id', user.id);
-      await supabase.from('portable_plaid_items').delete().eq('user_id', user.id);
-      await supabase.from('portable_users').delete().eq('id', user.id);
+      await supabase.from('stub_transactions').delete().eq('user_id', user.id);
+      await supabase.from('stub_parsed_income').delete().eq('user_id', user.id);
+      await supabase.from('stub_plaid_items').delete().eq('user_id', user.id);
+      await supabase.from('stub_users').delete().eq('id', user.id);
 
       // Delete auth user
       const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
@@ -326,7 +326,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       // Load notification preferences
       const loadPreferences = async () => {
         const { data } = await supabase
-          .from('portable_users')
+          .from('stub_users')
           .select('email_preferences')
           .eq('id', user.id)
           .single();
@@ -412,7 +412,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         }));
 
         const { error: txError } = await supabase
-          .from('portable_transactions')
+          .from('stub_transactions')
           .upsert(transactionsToInsert, { onConflict: 'plaid_transaction_id' });
 
         if (txError) {
@@ -453,7 +453,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         };
 
         const { error: incomeError } = await supabase
-          .from('portable_parsed_income')
+          .from('stub_parsed_income')
           .upsert({
             user_id: user.id,
             total_income: parsed.totalIncome,
@@ -506,7 +506,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
                 </div>
-                <h1 className="text-2xl font-bold text-white font-space-grotesk">Portable</h1>
+                <h1 className="text-2xl font-bold text-white font-space-grotesk">Stub</h1>
               </div>
               <div className="hidden md:flex items-center space-x-1">
                 {[
@@ -1214,7 +1214,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
                   <p className="text-sm text-slate-300">
-                    <span className="font-bold text-white">12,000 Uber drivers</span> on Portable average <span className="font-bold text-blue-400">$2,100/mo more</span> with multi-platform strategies
+                    <span className="font-bold text-white">12,000 Uber drivers</span> on Stub average <span className="font-bold text-blue-400">$2,100/mo more</span> with multi-platform strategies
                   </p>
                 </div>
                 <div className="flex items-start space-x-3">
@@ -3163,9 +3163,9 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
               </div>
-              <span className="text-xl font-bold text-white font-space-grotesk">Portable</span>
+              <span className="text-xl font-bold text-white font-space-grotesk">Stub</span>
             </div>
-            <div className="text-sm text-slate-500">© 2025 Portable Financial Ltd. All rights reserved.</div>
+            <div className="text-sm text-slate-500">© 2025 Stub Financial Ltd. All rights reserved.</div>
           </div>
         </div>
       </footer>

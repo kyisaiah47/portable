@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "Income fluctuates? Here's how to build a safety net that protects you during slow months. Complete guide for gig workers and freelancers.",
     type: "article",
     publishedTime: "2024-12-30T00:00:00.000Z",
-    authors: ["Portable"],
+    authors: ["Stub"],
   },
   twitter: {
     card: "summary_large_image",
@@ -24,7 +24,7 @@ export default function BlogPost() {
     <div className="min-h-screen bg-slate-950 font-inter">
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Portable</Link>
+          <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Stub</Link>
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="text-slate-300 hover:text-white text-sm">Dashboard</Link>
             <Link href="/signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Get Started</Link>
@@ -123,7 +123,7 @@ export default function BlogPost() {
 
           <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-6 mt-12">
             <h3 className="text-purple-400 font-bold mb-3 mt-0">Build Your Safety Net on Autopilot</h3>
-            <p className="mb-4">Portable automatically sets aside percentages for taxes, savings, and emergency funds based on your actual income. Works with variable income.</p>
+            <p className="mb-4">Stub automatically sets aside percentages for taxes, savings, and emergency funds based on your actual income. Works with variable income.</p>
             <Link href="/signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold">Start Saving Smarter →</Link>
           </div>
         </div>

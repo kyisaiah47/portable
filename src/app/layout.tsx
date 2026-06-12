@@ -38,8 +38,8 @@ const sora = Sora({
 export const metadata: Metadata = {
   metadataBase: new URL('https://portable.app'),
   title: {
-    default: "Portable — Financial Platform for Gig Workers",
-    template: "%s | Portable",
+    default: "Stub — Financial Platform for Gig Workers",
+    template: "%s | Stub",
   },
   description: "Track income, manage taxes, and build financial stability as a gig worker. Automatic income tracking from Uber, DoorDash, Upwork, and 50+ platforms. Free to start.",
   keywords: [
@@ -54,28 +54,28 @@ export const metadata: Metadata = {
     "delivery driver income",
     "freelance income tracking",
   ],
-  authors: [{ name: "Portable" }],
-  creator: "Portable",
-  publisher: "Portable",
+  authors: [{ name: "Stub" }],
+  creator: "Stub",
+  publisher: "Stub",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://portable.app",
-    siteName: "Portable",
-    title: "Portable — Financial Platform for Gig Workers",
+    siteName: "Stub",
+    title: "Stub — Financial Platform for Gig Workers",
     description: "Track income, manage taxes, and build financial stability. Automatic income tracking from 50+ gig platforms.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Portable - Financial Platform for Gig Workers",
+        alt: "Stub - Financial Platform for Gig Workers",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Portable — Financial Platform for Gig Workers",
+    title: "Stub — Financial Platform for Gig Workers",
     description: "Track income, manage taxes, and build financial stability as a gig worker. Free to start.",
     images: ["/og-image.png"],
     creator: "@getportable",

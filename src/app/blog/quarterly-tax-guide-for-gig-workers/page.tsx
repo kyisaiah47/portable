@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "Complete guide to quarterly tax payments for 1099 contractors. Deadlines, calculations, and how to avoid penalties.",
     type: "article",
     publishedTime: "2025-01-03T00:00:00.000Z",
-    authors: ["Portable"],
+    authors: ["Stub"],
   },
   twitter: {
     card: "summary_large_image",
@@ -25,7 +25,7 @@ export default function BlogPost() {
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-white font-bold text-xl font-space-grotesk hover:text-slate-300 transition-colors">
-            Portable
+            Stub
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/blog" className="text-slate-300 hover:text-white text-sm">
@@ -111,7 +111,7 @@ export default function BlogPost() {
             <h3 className="text-green-400 font-bold mb-2 mt-0">Pro Tips for Gig Workers</h3>
             <ul className="mb-0 text-slate-300">
               <li>Set aside 30% of every payment immediately</li>
-              <li>Use Portable to automatically track quarterly earnings</li>
+              <li>Use Stub to automatically track quarterly earnings</li>
               <li>Keep a separate savings account for taxes</li>
               <li>Track ALL business expenses (you'll thank yourself later)</li>
               <li>If your income varies, pay based on actual quarterly earnings, not last year's total</li>
@@ -126,7 +126,7 @@ export default function BlogPost() {
           <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-6 mt-12">
             <h3 className="text-purple-400 font-bold mb-3 mt-0">Ready to Simplify Your Taxes?</h3>
             <p className="text-slate-300 mb-4">
-              Portable automatically calculates your quarterly tax estimates based on your actual income from all platforms. No more guesswork, no more spreadsheets.
+              Stub automatically calculates your quarterly tax estimates based on your actual income from all platforms. No more guesswork, no more spreadsheets.
             </p>
             <Link href="/signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity">
               Start Free Trial →

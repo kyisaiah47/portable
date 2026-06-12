@@ -168,7 +168,7 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
                 </div>
-                <h1 className="text-2xl font-bold text-white font-space-grotesk">Portable</h1>
+                <h1 className="text-2xl font-bold text-white font-space-grotesk">Stub</h1>
               </div>
               <div className="hidden md:flex items-center space-x-1">
                 {[
@@ -275,9 +275,9 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
               </div>
-              <span className="text-xl font-bold text-white font-space-grotesk">Portable</span>
+              <span className="text-xl font-bold text-white font-space-grotesk">Stub</span>
             </div>
-            <div className="text-sm text-slate-500">© 2025 Portable Financial Ltd. All rights reserved.</div>
+            <div className="text-sm text-slate-500">© 2025 Stub Financial Ltd. All rights reserved.</div>
           </div>
         </div>
       </footer>

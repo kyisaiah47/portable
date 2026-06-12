@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: "Complete guide to tracking income from Uber, DoorDash, Upwork, and other gig platforms. Automate your income tracking and never miss a payment.",
     type: "article",
     publishedTime: "2024-12-20T00:00:00.000Z",
-    authors: ["Portable"],
+    authors: ["Stub"],
   },
   twitter: {
     card: "summary_large_image",
@@ -32,7 +32,7 @@ export default function BlogPost() {
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-white font-bold text-xl font-space-grotesk hover:text-slate-300 transition-colors">
-            Portable
+            Stub
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/blog" className="text-slate-300 hover:text-white text-sm">
@@ -105,12 +105,12 @@ export default function BlogPost() {
             </ul>
 
             <p>
-              Services like <Link href="/" className="text-blue-400 hover:text-blue-300 font-semibold">Portable</Link> use Plaid (the same technology your bank uses) to securely connect your accounts. Once connected, every deposit from Uber, DoorDash, Upwork, etc. is automatically categorized and tracked.
+              Services like <Link href="/" className="text-blue-400 hover:text-blue-300 font-semibold">Stub</Link> use Plaid (the same technology your bank uses) to securely connect your accounts. Once connected, every deposit from Uber, DoorDash, Upwork, etc. is automatically categorized and tracked.
             </p>
 
             <h3 className="text-2xl font-bold text-white mt-8 mb-4 font-space-grotesk">How to Set It Up:</h3>
             <ol className="list-decimal pl-6 space-y-3">
-              <li>Sign up for a platform that supports bank connections (like Portable, Mint, or YNAB)</li>
+              <li>Sign up for a platform that supports bank connections (like Stub, Mint, or YNAB)</li>
               <li>Click "Connect Bank" and select your bank from the list</li>
               <li>Enter your bank login credentials (this is encrypted and never stored)</li>
               <li>Select which accounts to connect (checking, savings, credit cards)</li>
@@ -238,7 +238,7 @@ export default function BlogPost() {
             <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-white/10 rounded-lg p-8 my-12 text-center">
               <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Ready to Automate Your Income Tracking?</h3>
               <p className="text-slate-300 mb-6">
-                Portable automatically tracks income from 50+ gig platforms, calculates taxes, and helps you build savings. Free to start.
+                Stub automatically tracks income from 50+ gig platforms, calculates taxes, and helps you build savings. Free to start.
               </p>
               <Link
                 href="/signup"
@@ -268,7 +268,7 @@ export default function BlogPost() {
         {/* Author Box */}
         <div className="mt-16 pt-12 border-t border-white/10">
           <div className="bg-slate-900/50 rounded-lg p-6 border border-white/10">
-            <p className="text-slate-400 text-sm mb-4">Written by the Portable Team</p>
+            <p className="text-slate-400 text-sm mb-4">Written by the Stub Team</p>
             <p className="text-slate-300">
               Our team of financial experts and former gig workers create guides to help you maximize earnings, minimize taxes, and build financial stability.
             </p>
@@ -280,7 +280,7 @@ export default function BlogPost() {
       <footer className="border-t border-white/10 mt-24">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-400 text-sm">© 2025 Portable. All rights reserved.</p>
+            <p className="text-slate-400 text-sm">© 2025 Stub. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/privacy" className="text-slate-400 hover:text-white text-sm">Privacy</Link>
               <Link href="/terms" className="text-slate-400 hover:text-white text-sm">Terms</Link>

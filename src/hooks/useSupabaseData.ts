@@ -98,7 +98,7 @@ export function useParsedIncome(userId: string | null) {
         setLoading(true);
 
         const { data: parsedIncome, error: fetchError } = await supabase
-          .from('portable_parsed_income')
+          .from('stub_parsed_income')
           .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false })
@@ -138,7 +138,7 @@ export function useParsedIncome(userId: string | null) {
         {
           event: '*',
           schema: 'public',
-          table: 'portable_parsed_income',
+          table: 'stub_parsed_income',
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
@@ -192,7 +192,7 @@ export function useTransactions(userId: string | null) {
       try {
         setLoading(true);
         const { data: transactions, error: fetchError } = await supabase
-          .from('portable_transactions')
+          .from('stub_transactions')
           .select('*')
           .eq('user_id', userId)
           .order('date', { ascending: false });
@@ -222,7 +222,7 @@ export function useTransactions(userId: string | null) {
         {
           event: '*',
           schema: 'public',
-          table: 'portable_transactions',
+          table: 'stub_transactions',
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {

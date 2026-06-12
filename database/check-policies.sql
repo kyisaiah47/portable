@@ -1,4 +1,4 @@
--- Check all policies on portable_users
+-- Check all policies on stub_users
 SELECT
     schemaname,
     tablename,
@@ -9,4 +9,4 @@ SELECT
     qual,
     with_check
 FROM pg_policies
-WHERE tablename = 'portable_users';
+WHERE tablename = 'stub_users';

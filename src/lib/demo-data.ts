@@ -148,14 +148,14 @@ export async function seedDemoData(userId: string, supabase: any) {
   try {
     // Insert transactions
     const { error: txError } = await supabase
-      .from('portable_transactions')
+      .from('stub_transactions')
       .upsert(transactions, { onConflict: 'plaid_transaction_id' });
 
     if (txError) throw txError;
 
     // Insert parsed income
     const { error: incomeError } = await supabase
-      .from('portable_parsed_income')
+      .from('stub_parsed_income')
       .upsert(parsedIncome, { onConflict: 'user_id' });
 
     if (incomeError) throw incomeError;

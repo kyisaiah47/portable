@@ -14,7 +14,7 @@ export const supabase = createBrowserClient(
 export type Database = {
   public: {
     Tables: {
-      portable_users: {
+      stub_users: {
         Row: {
           id: string;
           email: string;
@@ -39,7 +39,7 @@ export type Database = {
           updated_at?: string;
         };
       };
-      portable_plaid_items: {
+      stub_plaid_items: {
         Row: {
           id: string;
           user_id: string;
@@ -64,7 +64,7 @@ export type Database = {
           updated_at?: string;
         };
       };
-      portable_transactions: {
+      stub_transactions: {
         Row: {
           id: string;
           user_id: string;
@@ -102,7 +102,7 @@ export type Database = {
           classification?: TransactionClassification | null;
         };
       };
-      portable_parsed_income: {
+      stub_parsed_income: {
         Row: {
           id: string;
           user_id: string;

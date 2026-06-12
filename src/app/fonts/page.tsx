@@ -14,7 +14,7 @@ export default function FontsPreview() {
   return (
     <div className="min-h-screen bg-slate-950 py-20 px-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-6xl font-bold text-white mb-4">Pick a font for "Portable"</h1>
+        <h1 className="text-6xl font-bold text-white mb-4">Pick a font for "Stub"</h1>
         <p className="text-xl text-slate-400 mb-16">Try different options for the logo</p>
 
         <div className="space-y-12">
@@ -27,7 +27,7 @@ export default function FontsPreview() {
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
                   </div>
-                  <span className={`text-3xl font-bold text-white ${font.class}`}>Portable</span>
+                  <span className={`text-3xl font-bold text-white ${font.class}`}>Stub</span>
                 </div>
                 <span className="text-sm text-slate-400">{font.name}</span>
               </div>

@@ -43,7 +43,7 @@ export default function ReferralDashboard() {
 
       // Fetch user's referral stats
       let { data: userData, error: fetchError } = await supabase
-        .from('portable_users')
+        .from('stub_users')
         .select('referral_code, total_referrals, referral_earnings')
         .eq('id', user.id)
         .single();
@@ -55,7 +55,7 @@ export default function ReferralDashboard() {
         if (!userData) {
           // Create new user record
           const { data: newData, error: createError } = await supabase
-            .from('portable_users')
+            .from('stub_users')
             .insert({
               id: user.id,
               email: user.email,
@@ -74,7 +74,7 @@ export default function ReferralDashboard() {
         } else {
           // Update existing record with referral code
           const { data: updatedData } = await supabase
-            .from('portable_users')
+            .from('stub_users')
             .update({ referral_code: newReferralCode })
             .eq('id', user.id)
             .select('referral_code, total_referrals, referral_earnings')
@@ -88,7 +88,7 @@ export default function ReferralDashboard() {
 
       // Fetch detailed referrals
       const { data: referralsData } = await supabase
-        .from('portable_referrals')
+        .from('stub_referrals')
         .select('*')
         .eq('referrer_id', user.id)
         .order('created_at', { ascending: false });
@@ -149,23 +149,23 @@ export default function ReferralDashboard() {
   }
 
   function shareViaEmail() {
-    const subject = encodeURIComponent('Get $10 on Portable - Financial Platform for Gig Workers');
+    const subject = encodeURIComponent('Get $10 on Stub - Financial Platform for Gig Workers');
     const body = encodeURIComponent(
-      `Hey! I've been using Portable to track my income from Uber, DoorDash, and other gig platforms - it's been a game changer.\n\nSign up with my link and we both get $10:\n${window.location.origin}/signup?ref=${displayStats.referralCode}\n\nIt's free to start and automatically tracks all your income in one place.`
+      `Hey! I've been using Stub to track my income from Uber, DoorDash, and other gig platforms - it's been a game changer.\n\nSign up with my link and we both get $10:\n${window.location.origin}/signup?ref=${displayStats.referralCode}\n\nIt's free to start and automatically tracks all your income in one place.`
     );
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   }
 
   function shareViaText() {
     const message = encodeURIComponent(
-      `Get $10 on Portable (financial tracking for gig workers): ${window.location.origin}/signup?ref=${displayStats.referralCode}`
+      `Get $10 on Stub (financial tracking for gig workers): ${window.location.origin}/signup?ref=${displayStats.referralCode}`
     );
     window.location.href = `sms:?body=${message}`;
   }
 
   function shareViaSocial() {
     const text = encodeURIComponent(
-      `Track your gig income automatically with Portable. Sign up and we both get $10!`
+      `Track your gig income automatically with Stub. Sign up and we both get $10!`
     );
     const url = encodeURIComponent(`${window.location.origin}/signup?ref=${displayStats.referralCode}`);
     window.open(
@@ -219,7 +219,7 @@ export default function ReferralDashboard() {
         <CardHeader>
           <CardTitle className="text-white">Share Your Referral Link</CardTitle>
           <CardDescription className="text-slate-400">
-            Invite friends to Portable and earn $10 for each successful referral
+            Invite friends to Stub and earn $10 for each successful referral
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

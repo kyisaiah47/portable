@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "Real data from 10,000+ drivers. See which platform pays better in your city and time slot. Maximize your delivery driver earnings.",
     type: "article",
     publishedTime: "2024-12-28T00:00:00.000Z",
-    authors: ["Portable"],
+    authors: ["Stub"],
   },
   twitter: {
     card: "summary_large_image",
@@ -24,7 +24,7 @@ export default function BlogPost() {
     <div className="min-h-screen bg-slate-950 font-inter">
       <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Portable</Link>
+          <Link href="/" className="text-white font-bold text-xl font-space-grotesk">Stub</Link>
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="text-slate-300 hover:text-white text-sm">Dashboard</Link>
             <Link href="/signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Get Started</Link>
@@ -163,7 +163,7 @@ export default function BlogPost() {
 
           <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-6 mt-12">
             <h3 className="text-purple-400 font-bold mb-3 mt-0">Track Earnings Across All Platforms</h3>
-            <p className="mb-4">Portable automatically combines income from DoorDash, Uber Eats, and Grubhub. See your true hourly rate across all apps.</p>
+            <p className="mb-4">Stub automatically combines income from DoorDash, Uber Eats, and Grubhub. See your true hourly rate across all apps.</p>
             <Link href="/signup" className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-bold">Start Tracking Free →</Link>
           </div>
         </div>

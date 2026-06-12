@@ -196,7 +196,7 @@ export function generateWeeklyEarningsEmail(data: WeeklyReportData): string {
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <div class="logo">Portable</div>
+      <div class="logo">Stub</div>
       <div class="header-subtitle">Your Weekly Earnings Report • ${data.weekStart} - ${data.weekEnd}</div>
     </div>
 
@@ -262,12 +262,12 @@ export function generateWeeklyEarningsEmail(data: WeeklyReportData): string {
 
     <!-- Footer -->
     <div class="footer">
-      <p>You're receiving this because you enabled weekly earnings reports in Portable.</p>
+      <p>You're receiving this because you enabled weekly earnings reports in Stub.</p>
       <p>
         <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://getportable.app'}/settings" class="footer-link">Manage preferences</a> •
         <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://getportable.app'}/privacy" class="footer-link">Privacy</a>
       </p>
-      <p style="margin-top: 16px;">© 2025 Portable. All rights reserved.</p>
+      <p style="margin-top: 16px;">© 2025 Stub. All rights reserved.</p>
     </div>
   </div>
 </body>
@@ -316,10 +316,10 @@ ${data.insights.map((insight, i) => `${i + 1}. ${insight}`).join('\n')}
 
 View your full dashboard: ${process.env.NEXT_PUBLIC_APP_URL || 'https://getportable.app'}/dashboard
 
-You're receiving this because you enabled weekly earnings reports in Portable.
+You're receiving this because you enabled weekly earnings reports in Stub.
 Manage preferences: ${process.env.NEXT_PUBLIC_APP_URL || 'https://getportable.app'}/settings
 
-© 2025 Portable. All rights reserved.
+© 2025 Stub. All rights reserved.
   `.trim();
 }
 
@@ -493,7 +493,7 @@ export function generateTaxReminderEmail(data: TaxReminderData): string {
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <div class="logo">Portable</div>
+      <div class="logo">Stub</div>
       <div class="header-subtitle">Quarterly Tax Payment Reminder</div>
     </div>
 
@@ -539,7 +539,7 @@ export function generateTaxReminderEmail(data: TaxReminderData): string {
     <div class="card">
       <div class="section-title">⚡ Important Reminders</div>
       <ul class="tips-list">
-        <li>This is an <strong>estimate</strong> based on your income in Portable. Consult a tax professional for accuracy.</li>
+        <li>This is an <strong>estimate</strong> based on your income in Stub. Consult a tax professional for accuracy.</li>
         <li>Quarterly tax deadlines: April 15, June 15, September 15, January 15</li>
         <li>Missing payments can result in IRS penalties and interest charges</li>
         <li>Keep records of all payments for your annual tax return</li>
@@ -559,12 +559,12 @@ export function generateTaxReminderEmail(data: TaxReminderData): string {
 
     <!-- Footer -->
     <div class="footer">
-      <p>You're receiving this because you enabled tax deadline reminders in Portable.</p>
+      <p>You're receiving this because you enabled tax deadline reminders in Stub.</p>
       <p>
         <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://getportable.app'}/settings" class="footer-link">Manage preferences</a> •
         <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://getportable.app'}/privacy" class="footer-link">Privacy</a>
       </p>
-      <p style="margin-top: 16px;">© 2025 Portable. All rights reserved.</p>
+      <p style="margin-top: 16px;">© 2025 Stub. All rights reserved.</p>
       <p style="margin-top: 8px; color: #475569; font-size: 11px;">
         This is not professional tax advice. Consult a tax professional for your specific situation.
       </p>
@@ -604,7 +604,7 @@ HOW TO PAY:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 IMPORTANT REMINDERS:
-• This is an estimate based on your income in Portable
+• This is an estimate based on your income in Stub
 • Quarterly deadlines: April 15, June 15, September 15, January 15
 • Missing payments can result in IRS penalties
 • Keep records of all payments for your annual return
@@ -616,7 +616,7 @@ View full tax breakdown: ${process.env.NEXT_PUBLIC_APP_URL || 'https://getportab
 You're receiving this because you enabled tax deadline reminders.
 Manage preferences: ${process.env.NEXT_PUBLIC_APP_URL || 'https://getportable.app'}/settings
 
-© 2025 Portable. All rights reserved.
+© 2025 Stub. All rights reserved.
 This is not professional tax advice. Consult a tax professional.
   `.trim();
 }
