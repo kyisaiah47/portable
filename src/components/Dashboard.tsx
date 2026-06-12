@@ -6,6 +6,7 @@ import MileageTracker from '@/components/MileageTracker';
 import HomeOverview from '@/components/home/HomeOverview';
 import ExpensesView from '@/components/expenses/ExpensesView';
 import IncomeView from '@/components/income/IncomeView';
+import TaxesView from '@/components/taxes/TaxesView';
 import { buildAccountantCsv, downloadAccountantCsv } from '@/lib/accountant-export';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -889,426 +890,62 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
         {activeTab === 'taxes' && (
           <div className="space-y-10">
-            {!parsedIncome ? (
-              <>
-                <PageHeader
-                  eyebrow="Taxes"
-                  title="$0"
-                  subtitle="Quarterly self-employment tax estimates, computed from your real income."
-                  actions={
+            <PageHeader
+              eyebrow="Taxes"
+              title="No surprises"
+              subtitle="Quarterly self-employment estimates from your real numbers — the AI explains, the calculator computes."
+              actions={
+                parsedIncome ? (
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => setIsCalculatorModalOpen(true)}
-                      disabled
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/10 text-sm font-medium text-slate-600 cursor-not-allowed"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
                     >
                       <Calculator className="w-3.5 h-3.5" />
                       Tax calculator
                     </button>
-                  }
-                />
-                <EmptyState
-                  icon={FileText}
-                  title="Upload income to calculate taxes"
-                  body="Upload your bank statement on the Income tab to get quarterly tax estimates, a payment schedule, and deduction calculations."
-                  action={
-                    <Link
-                      href="/dashboard/income"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors"
+                    <button
+                      onClick={() => {
+                        const expenseResults = buildExpensesFromTransactions(parsedIncome.rawTransactions || []);
+                        const taxCalc = parsedIncome.parsed.startDate && parsedIncome.parsed.endDate
+                          ? projectAnnualTax(parsedIncome.parsed.totalIncome, expenseResults.totalDeductions, parsedIncome.parsed.startDate, parsedIncome.parsed.endDate)
+                          : calculateTaxes(parsedIncome.parsed.totalIncome, expenseResults.totalDeductions);
+                        downloadAccountantCsv(
+                          buildAccountantCsv({
+                            totalIncome: parsedIncome.parsed.totalIncome,
+                            totalDeductions: expenseResults.totalDeductions,
+                            taxCalc,
+                            transactions: parsedIncome.rawTransactions || [],
+                          })
+                        );
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium"
                     >
-                      <Upload className="w-3.5 h-3.5" />
-                      Go to Income
-                    </Link>
-                  }
-                />
-              </>
-            ) : (() => {
-              // Calculate real taxes from uploaded data
-              const expenseResults = buildExpensesFromTransactions(parsedIncome.rawTransactions || []);
-              const taxCalc = parsedIncome.parsed.startDate && parsedIncome.parsed.endDate
-                ? projectAnnualTax(
-                    parsedIncome.parsed.totalIncome,
-                    expenseResults.totalDeductions,
-                    parsedIncome.parsed.startDate,
-                    parsedIncome.parsed.endDate
-                  )
-                : calculateTaxes(parsedIncome.parsed.totalIncome, expenseResults.totalDeductions);
-
-              const deadlines = getQuarterlyDeadlines(2024, taxCalc.quarterlyPayment);
-
-              return (
-                <>
-                  <PageHeader
-                    eyebrow="Taxes"
-                    title={money(taxCalc.quarterlyPayment)}
-                    subtitle={`Estimated quarterly payment · ${(taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate`}
-                    actions={
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setIsCalculatorModalOpen(true)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
-                        >
-                          <Calculator className="w-3.5 h-3.5" />
-                          Tax calculator
-                        </button>
-                        <button
-                          onClick={() =>
-                            downloadAccountantCsv(
-                              buildAccountantCsv({
-                                totalIncome: parsedIncome.parsed.totalIncome,
-                                totalDeductions: expenseResults.totalDeductions,
-                                taxCalc,
-                                transactions: parsedIncome.rawTransactions || [],
-                              })
-                            )
-                          }
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                          Export for accountant
-                        </button>
-                      </div>
-                    }
-                  />
-
-                  <StatGrid
-                    stats={[
-                      {
-                        label: 'Annual tax liability',
-                        value: money(taxCalc.totalTaxLiability),
-                        sub: `${(taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate`,
-                      },
-                      {
-                        label: 'Quarterly payment',
-                        value: money(taxCalc.quarterlyPayment),
-                        sub: 'Due four times per year',
-                      },
-                      {
-                        label: 'Total deductions',
-                        value: money(expenseResults.totalDeductions),
-                        sub: `${expenseResults.expenses.length} expenses tracked`,
-                      },
-                      {
-                        label: 'Tax savings',
-                        value: money(expenseResults.potentialTaxSavings),
-                        sub: 'From deductions',
-                      },
-                    ]}
-                  />
-
-                  {/* AI plain-English summary (numbers come from the tax calculator) */}
-                  <AITaxSummary
-                    taxCalc={taxCalc}
-                    totalDeductions={expenseResults.totalDeductions}
-                    deadlines={deadlines}
-                    platforms={Array.from(parsedIncome.parsed.byPlatform.keys())}
-                    deductionsByCategory={Object.fromEntries(
-                      Array.from(expenseResults.byCategory.entries()).map(([category, items]) => [
-                        category,
-                        items.reduce((sum, e) => sum + e.deductibleAmount, 0),
-                      ])
-                    )}
-                  />
-
-                  {/* Tax breakdown */}
-                  <section>
-                    <SectionHeader
-                      title="Tax breakdown"
-                      hint={`How your ${money(taxCalc.totalTaxLiability)} bill is calculated`}
-                    />
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {/* Left: components */}
-                      <div className="rounded-lg border border-white/10 p-4">
-                        <h3 className="text-[13px] font-semibold text-white mb-3">Tax components</h3>
-                        <div className="space-y-3">
-                          {[
-                            { label: 'Federal income tax', value: taxCalc.breakdown.federalIncome },
-                            { label: 'Social Security (12.4%)', value: taxCalc.breakdown.socialSecurity },
-                            { label: 'Medicare (2.9%)', value: taxCalc.breakdown.medicare },
-                            { label: 'State tax (CA)', value: taxCalc.breakdown.state },
-                          ].map((row) => (
-                            <div key={row.label}>
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-sm text-slate-400">{row.label}</span>
-                                <span className="text-sm font-medium text-white">{money(row.value)}</span>
-                              </div>
-                              <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-indigo-400/70 rounded-full"
-                                  style={{ width: `${(row.value / taxCalc.totalTaxLiability) * 100}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-                          <span className="text-sm font-semibold text-white">Total tax</span>
-                          <span className="text-base font-semibold text-white">
-                            {money(taxCalc.totalTaxLiability)}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Right: income calculation */}
-                      <div className="rounded-lg border border-white/10 p-4">
-                        <h3 className="text-[13px] font-semibold text-white mb-3">Income calculation</h3>
-                        <div className="space-y-2.5">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-slate-400">Gross income</span>
-                            <span className="text-sm font-medium text-white">{money(taxCalc.grossIncome)}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-slate-400">Business deductions</span>
-                            <span className="text-sm font-medium text-red-400">
-                              −{money(expenseResults.totalDeductions)}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-slate-400">Standard deduction</span>
-                            <span className="text-sm font-medium text-red-400">−$14,600</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-slate-400">SE tax deduction (50%)</span>
-                            <span className="text-sm font-medium text-red-400">
-                              −{money(taxCalc.selfEmploymentTax * 0.5)}
-                            </span>
-                          </div>
-                          <div className="border-t border-white/10 pt-2.5 flex items-center justify-between">
-                            <span className="text-sm font-semibold text-white">Taxable income</span>
-                            <span className="text-sm font-semibold text-white">
-                              {money(taxCalc.adjustedGrossIncome - 14600)}
-                            </span>
-                          </div>
-                        </div>
-
-                        <p className="mt-4 text-xs text-slate-500 leading-relaxed border-t border-white/5 pt-3">
-                          Self-employed filers deduct 50% of self-employment tax from adjusted gross
-                          income — worth about {money(taxCalc.selfEmploymentTax * 0.5 * 0.22)} in federal
-                          income tax here.
-                        </p>
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* Tax chart */}
-                  <section className="rounded-lg border border-white/10 p-5">
-                    <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-                      <div>
-                        <h2 className="text-sm font-semibold text-white">Tax overview</h2>
-                        <p className="text-xs text-slate-500 mt-0.5">Quarterly payments and liability breakdown</p>
-                      </div>
-                      <SegmentedControl
-                        options={[
-                          { value: 'quarterly' as const, label: 'Quarterly' },
-                          { value: 'liability' as const, label: 'Liability' },
-                        ]}
-                        value={taxChartView}
-                        onChange={setTaxChartView}
-                      />
-                    </div>
-
-                    {taxChartView === 'liability' ? (
-                      (() => {
-                        // Pie chart for tax liability breakdown
-                        const liabilityData = [
-                          { name: 'Federal Income', value: taxCalc.breakdown.federalIncome, fill: '#5b5bd6' },
-                          { name: 'Social Security', value: taxCalc.breakdown.socialSecurity, fill: '#7da7c9' },
-                          { name: 'Medicare', value: taxCalc.breakdown.medicare, fill: '#9b8ed4' },
-                          { name: 'State Tax', value: taxCalc.breakdown.state, fill: '#c9a36a' },
-                        ];
-
-                        return (
-                          <div className="h-72">
-                            <ChartContainer
-                              config={{
-                                'Federal Income': { label: 'Federal income tax', color: '#5b5bd6' },
-                                'Social Security': { label: 'Social Security', color: '#7da7c9' },
-                                'Medicare': { label: 'Medicare', color: '#9b8ed4' },
-                                'State Tax': { label: 'State tax', color: '#c9a36a' },
-                              }}
-                              className="h-full w-full"
-                            >
-                              <PieChart>
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Pie
-                                  data={liabilityData}
-                                  cx="50%"
-                                  cy="50%"
-                                  labelLine={false}
-                                  label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                                  outerRadius={105}
-                                  innerRadius={62}
-                                  dataKey="value"
-                                  stroke="#fff"
-                                >
-                                  {liabilityData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                  ))}
-                                </Pie>
-                                <ChartLegend content={(<ChartLegendContent />) as never} />
-                              </PieChart>
-                            </ChartContainer>
-                          </div>
-                        );
-                      })()
-                    ) : (
-                      (() => {
-                        // Quarterly bar chart (default)
-                        const quarterlyData = deadlines.map((deadline) => ({
-                          quarter: deadline.quarter,
-                          owed: deadline.amount,
-                          setAside: deadline.amount * 0.68, // Mock 68% set aside
-                        }));
-
-                        return (
-                          <div className="h-72">
-                            <ChartContainer
-                              config={{
-                                owed: { label: 'Owed', color: '#cf6f6f' },
-                                setAside: { label: 'Set aside', color: '#6fa287' },
-                              }}
-                              className="h-full w-full"
-                            >
-                              <BarChart data={quarterlyData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                                <XAxis
-                                  dataKey="quarter"
-                                  stroke={CHART_AXIS}
-                                  tickLine={false}
-                                  axisLine={false}
-                                  style={{ fontSize: '12px' }}
-                                />
-                                <YAxis
-                                  stroke={CHART_AXIS}
-                                  tickLine={false}
-                                  axisLine={false}
-                                  style={{ fontSize: '12px' }}
-                                  tickFormatter={(value) => `$${value}`}
-                                />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <ChartLegend content={(<ChartLegendContent />) as never} />
-                                <Bar dataKey="setAside" fill="#6fa287" />
-                                <Bar dataKey="owed" fill="#cf6f6f" />
-                              </BarChart>
-                            </ChartContainer>
-                          </div>
-                        );
-                      })()
-                    )}
-                  </section>
-
-                  {/* Quarterly payment schedule */}
-                  <section>
-                    <SectionHeader
-                      title="Quarterly payment schedule"
-                      hint={`Pay ${money(taxCalc.quarterlyPayment)} four times per year to avoid penalties`}
-                    />
-                    <div className="rounded-lg border border-white/10 overflow-hidden">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="bg-slate-950/60 border-b border-white/10">
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Quarter</th>
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5 hidden sm:table-cell">Period</th>
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Due</th>
-                            <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Status</th>
-                            <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Amount</th>
-                            <th className="px-4 py-2.5"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {deadlines.map((deadline) => (
-                            <tr key={deadline.quarter} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
-                              <td className="px-4 py-2.5 font-medium text-white">{deadline.quarter} 2024</td>
-                              <td className="px-4 py-2.5 text-slate-400 hidden sm:table-cell">{deadline.period}</td>
-                              <td className="px-4 py-2.5 text-slate-400 whitespace-nowrap">
-                                {deadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                              </td>
-                              <td className="px-4 py-2.5">
-                                {deadline.isPast ? (
-                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-red-500/10 text-red-400">
-                                    Overdue
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-emerald-500/10 text-emerald-400">
-                                    Upcoming
-                                  </span>
-                                )}
-                              </td>
-                              <td className="px-4 py-2.5 text-right font-medium text-white">
-                                {money(deadline.amount)}
-                              </td>
-                              <td className="px-4 py-2.5 text-right">
-                                {deadline.isPast ? (
-                                  <button
-                                    onClick={() => toast.success('IRS payment portal integration coming soon!')}
-                                    className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
-                                  >
-                                    Pay now
-                                  </button>
-                                ) : (
-                                  <button
-                                    onClick={() => toast.success('Tax reminders coming soon!')}
-                                    className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
-                                  >
-                                    Set reminder
-                                  </button>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-
-                  {/* Deduction summary */}
-                  <section>
-                    <SectionHeader title="Your deductions" hint="Every dollar you can write off" />
-                    {expenseResults.expenses.length === 0 ? (
-                      <EmptyState
-                        icon={Receipt}
-                        title="No deductions tracked yet"
-                        body="Upload transactions with business expenses to see potential tax deductions."
-                      />
-                    ) : (
-                      <div className="rounded-lg border border-white/10 overflow-hidden">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="bg-slate-950/60 border-b border-white/10">
-                              <th className="text-left text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Category</th>
-                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Items</th>
-                              <th className="text-right text-[11px] font-medium uppercase tracking-wider text-slate-500 px-4 py-2.5">Deductible</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Array.from(expenseResults.byCategory.entries()).map(([category, expenses]) => {
-                              const totalAmount = expenses.reduce((sum, e) => sum + e.deductibleAmount, 0);
-
-                              return (
-                                <tr key={category} className="border-b border-white/5 last:border-0 hover:bg-slate-800/60 transition-colors">
-                                  <td className="px-4 py-2.5">
-                                    <span className="inline-flex items-center gap-2.5 font-medium text-white capitalize">
-                                      <span
-                                        className="w-2 h-2 rounded-full"
-                                        style={{ background: EXPENSE_CATEGORY_COLORS[category] || EXPENSE_CATEGORY_COLORS.other }}
-                                      />
-                                      {category.replace('-', ' ')}
-                                    </span>
-                                  </td>
-                                  <td className="px-4 py-2.5 text-right text-slate-400">{expenses.length}</td>
-                                  <td className="px-4 py-2.5 text-right font-medium text-white">
-                                    {money(totalAmount)}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </section>
-                </>
-              );
-            })()}
+                      <Download className="w-3.5 h-3.5" />
+                      Export for accountant
+                    </button>
+                  </div>
+                ) : undefined
+              }
+            />
+            {!parsedIncome ? (
+              <EmptyState
+                icon={FileText}
+                title="Upload income to calculate taxes"
+                body="Upload your bank statement and Stub computes quarterly estimates, a payment schedule, and a plain-English summary of what you owe."
+                action={
+                  <button
+                    onClick={() => setShowWizard(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    Open setup guide
+                  </button>
+                }
+              />
+            ) : (
+              <TaxesView parsedIncome={parsedIncome} />
+            )}
 
             {/* Tax Calculator Modal */}
             {parsedIncome && (() => {
