@@ -21,7 +21,7 @@ export default function Home() {
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
               </div>
-              <span className="text-2xl font-bold text-white font-space-grotesk">Stub</span>
+              <span className="text-lg font-bold text-white font-space-grotesk">Stub</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link
@@ -42,17 +42,17 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-28 pb-32 px-6 relative overflow-hidden">
+      <section className="pt-16 pb-20 px-6 relative overflow-hidden">
         {/* Animated gradient mesh */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-          <div className="absolute top-40 right-20 w-96 h-96 bg-purple-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-20 left-1/2 w-96 h-96 bg-pink-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+          <div className="absolute top-40 right-20 w-72 h-72 bg-purple-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-20 left-1/2 w-72 h-72 bg-pink-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-5xl mx-auto mb-20">
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-full border border-white/10 mb-10">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-full border border-white/10 mb-6">
               <div className="flex -space-x-2">
                 <Avatar className="w-6 h-6 border-2 border-slate-950">
                   <AvatarImage src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=3B82F6" alt="" />
@@ -70,7 +70,7 @@ export default function Home() {
               <span className="text-sm font-semibold text-white">Join 60M+ independent workers</span>
             </div>
 
-            <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold mb-10 leading-[0.95] font-space-grotesk">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-[1.02] font-space-grotesk">
               <span className="inline-block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
                 Benefits for
               </span>
@@ -78,19 +78,19 @@ export default function Home() {
               <span className="text-white">gig workers.</span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-slate-300 mb-14 leading-relaxed max-w-4xl mx-auto font-light">
+            <p className="text-base md:text-lg text-slate-300 mb-8 leading-relaxed max-w-2xl mx-auto font-light">
               Navigate the gig economy with confidence. Access health insurance, retirement plans, and financial guidance designed for independent workers.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-20">
               <Link
                 href="/signup"
-                className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-14 py-6 rounded-full text-lg font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-3"
+                className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-7 py-3 rounded-full text-sm font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-3"
               >
                 <span>Get Stub</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="text-white px-14 py-6 rounded-full text-lg font-semibold hover:bg-white/5 transition-colors border-2 border-white/20 inline-flex items-center gap-3">
+              <button className="text-white px-7 py-3 rounded-full text-sm font-semibold hover:bg-white/5 transition-colors border-2 border-white/20 inline-flex items-center gap-3">
                 <span>Watch demo</span>
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               </button>
@@ -101,27 +101,27 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-10 border border-blue-400/50 transform group-hover:-translate-y-2 transition-transform">
+              <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 border border-blue-400/50 transform group-hover:-translate-y-2 transition-transform">
                 <div className="text-sm text-blue-200 font-semibold mb-3 uppercase tracking-wider">Health Insurance</div>
-                <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Covered</div>
+                <div className="text-2xl font-black text-white mb-2 font-space-grotesk">Covered</div>
                 <div className="text-blue-200 text-lg">Medical, dental, vision plans starting at $150/mo</div>
               </div>
             </div>
 
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-10 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
+              <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
                 <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">Retirement</div>
-                <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Building</div>
+                <div className="text-2xl font-black text-white mb-2 font-space-grotesk">Building</div>
                 <div className="text-purple-200 text-lg">Stub 401(k) that moves with you</div>
               </div>
             </div>
 
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-pink-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative bg-gradient-to-br from-pink-600 to-pink-700 rounded-3xl p-10 border border-pink-400/50 transform group-hover:-translate-y-2 transition-transform">
+              <div className="relative bg-gradient-to-br from-pink-600 to-pink-700 rounded-2xl p-6 border border-pink-400/50 transform group-hover:-translate-y-2 transition-transform">
                 <div className="text-sm text-pink-200 font-semibold mb-3 uppercase tracking-wider">Tax Prep</div>
-                <div className="text-5xl font-black text-white mb-5 font-space-grotesk">Simplified</div>
+                <div className="text-2xl font-black text-white mb-2 font-space-grotesk">Simplified</div>
                 <div className="text-pink-200 text-lg">Track deductions across all platforms</div>
               </div>
             </div>
@@ -192,8 +192,8 @@ export default function Home() {
       {/* Story/About Section */}
       <section className="py-40 px-6 bg-slate-900/30">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 font-space-grotesk">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-space-grotesk">
               The safety net you deserve
             </h2>
             <p className="text-xl text-slate-400">
@@ -231,10 +231,10 @@ export default function Home() {
       </section>
 
       {/* Features grid */}
-      <section id="features" className="py-32 px-6">
+      <section id="features" className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white font-space-grotesk">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white font-space-grotesk">
               Built for the gig economy
             </h2>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
@@ -313,9 +313,9 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-32 px-6 bg-slate-900/30">
+      <section id="about" className="py-20 px-6 bg-slate-900/30">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 font-space-grotesk">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 font-space-grotesk">
             Built by gig workers, for gig workers
           </h2>
           <p className="text-xl text-slate-300 mb-8 leading-relaxed">
@@ -328,20 +328,20 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-32 px-6 relative overflow-hidden">
+      <section className="py-20 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
         <div className="absolute inset-0 opacity-20" style={{backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')"}}></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 font-space-grotesk">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 font-space-grotesk">
             Join 60M+ independent workers
           </h2>
-          <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
+          <p className="text-base text-white/90 mb-8 max-w-xl mx-auto">
             Get started in minutes. No credit check, no monthly fees, no minimum balance.
           </p>
           <Link
             href="/signup"
-            className="bg-white text-gray-900 px-14 py-5 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors shadow-2xl inline-flex items-center gap-3"
+            className="bg-white text-gray-900 px-7 py-3 rounded-full text-sm font-bold hover:bg-gray-100 transition-colors shadow-2xl inline-flex items-center gap-3"
           >
             Get Started Free
             <ArrowRight className="w-5 h-5" />
@@ -352,7 +352,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-white/10 py-16 px-6 bg-slate-900/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
+          <div className="grid md:grid-cols-4 gap-8 mb-10">
             {/* Brand */}
             <div>
               <div className="flex items-center space-x-2 mb-4">
