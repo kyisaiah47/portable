@@ -168,7 +168,7 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
           </div>
           <button
             onClick={generateSampleCSV}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
           >
             <Download className="w-4 h-4" />
             <span>Sample CSV</span>
@@ -185,7 +185,7 @@ export default function CSVUpload({ userId, onUploadComplete }: CSVUploadProps) 
           />
           <div className={`border border-dashed rounded-lg p-10 text-center transition-all ${
             uploading
-              ? 'border-indigo-300 bg-indigo-500/10/50'
+              ? 'border-indigo-400/50 bg-indigo-500/10'
               : 'border-white/20 hover:border-indigo-400 hover:bg-slate-800/60'
           }`}>
             {uploading ? (

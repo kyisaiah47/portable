@@ -128,7 +128,7 @@ export default function DashboardLayout({ user, onLogout, children }: DashboardL
           <p className="text-sm text-slate-400">{incomeError.message}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-3.5 py-1.5 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="mt-4 px-3.5 py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors"
           >
             Retry
           </button>

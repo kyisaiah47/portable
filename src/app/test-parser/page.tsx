@@ -133,7 +133,7 @@ export default function TestParserPage() {
             </div>
             <button
               onClick={generateSampleCSV}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
             >
               <Download className="w-4 h-4" />
               <span>Download Sample CSV</span>

@@ -59,6 +59,11 @@ export default function ReferralDashboard() {
             .insert({
               id: user.id,
               email: user.email,
+              first_name:
+                (user.user_metadata?.first_name as string) ??
+                user.email?.split('@')[0] ??
+                'There',
+              last_name: (user.user_metadata?.last_name as string) ?? '',
               referral_code: newReferralCode,
               total_referrals: 0,
               referral_earnings: 0,
@@ -142,7 +147,7 @@ export default function ReferralDashboard() {
   };
 
   function copyReferralLink() {
-    const referralUrl = `${window.location.origin}/signup?ref=${displayStats.referralCode}`;
+    const referralUrl = `${window.location.origin}/?auth=signup&ref=${displayStats.referralCode}`;
     navigator.clipboard.writeText(referralUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -151,14 +156,14 @@ export default function ReferralDashboard() {
   function shareViaEmail() {
     const subject = encodeURIComponent('Get $10 on Stub - Financial Platform for Gig Workers');
     const body = encodeURIComponent(
-      `Hey! I've been using Stub to track my income from Uber, DoorDash, and other gig platforms - it's been a game changer.\n\nSign up with my link and we both get $10:\n${window.location.origin}/signup?ref=${displayStats.referralCode}\n\nIt's free to start and automatically tracks all your income in one place.`
+      `Hey! I've been using Stub to track my income from Uber, DoorDash, and other gig platforms - it's been a game changer.\n\nSign up with my link and we both get $10:\n${window.location.origin}/?auth=signup&ref=${displayStats.referralCode}\n\nIt's free to start and automatically tracks all your income in one place.`
     );
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   }
 
   function shareViaText() {
     const message = encodeURIComponent(
-      `Get $10 on Stub (financial tracking for gig workers): ${window.location.origin}/signup?ref=${displayStats.referralCode}`
+      `Get $10 on Stub (financial tracking for gig workers): ${window.location.origin}/?auth=signup&ref=${displayStats.referralCode}`
     );
     window.location.href = `sms:?body=${message}`;
   }
@@ -167,7 +172,7 @@ export default function ReferralDashboard() {
     const text = encodeURIComponent(
       `Track your gig income automatically with Stub. Sign up and we both get $10!`
     );
-    const url = encodeURIComponent(`${window.location.origin}/signup?ref=${displayStats.referralCode}`);
+    const url = encodeURIComponent(`${window.location.origin}/?auth=signup&ref=${displayStats.referralCode}`);
     window.open(
       `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
       '_blank',
@@ -175,7 +180,7 @@ export default function ReferralDashboard() {
     );
   }
 
-  const referralUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/signup?ref=${displayStats.referralCode}`;
+  const referralUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/?auth=signup&ref=${displayStats.referralCode}`;
 
   return (
     <div className="space-y-6">

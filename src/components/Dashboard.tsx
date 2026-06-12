@@ -719,7 +719,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           <p className="text-sm text-slate-400">{incomeError.message}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-3.5 py-1.5 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="mt-4 px-3.5 py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors"
           >
             Retry
           </button>
@@ -740,14 +740,14 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       <a
         href="/sample-bank-statement.csv"
         download
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
       >
         <Download className="w-3.5 h-3.5" />
         Sample
       </a>
       <label
         htmlFor="csv-upload"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors cursor-pointer"
       >
         <Upload className="w-3.5 h-3.5" />
         Upload CSV
@@ -794,7 +794,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 action={
                   <label
                     htmlFor="csv-upload"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     Upload statement
@@ -1043,7 +1043,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 action={
                   <label
                     htmlFor="csv-upload"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     Upload statement
@@ -1423,7 +1423,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                       action={
                         <Link
                           href="/dashboard/income"
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors"
                         >
                           <Upload className="w-3.5 h-3.5" />
                           Go to Income
@@ -1762,7 +1762,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   action={
                     <Link
                       href="/dashboard/income"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       Go to Income
@@ -1793,7 +1793,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     actions={
                       <button
                         onClick={() => setIsCalculatorModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors"
                       >
                         <Calculator className="w-3.5 h-3.5" />
                         Tax calculator
@@ -2213,7 +2213,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* City Selector */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors">
+                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors">
                         <Globe className="w-3.5 h-3.5 text-slate-500" />
                         <span>
                           {selectedCities.length === 0 ? 'All cities' : selectedCities.length === 1 ? selectedCities[0] : `${selectedCities.length} cities`}
@@ -2256,7 +2256,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   {/* Gig Type Selector */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-gray-400 transition-colors">
+                      <button className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 text-sm font-medium text-slate-300 hover:border-white/40 transition-colors">
                         <Briefcase className="w-3.5 h-3.5 text-slate-500" />
                         <span>
                           {selectedGigTypes.length === 0 ? 'All gigs' : selectedGigTypes.length === 1 ? selectedGigTypes[0] : `${selectedGigTypes.length} types`}
@@ -2400,7 +2400,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <button
                   type="submit"
                   disabled={savingProfile}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors disabled:opacity-50"
                 >
                   {savingProfile ? (
                     <>
@@ -2477,7 +2477,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <button
                   type="submit"
                   disabled={savingNotifications}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors disabled:opacity-50"
                 >
                   {savingNotifications ? (
                     <>
@@ -2534,7 +2534,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 <button
                   type="submit"
                   disabled={savingPassword || !newPassword || !confirmPassword}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors disabled:opacity-50"
                 >
                   {savingPassword ? (
                     <>

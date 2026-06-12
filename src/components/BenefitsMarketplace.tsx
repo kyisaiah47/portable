@@ -171,14 +171,14 @@ export default function BenefitsMarketplace() {
           <div className="flex gap-3 flex-shrink-0">
             <button
               onClick={() => setIsHealthCalcModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium  transition-colors"
             >
               <Heart className="w-4 h-4" />
               <span>Health Calc</span>
             </button>
             <button
               onClick={() => setIsRetirementCalcModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white  text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               <Building2 className="w-4 h-4" />
               <span>Retirement Calc</span>
@@ -556,7 +556,7 @@ export default function BenefitsMarketplace() {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                   selectedCategory === category.id
-                    ? 'bg-gray-900 text-white hover:bg-gray-800'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white '
                     : 'bg-slate-950 text-slate-400 hover:text-white border border-white/10 hover:bg-slate-800'
                 }`}
               >
@@ -611,7 +611,7 @@ export default function BenefitsMarketplace() {
                   href={benefit.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-gray-900 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium  transition-colors flex items-center justify-center space-x-2"
                 >
                   <span>Visit {benefit.provider}</span>
                   <ExternalLink className="w-4 h-4" />

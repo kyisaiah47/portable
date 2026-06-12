@@ -14,6 +14,7 @@ import {
 import { DashboardData } from '@/components/DashboardLayout';
 import { HomePageSkeleton } from '@/components/LoadingSkeleton';
 import CSVUpload from '@/components/CSVUpload';
+import FirstRunWizard from '@/components/FirstRunWizard';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { parseTransactions, calculateStabilityScore, type Transaction } from '@/lib/income-parser';
@@ -47,9 +48,15 @@ export default function HomePage({ dashboardData, user }: HomePageProps) {
     return <HomePageSkeleton />;
   }
 
-  // Show loading skeleton if no data yet
-  if (!parsedIncome && !showUpload) {
-    return <HomePageSkeleton />;
+  // First run: no data yet — guide the user through their first upload.
+  if (!parsedIncome) {
+    return (
+      <FirstRunWizard
+        userId={user.id}
+        firstName={user.firstName}
+        onUploadComplete={() => window.location.reload()}
+      />
+    );
   }
 
   const handleUploadComplete = () => {
