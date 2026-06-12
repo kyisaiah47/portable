@@ -3,7 +3,8 @@
 import * as React from 'react';
 import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
+import { AICard } from '@/components/ui/glow-card';
 
 /* The "what did the AI actually do" card. Makes Claude's work legible:
    how many rows rules handled, how many needed judgment, and the money
@@ -35,8 +36,7 @@ export default function AIReviewCard({ transactions }: { transactions: any[] }) 
 	if (stats.ai === 0) return null;
 
 	return (
-		<Card className="relative overflow-hidden border-purple-400/25 bg-slate-900">
-			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+		<AICard>
 			<CardContent>
 				<div className="flex flex-wrap items-start justify-between gap-4">
 					<div className="flex items-start gap-3 min-w-0">
@@ -115,6 +115,6 @@ export default function AIReviewCard({ transactions }: { transactions: any[] }) 
 					</div>
 				)}
 			</CardContent>
-		</Card>
+		</AICard>
 	);
 }

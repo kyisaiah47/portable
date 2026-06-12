@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Car, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { GLOW_SURFACE } from '@/components/ui/glow-card';
 
 // IRS standard mileage rate (2025: $0.70/mi). Update yearly.
 export const IRS_MILEAGE_RATE = 0.7;
@@ -73,7 +74,7 @@ export default function MileageTracker({ userId }: { userId: string }) {
 		<div className="space-y-6">
 			{/* Totals */}
 			<div className="grid sm:grid-cols-3 gap-4">
-				<div className="bg-slate-900 border border-white/10 rounded-lg p-5">
+				<div className={`${GLOW_SURFACE} rounded-lg p-5`}>
 					<p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
 						Miles logged
 					</p>
@@ -81,7 +82,7 @@ export default function MileageTracker({ userId }: { userId: string }) {
 						{totalMiles.toLocaleString(undefined, { maximumFractionDigits: 1 })}
 					</p>
 				</div>
-				<div className="bg-slate-900 border border-white/10 rounded-lg p-5">
+				<div className={`${GLOW_SURFACE} rounded-lg p-5`}>
 					<p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
 						IRS rate
 					</p>
@@ -89,7 +90,7 @@ export default function MileageTracker({ userId }: { userId: string }) {
 						${IRS_MILEAGE_RATE.toFixed(2)}/mi
 					</p>
 				</div>
-				<div className="bg-slate-900 border border-white/10 rounded-lg p-5">
+				<div className={`${GLOW_SURFACE} rounded-lg p-5`}>
 					<p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
 						Deduction
 					</p>
@@ -102,7 +103,7 @@ export default function MileageTracker({ userId }: { userId: string }) {
 			{/* Add trip */}
 			<form
 				onSubmit={addTrip}
-				className="bg-slate-900 border border-white/10 rounded-lg p-5 flex flex-wrap items-end gap-3"
+				className={`${GLOW_SURFACE} rounded-lg p-5 flex flex-wrap items-end gap-3`}
 			>
 				<div>
 					<label className="block text-xs font-medium text-slate-400 mb-1.5">
@@ -153,7 +154,7 @@ export default function MileageTracker({ userId }: { userId: string }) {
 			</form>
 
 			{/* Trips */}
-			<div className="bg-slate-900 border border-white/10 rounded-lg overflow-hidden">
+			<div className={`${GLOW_SURFACE} rounded-lg`}>
 				{loading ? (
 					<p className="p-5 text-sm text-slate-400">Loading…</p>
 				) : trips.length === 0 ? (

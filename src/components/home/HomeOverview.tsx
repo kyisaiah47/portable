@@ -12,6 +12,7 @@ import {
 	CardTitle,
 	CardAction,
 } from '@/components/ui/card';
+import { GlowCard, AICard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import {
 	ChartContainer,
@@ -131,7 +132,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 
 			{/* Stat cards — dashboard-01 style */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Safe to spend</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -141,9 +142,9 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 					<CardContent className="text-sm text-slate-300">
 						After 30% taxes + 10% buffer on {money(c.totalIncome)} earned
 					</CardContent>
-				</Card>
+				</GlowCard>
 
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Stub found you</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -161,9 +162,9 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							see the reasons →
 						</Link>
 					</CardContent>
-				</Card>
+				</GlowCard>
 
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Next IRS deadline</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -181,9 +182,9 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							? `${c.nextDeadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · set aside ${money(c.taxCalc.quarterlyPayment)}`
 							: 'No upcoming deadline'}
 					</CardContent>
-				</Card>
+				</GlowCard>
 
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>This week</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -213,11 +214,11 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							vs. the week before
 						</CardContent>
 					</CardHeader>
-				</Card>
+				</GlowCard>
 			</div>
 
 			{/* Income trend — interactive area chart */}
-			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+			<GlowCard>
 				<CardHeader>
 					<CardTitle className="text-white">Income</CardTitle>
 					<CardDescription>Daily earnings across all platforms</CardDescription>
@@ -283,10 +284,10 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 						</AreaChart>
 					</ChartContainer>
 				</CardContent>
-			</Card>
+			</GlowCard>
 
 			{/* Recent activity with AI tags */}
-			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+			<GlowCard>
 				<CardHeader>
 					<CardTitle className="text-white">Recent activity</CardTitle>
 					<CardDescription>What the AI saw in your latest statement</CardDescription>
@@ -359,7 +360,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 						</TableBody>
 					</Table>
 				</CardContent>
-			</Card>
+			</GlowCard>
 		</div>
 	);
 }

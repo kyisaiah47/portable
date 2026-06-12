@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import { Sparkles, TrendingUp, AlertTriangle, Eye, RefreshCw, Loader2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
+import { AICard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import { buildExpensesFromTransactions } from '@/lib/hybrid-classifier';
 import { calculateTaxes, projectAnnualTax } from '@/lib/tax-calculator';
@@ -126,8 +127,7 @@ export default function AIAnalysisPanel({ parsedIncome }: { parsedIncome: any })
 	}, [run]);
 
 	return (
-		<Card className="relative overflow-hidden border-purple-400/25 bg-slate-900">
-			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+		<AICard>
 			<CardContent>
 				<div className="flex items-start justify-between gap-4 mb-1">
 					<div className="flex items-center gap-2.5">
@@ -180,6 +180,6 @@ export default function AIAnalysisPanel({ parsedIncome }: { parsedIncome: any })
 					</>
 				)}
 			</CardContent>
-		</Card>
+		</AICard>
 	);
 }

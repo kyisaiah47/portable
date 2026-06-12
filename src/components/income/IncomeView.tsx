@@ -12,6 +12,7 @@ import {
 	CardTitle,
 	CardAction,
 } from '@/components/ui/card';
+import { GlowCard, AICard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import {
 	ChartContainer,
@@ -123,7 +124,7 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 		<div className="space-y-6">
 			{/* Stat cards */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Total income</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -134,8 +135,8 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 						{parsedIncome.parsed.income?.length ?? 0} payments across {c.platforms.length}{' '}
 						platforms
 					</CardContent>
-				</Card>
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				</GlowCard>
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Top platform</CardDescription>
 						<CardTitle className="text-3xl font-bold font-space-grotesk text-white">
@@ -154,8 +155,8 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 							? 'Heavy concentration — one deactivation hurts. Worth diversifying.'
 							: 'Healthy mix — no single platform owns your income.'}
 					</CardContent>
-				</Card>
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				</GlowCard>
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Stability score</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -166,14 +167,14 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 						{money(c.stability.weeklyAverage ?? 0)}/week average ·{' '}
 						{c.stability.variability}% variability — the number landlords understand
 					</CardContent>
-				</Card>
+				</GlowCard>
 			</div>
 
 			{/* Momentum callouts */}
 			{c.momentum.length > 0 && (
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 					{c.momentum.map((m) => (
-						<Card key={m.platform} className="bg-slate-900 border-white/10">
+						<GlowCard key={m.platform}>
 							<CardContent>
 								<div className="flex items-start justify-between mb-3">
 									{(() => {
@@ -216,13 +217,13 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 									{money(m.recent)} last 4 weeks vs {money(m.prior)} the 4 before
 								</p>
 							</CardContent>
-						</Card>
+						</GlowCard>
 					))}
 				</div>
 			)}
 
 			{/* Weekly stacked chart */}
-			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+			<GlowCard>
 				<CardHeader>
 					<CardTitle className="text-white">Weekly earnings by platform</CardTitle>
 					<CardDescription>Last 12 weeks of your statement</CardDescription>
@@ -251,10 +252,10 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 						</BarChart>
 					</ChartContainer>
 				</CardContent>
-			</Card>
+			</GlowCard>
 
 			{/* Platform breakdown */}
-			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+			<GlowCard>
 				<CardHeader>
 					<CardTitle className="text-white">Platform mix</CardTitle>
 					<CardDescription>Where the money actually comes from</CardDescription>
@@ -289,7 +290,7 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 						</div>
 					))}
 				</CardContent>
-			</Card>
+			</GlowCard>
 		</div>
 	);
 }

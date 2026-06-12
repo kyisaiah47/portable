@@ -9,6 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { GlowCard, AICard } from '@/components/ui/glow-card';
 import { Badge } from '@/components/ui/badge';
 import {
 	Table,
@@ -69,8 +70,7 @@ function AskDeduction() {
 		);
 
 	return (
-		<Card className="relative overflow-hidden border-purple-400/25 bg-slate-900">
-			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+		<AICard>
 			<CardHeader>
 				<CardTitle className="text-white flex items-center gap-2">
 					<Sparkles className="h-4 w-4 text-purple-400" />
@@ -116,7 +116,7 @@ function AskDeduction() {
 					</div>
 				)}
 			</CardContent>
-		</Card>
+		</AICard>
 	);
 }
 
@@ -149,7 +149,7 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 			<AskDeduction />
 
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Deductions found</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -159,8 +159,8 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 					<CardContent className="text-sm text-slate-300">
 						≈ {money(c.total * 0.3)} less tax at a 30% rate
 					</CardContent>
-				</Card>
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				</GlowCard>
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Write-offs caught</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -170,8 +170,8 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 					<CardContent className="text-sm text-slate-300">
 						{c.aiFoundCount} needed AI judgment — rules alone would have missed them
 					</CardContent>
-				</Card>
-				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+				</GlowCard>
+				<GlowCard>
 					<CardHeader>
 						<CardDescription>Biggest category</CardDescription>
 						<CardTitle className="text-3xl font-bold font-space-grotesk text-white capitalize">
@@ -181,10 +181,10 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 					<CardContent className="text-sm text-slate-300">
 						{c.topCategory ? `${money(c.topCategory[1])} deductible` : 'Upload a statement first'}
 					</CardContent>
-				</Card>
+				</GlowCard>
 			</div>
 
-			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
+			<GlowCard>
 				<CardHeader>
 					<CardTitle className="text-white">The ledger</CardTitle>
 					<CardDescription>
@@ -238,7 +238,7 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 						</TableBody>
 					</Table>
 				</CardContent>
-			</Card>
+			</GlowCard>
 		</div>
 	);
 }

@@ -8,6 +8,7 @@ import ExpensesView from '@/components/expenses/ExpensesView';
 import IncomeView from '@/components/income/IncomeView';
 import TaxesView from '@/components/taxes/TaxesView';
 import AIAnalysisPanel from '@/components/insights/AIAnalysisPanel';
+import { GLOW_SURFACE } from '@/components/ui/glow-card';
 import { buildAccountantCsv, downloadAccountantCsv } from '@/lib/accountant-export';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -1136,7 +1137,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     title={selectedCities.length > 0 || selectedGigTypes.length > 0 ? 'Filtered guides' : 'All guides'}
                     hint={`${guides.length} guide${guides.length !== 1 ? 's' : ''}${selectedCities.length > 0 ? ` in ${selectedCities.join(', ')}` : ''}${selectedGigTypes.length > 0 ? ` for ${selectedGigTypes.join(', ')}` : ''}`}
                   />
-                  <div className="rounded-lg border border-white/10 divide-y divide-white/5">
+                  <div className={`${GLOW_SURFACE} rounded-lg divide-y divide-white/5`}>
                     {guides.map((guide) => (
                       <Link
                         key={guide.id}

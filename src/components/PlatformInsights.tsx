@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { GlowCard } from '@/components/ui/glow-card';
 import { TrendingUp, TrendingDown, Minus, Award, Target, Clock, Calendar } from 'lucide-react';
 import { analyzePlatformPerformance, getPlatformColor } from '@/lib/platform-insights';
 
@@ -24,13 +25,13 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
 
   if (!analysis || analysis.platforms.length === 0) {
     return (
-      <Card className="border-white/10 shadow-none">
+      <GlowCard className="shadow-none">
         <CardContent className="p-12 text-center">
           <Target className="w-9 h-9 text-slate-600 mx-auto mb-4" strokeWidth={1.5} />
           <h3 className="text-base font-semibold text-white mb-1">No platform data yet</h3>
           <p className="text-sm text-slate-400">Upload a bank statement to see detailed platform comparison insights</p>
         </CardContent>
-      </Card>
+      </GlowCard>
     );
   }
 
@@ -40,7 +41,7 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
     <div className="space-y-6">
       {/* Top Performers */}
       <div className="grid md:grid-cols-3 gap-4">
-        <Card className="border-white/10 shadow-none">
+        <GlowCard className="shadow-none">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-indigo-400" />
@@ -56,9 +57,9 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
               total
             </p>
           </CardContent>
-        </Card>
+        </GlowCard>
 
-        <Card className="border-white/10 shadow-none">
+        <GlowCard className="shadow-none">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <Target className="w-4 h-4 text-emerald-600" />
@@ -73,9 +74,9 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
               {platforms.find((p) => p.platform === mostConsistent)?.consistency}% consistency score
             </p>
           </CardContent>
-        </Card>
+        </GlowCard>
 
-        <Card className="border-white/10 shadow-none">
+        <GlowCard className="shadow-none">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-indigo-400" />
@@ -88,11 +89,11 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
             </div>
             <p className="text-xs text-slate-400 mt-1">{platforms[0]?.platform} average</p>
           </CardContent>
-        </Card>
+        </GlowCard>
       </div>
 
       {/* Platform Comparison Table */}
-      <Card className="border-white/10 shadow-none">
+      <GlowCard className="shadow-none">
         <CardHeader>
           <CardTitle className="text-white text-sm font-semibold">Platform performance</CardTitle>
           <CardDescription className="text-slate-400">Earnings, consistency, and trends across platforms</CardDescription>
@@ -178,10 +179,10 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
             })}
           </div>
         </CardContent>
-      </Card>
+      </GlowCard>
 
       {/* Recommendations */}
-      <Card className="border-white/10 shadow-none">
+      <GlowCard className="shadow-none">
         <CardHeader>
           <CardTitle className="text-white text-sm font-semibold flex items-center gap-2">
             <Target className="w-4 h-4 text-indigo-400" />
@@ -204,10 +205,10 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
             ))}
           </div>
         </CardContent>
-      </Card>
+      </GlowCard>
 
       {/* Best Times to Work */}
-      <Card className="border-white/10 shadow-none">
+      <GlowCard className="shadow-none">
         <CardHeader>
           <CardTitle className="text-white text-sm font-semibold flex items-center gap-2"><Calendar className="w-4 h-4 text-indigo-400" />Optimize your schedule</CardTitle>
           <CardDescription className="text-slate-400">Work these times to maximize earnings per hour</CardDescription>
@@ -255,7 +256,7 @@ export default function PlatformInsights({ transactions }: PlatformInsightsProps
             ))}
           </div>
         </CardContent>
-      </Card>
+      </GlowCard>
     </div>
   );
 }
