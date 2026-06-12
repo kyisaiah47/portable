@@ -175,7 +175,7 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 						Every write-off with the reason on record — ready for your accountant (or an audit).
 					</CardDescription>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="max-h-[480px] overflow-y-auto">
 					<Table>
 						<TableHeader>
 							<TableRow className="border-white/10 hover:bg-transparent">

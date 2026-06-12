@@ -66,15 +66,13 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
+              render={<Link href="/dashboard" />}
             >
-              <Link href="/dashboard">
-                <ShiftMark className="h-5 w-auto" />
-                <span className="text-base font-bold font-space-grotesk tracking-tight">
-                  stub
-                </span>
-              </Link>
+              <ShiftMark className="h-7 w-auto" />
+              <span className="text-lg font-bold font-space-grotesk tracking-tight">
+                Stub
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -90,12 +88,10 @@ export function AppSidebar({
                   <SidebarMenuButton
                     tooltip={item.title}
                     isActive={pathname === item.url}
-                    asChild
+                    render={<Link href={item.url} />}
                   >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
+                    <item.icon />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -110,12 +106,10 @@ export function AppSidebar({
                   <SidebarMenuButton
                     tooltip={item.title}
                     isActive={pathname === item.url}
-                    asChild
+                    render={<Link href={item.url} />}
                   >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
+                    <item.icon />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

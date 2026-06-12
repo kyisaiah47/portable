@@ -5,6 +5,7 @@ import {
 	CardAction,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
@@ -45,13 +46,17 @@ export function StatCard({
 	label,
 	value,
 	sub,
+	footer,
 	action,
 	gradientValue = false,
 	className,
 }: {
 	label: React.ReactNode;
 	value: React.ReactNode;
+	/** Muted context line (block-style second footer line). */
 	sub?: React.ReactNode;
+	/** Bold takeaway line (block-style first footer line). */
+	footer?: React.ReactNode;
 	action?: React.ReactNode;
 	gradientValue?: boolean;
 	className?: string;
@@ -72,7 +77,16 @@ export function StatCard({
 				</CardTitle>
 				{action && <CardAction>{action}</CardAction>}
 			</CardHeader>
-			{sub && <CardContent className="text-sm text-slate-300">{sub}</CardContent>}
+			{(footer || sub) && (
+				<CardFooter className="flex-col items-start gap-1.5 text-sm">
+					{footer && (
+						<div className="line-clamp-1 flex gap-2 font-medium text-white">
+							{footer}
+						</div>
+					)}
+					{sub && <div className="text-slate-400">{sub}</div>}
+				</CardFooter>
+			)}
 		</GlowCard>
 	);
 }

@@ -42,6 +42,7 @@ const chartConfig = {
 
 export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 	const [range, setRange] = React.useState<'90d' | '30d' | '7d'>('90d');
+	const [month, setMonth] = React.useState<string>('all');
 
 	const computed = React.useMemo(() => {
 		const raw = parsedIncome.rawTransactions || [];
@@ -103,10 +104,13 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 			.map(([date, amount]) => ({ date, income: Math.round(amount * 100) / 100 }));
 
 		// Recent transactions with their AI tags
-		const recent = [...raw]
+		const classified = [...raw]
 			.filter((t: any) => t.classification && t.classification.kind !== 'none')
-			.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
-			.slice(0, 8);
+			.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+		const months = Array.from(
+			new Set(classified.map((t: any) => new Date(t.date).toISOString().slice(0, 7)))
+		).sort().reverse() as string[];
+		const recent = classified;
 
 		return {
 			safeToSpend,
@@ -121,6 +125,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 			weekDelta,
 			series,
 			recent,
+			months,
 		};
 	}, [parsedIncome, range]);
 
@@ -136,6 +141,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 					label="Safe to spend"
 					gradientValue
 					value={money(c.safeToSpend)}
+					footer={<>Your real spending power</>}
 					sub={<>After 30% taxes + 10% buffer on {money(c.totalIncome)} earned</>}
 				/>
 
@@ -147,13 +153,11 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							<Sparkles className="w-3 h-3" /> AI
 						</Badge>
 					}
+					footer={<>{c.deductibleCount} write-offs caught <Sparkles className="size-4 text-purple-400" /></>}
 					sub={
-						<>
-							{c.deductibleCount} deductible expenses caught —{' '}
-							<Link href="/dashboard/expenses" className="text-indigo-400 hover:text-indigo-300">
-								see the reasons →
-							</Link>
-						</>
+						<Link href="/dashboard/expenses" className="text-indigo-400 hover:text-indigo-300">
+							See the reasons →
+						</Link>
 					}
 				/>
 
@@ -166,11 +170,14 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							{c.nextDeadline?.quarter ?? ''}
 						</Badge>
 					}
-					sub={
-						c.nextDeadline
-							? `${c.nextDeadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · set aside ${money(c.taxCalc.quarterlyPayment)}`
-							: 'No upcoming deadline'
+					footer={
+						c.nextDeadline ? (
+							<>Due {c.nextDeadline.dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} <CalendarClock className="size-4 text-slate-400" /></>
+						) : (
+							<>No upcoming deadline</>
+						)
 					}
+					sub={c.nextDeadline ? <>Have {money(c.taxCalc.quarterlyPayment)} ready</> : undefined}
 				/>
 
 				<StatCard
@@ -190,6 +197,14 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 								{c.weekDelta >= 0 ? '+' : ''}
 								{c.weekDelta.toFixed(0)}%
 							</Badge>
+						) : undefined
+					}
+					footer={
+						c.weekDelta !== null ? (
+							<>
+								{c.weekDelta >= 0 ? 'Up' : 'Down'} {Math.abs(c.weekDelta).toFixed(0)}% this week{' '}
+								{c.weekDelta >= 0 ? <TrendingUp className="size-4 text-emerald-400" /> : <TrendingDown className="size-4 text-red-400" />}
+							</>
 						) : undefined
 					}
 					sub="vs. the week before"
@@ -265,21 +280,37 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 				</CardContent>
 			</GlowCard>
 
+			{/* Month tabs above the table — block anatomy */}
+			<div className="flex items-center justify-between gap-4">
+				<ToggleGroup
+					type="single"
+					value={month}
+					onValueChange={(v) => v && setMonth(v)}
+					variant="outline"
+					size="sm"
+				>
+					<ToggleGroupItem value="all">All months</ToggleGroupItem>
+					{c.months.map((m: string) => (
+						<ToggleGroupItem key={m} value={m}>
+							{new Date(m + '-02T00:00:00').toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
+						</ToggleGroupItem>
+					))}
+				</ToggleGroup>
+				<Link
+					href="/dashboard/income"
+					className="text-xs font-medium text-indigo-400 hover:text-indigo-300 shrink-0"
+				>
+					View all →
+				</Link>
+			</div>
+
 			{/* Recent activity with AI tags */}
 			<GlowCard>
 				<CardHeader>
-					<CardTitle className="text-white">Recent activity</CardTitle>
-					<CardDescription>What the AI saw in your latest statement</CardDescription>
-					<CardAction>
-						<Link
-							href="/dashboard/income"
-							className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
-						>
-							View all →
-						</Link>
-					</CardAction>
+					<CardTitle className="text-white">Activity</CardTitle>
+					<CardDescription>What the AI saw in your statement</CardDescription>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="max-h-[440px] overflow-y-auto">
 					<Table>
 						<TableHeader>
 							<TableRow className="border-white/10 hover:bg-transparent">
@@ -290,7 +321,10 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{c.recent.map((t: any, i: number) => {
+							{c.recent
+							.filter((t: any) => month === 'all' || new Date(t.date).toISOString().slice(0, 7) === month)
+							.slice(0, month === 'all' ? 12 : 100)
+							.map((t: any, i: number) => {
 								const cls = t.classification;
 								const isIncome = cls.kind === 'income';
 								return (
