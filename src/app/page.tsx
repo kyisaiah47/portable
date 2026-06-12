@@ -1,410 +1,297 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowRight, Globe, Shield, Zap, CreditCard, TrendingUp, PiggyBank, FileText, BarChart3, MessageCircle } from 'lucide-react';
-import Image from 'next/image';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
-import { SiUber, SiLyft, SiDoordash, SiInstacart, SiGrubhub, SiUbereats, SiUpwork, SiFiverr, SiFreelancer, SiToptal, SiYoutube, SiTwitch, SiPatreon, SiOnlyfans, SiSubstack, SiAirbnb } from 'react-icons/si';
+import { ArrowRight } from 'lucide-react';
+import { ShiftMark } from '@/components/Logo';
+import {
+	SiUber,
+	SiLyft,
+	SiDoordash,
+	SiInstacart,
+	SiGrubhub,
+	SiUpwork,
+	SiFiverr,
+	SiYoutube,
+	SiTwitch,
+	SiAirbnb,
+} from 'react-icons/si';
+
+const PLATFORMS = [
+	{ icon: SiUber, name: 'Uber' },
+	{ icon: SiLyft, name: 'Lyft' },
+	{ icon: SiDoordash, name: 'DoorDash' },
+	{ icon: SiInstacart, name: 'Instacart' },
+	{ icon: SiGrubhub, name: 'Grubhub' },
+	{ icon: SiUpwork, name: 'Upwork' },
+	{ icon: SiFiverr, name: 'Fiverr' },
+	{ icon: SiYoutube, name: 'YouTube' },
+	{ icon: SiTwitch, name: 'Twitch' },
+	{ icon: SiAirbnb, name: 'Airbnb' },
+];
+
+const PROOF = [
+	{
+		stat: '76 in 4s',
+		title: 'Transactions sorted in seconds',
+		body: 'Upload a statement, get every gig payment recognized and categorized — Uber vs. Uber Eats vs. your actual dinner.',
+	},
+	{
+		stat: 'IRS-grade',
+		title: 'Deductions with receipts-level reasons',
+		body: 'Every write-off comes with the why: category, rate, and the rule behind it. Ready for your accountant — or an audit.',
+	},
+	{
+		stat: 'No surprises',
+		title: 'Know your quarterly bill early',
+		body: 'Self-employment tax, federal estimate, and exactly what to set aside — computed from your real income, updated as you earn.',
+	},
+];
 
 export default function Home() {
-  return (
-    <div className="min-h-screen bg-slate-950 font-inter">
-      {/* Navigation */}
-      <nav className="backdrop-blur-xl bg-slate-900/70 border-b border-white/10 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="flex -space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
-              </div>
-              <span className="text-lg font-bold text-white font-space-grotesk">Stub</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/login"
-                className="text-sm font-semibold text-slate-400 hover:text-white"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/signup"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity"
-              >
-                Get started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+	return (
+		<div className="min-h-screen bg-slate-950 font-inter text-white">
+			{/* Nav */}
+			<nav className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
+				<div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+					<div className="flex items-center gap-2.5">
+						<ShiftMark className="h-5 w-auto text-[#00D632]" />
+						<span className="text-lg font-bold font-space-grotesk tracking-tight">
+							stub
+						</span>
+					</div>
+					<div className="flex items-center gap-3">
+						<Link
+							href="/login"
+							className="text-sm font-semibold text-slate-400 hover:text-white transition-colors"
+						>
+							Log in
+						</Link>
+						<Link
+							href="/signup"
+							className="px-4 py-2 rounded-full text-sm font-bold text-slate-950 bg-[#00D632] hover:opacity-90 transition-opacity"
+						>
+							Get started
+						</Link>
+					</div>
+				</div>
+			</nav>
 
-      {/* Hero */}
-      <section className="pt-16 pb-20 px-6 relative overflow-hidden">
-        {/* Animated gradient mesh */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-          <div className="absolute top-40 right-20 w-72 h-72 bg-purple-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-20 left-1/2 w-72 h-72 bg-pink-500/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
-        </div>
+			{/* Hero */}
+			<section className="px-6 pt-20 pb-16">
+				<div className="max-w-3xl mx-auto text-center">
+					<h1 className="font-space-grotesk font-bold text-4xl md:text-6xl leading-[1.04] mb-6">
+						You&apos;re leaving{' '}
+						<span className="text-[#00D632]">$3,000–$5,000</span> in
+						deductions on the table.
+					</h1>
+					<p className="text-base md:text-lg text-slate-400 leading-relaxed max-w-xl mx-auto mb-8">
+						Upload a bank statement. Stub finds your gig income, your
+						write-offs, and what to set aside for taxes — before the IRS does
+						the math for you.
+					</p>
+					<Link
+						href="/signup"
+						className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-sm font-bold text-slate-950 bg-[#00D632] hover:scale-[1.03] transition-transform"
+					>
+						Upload a statement — free
+						<ArrowRight className="h-4 w-4" />
+					</Link>
+					<p className="mt-3 text-xs text-slate-500">
+						No bank login. No card. One CSV.
+					</p>
+				</div>
+			</section>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-full border border-white/10 mb-6">
-              <div className="flex -space-x-2">
-                <Avatar className="w-6 h-6 border-2 border-slate-950">
-                  <AvatarImage src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=3B82F6" alt="" />
-                  <AvatarFallback>F</AvatarFallback>
-                </Avatar>
-                <Avatar className="w-6 h-6 border-2 border-slate-950">
-                  <AvatarImage src="https://api.dicebear.com/7.x/notionists/svg?seed=Aneka&backgroundColor=A855F7" alt="" />
-                  <AvatarFallback>A</AvatarFallback>
-                </Avatar>
-                <Avatar className="w-6 h-6 border-2 border-slate-950">
-                  <AvatarImage src="https://api.dicebear.com/7.x/notionists/svg?seed=Luna&backgroundColor=EC4899" alt="" />
-                  <AvatarFallback>L</AvatarFallback>
-                </Avatar>
-              </div>
-              <span className="text-sm font-semibold text-white">Join 60M+ independent workers</span>
-            </div>
+			{/* Product proof: parsed statement mock */}
+			<section className="px-6 pb-16">
+				<div className="max-w-3xl mx-auto">
+					<div className="rounded-2xl border border-white/10 bg-slate-900 overflow-hidden">
+						<div className="px-5 py-3.5 border-b border-white/5 flex items-center justify-between">
+							<span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+								statement_june.csv — parsed
+							</span>
+							<span className="text-xs font-bold tabular-nums text-[#00D632]">
+								76 / 76 classified
+							</span>
+						</div>
+						<div className="divide-y divide-white/5 text-sm">
+							<MockRow
+								icon={<SiUber className="h-4 w-4 text-slate-400 shrink-0" />}
+								name="UBER *TRIP HELP.UBER.C"
+								tag="Rideshare income"
+								amount="+$842.10"
+								green
+							/>
+							<MockRow
+								icon={
+									<SiDoordash className="h-4 w-4 text-slate-400 shrink-0" />
+								}
+								name="DOORDASH DASHER PAY"
+								tag="Delivery income"
+								amount="+$311.55"
+								green
+							/>
+							<MockRow
+								name="VERIZON WIRELESS PMT"
+								tag="Phone — 50% deductible"
+								amount="−$94.00"
+							/>
+							<MockRow
+								name="SHELL OIL 5742199"
+								tag="Fuel — deductible"
+								amount="−$48.22"
+							/>
+						</div>
+						<div className="px-5 py-4 bg-slate-950/60 flex flex-wrap gap-x-8 gap-y-2 items-center justify-between">
+							<div>
+								<p className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
+									Deductions found
+								</p>
+								<p className="font-space-grotesk font-bold text-xl tabular-nums text-[#00D632]">
+									$2,593.74
+								</p>
+							</div>
+							<div>
+								<p className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
+									Set aside for Q3
+								</p>
+								<p className="font-space-grotesk font-bold text-xl tabular-nums text-white">
+									$1,840
+								</p>
+							</div>
+							<div>
+								<p className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
+									Platforms detected
+								</p>
+								<p className="font-space-grotesk font-bold text-xl tabular-nums text-white">
+									7
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-[1.02] font-space-grotesk">
-              <span className="inline-block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-                Benefits for
-              </span>
-              <br />
-              <span className="text-white">gig workers.</span>
-            </h1>
+			{/* Platform marquee */}
+			<section className="pb-20">
+				<p className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider mb-6">
+					Recognizes income from 50+ platforms
+				</p>
+				<div className="relative overflow-hidden">
+					<div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-slate-950 to-transparent z-10" />
+					<div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+					<div className="flex animate-marquee">
+						{[...Array(2)].map((_, i) => (
+							<div key={i} className="flex items-center gap-4 px-2">
+								{PLATFORMS.map(({ icon: Icon, name }) => (
+									<div
+										key={name}
+										className="flex items-center gap-2 bg-slate-900 border border-white/5 rounded-full px-4 py-2 whitespace-nowrap"
+									>
+										<Icon className="h-4 w-4 text-slate-400" />
+										<span className="text-xs font-semibold text-slate-300">
+											{name}
+										</span>
+									</div>
+								))}
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
 
-            <p className="text-base md:text-lg text-slate-300 mb-8 leading-relaxed max-w-2xl mx-auto font-light">
-              Navigate the gig economy with confidence. Access health insurance, retirement plans, and financial guidance designed for independent workers.
-            </p>
+			{/* Three proof blocks */}
+			<section className="px-6 pb-20">
+				<div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-4">
+					{PROOF.map((p) => (
+						<div
+							key={p.title}
+							className="rounded-2xl border border-white/10 bg-slate-900 p-6 hover:border-white/25 transition-colors"
+						>
+							<p className="font-space-grotesk font-bold text-2xl mb-3 text-[#00D632]">
+								{p.stat}
+							</p>
+							<h3 className="font-semibold text-white mb-2">{p.title}</h3>
+							<p className="text-sm text-slate-400 leading-relaxed">{p.body}</p>
+						</div>
+					))}
+				</div>
+			</section>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-20">
-              <Link
-                href="/signup"
-                className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-7 py-3 rounded-full text-sm font-bold hover:scale-105 transition-transform shadow-2xl shadow-purple-600/50 inline-flex items-center gap-3"
-              >
-                <span>Get Stub</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <button className="text-white px-7 py-3 rounded-full text-sm font-semibold hover:bg-white/5 transition-colors border-2 border-white/20 inline-flex items-center gap-3">
-                <span>Watch demo</span>
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              </button>
-            </div>
-          </div>
+			{/* Final CTA */}
+			<section className="px-6 pb-24">
+				<div className="max-w-3xl mx-auto text-center rounded-2xl border border-white/10 bg-slate-900 px-8 py-12">
+					<h2 className="font-space-grotesk font-bold text-2xl md:text-3xl mb-3">
+						Your books, sorted before your coffee&apos;s cold.
+					</h2>
+					<p className="text-sm text-slate-400 mb-7">
+						One statement is all it takes to see what you&apos;ve been missing.
+					</p>
+					<Link
+						href="/signup"
+						className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-sm font-bold text-slate-950 bg-[#00D632] hover:scale-[1.03] transition-transform"
+					>
+						Upload a statement — free
+						<ArrowRight className="h-4 w-4" />
+					</Link>
+				</div>
+			</section>
 
-          {/* Floating cards */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
-            <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 border border-blue-400/50 transform group-hover:-translate-y-2 transition-transform">
-                <div className="text-sm text-blue-200 font-semibold mb-3 uppercase tracking-wider">Health Insurance</div>
-                <div className="text-2xl font-black text-white mb-2 font-space-grotesk">Covered</div>
-                <div className="text-blue-200 text-lg">Medical, dental, vision plans starting at $150/mo</div>
-              </div>
-            </div>
+			{/* Footer */}
+			<footer className="border-t border-white/5 px-6 py-8">
+				<div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+					<div className="flex items-center gap-2">
+						<ShiftMark className="h-4 w-auto text-[#00D632]" />
+						<span>© {new Date().getFullYear()} Stub</span>
+					</div>
+					<div className="flex items-center gap-5">
+						<Link href="/privacy" className="hover:text-white transition-colors">
+							Privacy
+						</Link>
+						<Link href="/terms" className="hover:text-white transition-colors">
+							Terms
+						</Link>
+						<Link href="/blog" className="hover:text-white transition-colors">
+							Blog
+						</Link>
+					</div>
+				</div>
+			</footer>
+		</div>
+	);
+}
 
-            <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 border border-purple-400/50 transform group-hover:-translate-y-2 transition-transform">
-                <div className="text-sm text-purple-200 font-semibold mb-3 uppercase tracking-wider">Retirement</div>
-                <div className="text-2xl font-black text-white mb-2 font-space-grotesk">Building</div>
-                <div className="text-purple-200 text-lg">Stub 401(k) that moves with you</div>
-              </div>
-            </div>
-
-            <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-pink-600 rounded-3xl blur opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative bg-gradient-to-br from-pink-600 to-pink-700 rounded-2xl p-6 border border-pink-400/50 transform group-hover:-translate-y-2 transition-transform">
-                <div className="text-sm text-pink-200 font-semibold mb-3 uppercase tracking-wider">Tax Prep</div>
-                <div className="text-2xl font-black text-white mb-2 font-space-grotesk">Simplified</div>
-                <div className="text-pink-200 text-lg">Track deductions across all platforms</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Brand marquee */}
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Supports 50+ platforms including</p>
-            </div>
-            <div className="relative overflow-hidden">
-              {/* Gradient overlays */}
-              <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-950 to-transparent z-10"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-950 to-transparent z-10"></div>
-
-              {/* Scrolling marquee */}
-              <div className="flex animate-marquee">
-                {[...Array(2)].map((_, i) => (
-                  <div key={i} className="flex items-center space-x-12 px-6">
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiUber className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Uber</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiLyft className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Lyft</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiDoordash className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">DoorDash</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiInstacart className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Instacart</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiGrubhub className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Grubhub</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiUpwork className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Upwork</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiFiverr className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Fiverr</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiYoutube className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">YouTube</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiTwitch className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Twitch</span>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <SiAirbnb className="w-6 h-6 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-300">Airbnb</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Story/About Section */}
-      <section className="py-40 px-6 bg-slate-900/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-space-grotesk">
-              The safety net you deserve
-            </h2>
-            <p className="text-xl text-slate-400">
-              Traditional employment comes with benefits. Gig work shouldn't be any different.
-            </p>
-          </div>
-
-          <div className="space-y-8 text-lg text-slate-300 leading-relaxed">
-            <p>
-              Over <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">60 million independent workers</span> across the US are building careers on their own terms—driving for Uber, delivering with DoorDash, creating on YouTube and TikTok, streaming on Twitch, designing on Upwork, renting on Airbnb. The freedom is incredible. But there's a catch: no employer means no benefits.
-            </p>
-
-            <p>
-              When you're juggling multiple platforms and income streams, basic questions become impossible to answer. <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">How much did I actually earn last month?</span> Which expenses can I deduct? Can I afford health insurance? What about retirement?
-            </p>
-
-            <p>
-              Stub was built to answer these questions. We bring together everything gig workers need to thrive: <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent font-semibold">affordable health insurance</span> that doesn't require an employer, <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent font-semibold">portable retirement accounts</span> that follow you from gig to gig, <span className="bg-gradient-to-r from-pink-400 to-pink-500 bg-clip-text text-transparent font-semibold">income tracking</span> across all your platforms, and <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">tax tools</span> that actually understand 1099 life.
-            </p>
-
-            <p>
-              We believe independent work is the future. But that future only works if gig workers have access to the same financial security and benefits that traditional employees take for granted. That's why we're here—to build the infrastructure that makes gig work sustainable for the long term.
-            </p>
-
-            <div className="pt-8 border-t border-white/10 mt-12">
-              <p className="text-2xl font-semibold font-space-grotesk mb-4">
-                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Your work is already portable. Your benefits should be too.</span>
-              </p>
-              <p className="text-slate-400">
-                Join thousands of gig workers who are building financial security on their own terms.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features grid */}
-      <section id="features" className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white font-space-grotesk">
-              Built for the gig economy
-            </h2>
-            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-              Everything you need to thrive as an independent worker
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                <Shield className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Health insurance</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Access affordable health, dental, and vision plans. No employer required.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
-                <PiggyBank className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Retirement plans</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Solo 401(k) and SEP IRA options that follow you from gig to gig.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6">
-                <BarChart3 className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Income tracking</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Connect all your gig platforms. See your total earnings in one place.
-              </p>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6">
-                <FileText className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Tax assistance</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Quarterly tax estimates, deduction tracking, and 1099 management.
-              </p>
-            </div>
-
-            {/* Feature 5 */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6">
-                <Zap className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Emergency fund</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Build a safety net for slow months or unexpected expenses.
-              </p>
-            </div>
-
-            {/* Feature 6 */}
-            <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6">
-                <MessageCircle className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-space-grotesk">Expert guidance</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Chat with financial advisors who understand the gig economy.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 px-6 bg-slate-900/30">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 font-space-grotesk">
-            Built by gig workers, for gig workers
-          </h2>
-          <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-            We started Stub because we know what it's like to juggle multiple income streams, worry about taxes, and wish you had the same benefits as traditional employees. The gig economy has 60 million workers in the U.S. alone, and it's time we had financial tools that actually work for us.
-          </p>
-          <p className="text-lg text-slate-400 leading-relaxed">
-            Stub brings together everything independent workers need: health insurance, retirement planning, tax preparation, and income tracking—all in one place. No more spreadsheets, no more guesswork, no more feeling like you're on your own.
-          </p>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
-        <div className="absolute inset-0 opacity-20" style={{backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')"}}></div>
-
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 font-space-grotesk">
-            Join 60M+ independent workers
-          </h2>
-          <p className="text-base text-white/90 mb-8 max-w-xl mx-auto">
-            Get started in minutes. No credit check, no monthly fees, no minimum balance.
-          </p>
-          <Link
-            href="/signup"
-            className="bg-white text-gray-900 px-7 py-3 rounded-full text-sm font-bold hover:bg-gray-100 transition-colors shadow-2xl inline-flex items-center gap-3"
-          >
-            Get Started Free
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-16 px-6 bg-slate-900/50 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-10">
-            {/* Brand */}
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="flex -space-x-2">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
-                </div>
-                <span className="text-xl font-bold text-white font-space-grotesk">Stub</span>
-              </div>
-              <p className="text-sm text-slate-400">Financial tools built for gig workers and independent contractors.</p>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#features" className="text-slate-400 hover:text-white">Features</a></li>
-                <li><Link href="/blog" className="text-slate-400 hover:text-white">Blog</Link></li>
-                <li><Link href="/signup" className="text-slate-400 hover:text-white">Get Started</Link></li>
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#about" className="text-slate-400 hover:text-white">About</a></li>
-                <li><Link href="/privacy" className="text-slate-400 hover:text-white">Privacy</Link></li>
-                <li><Link href="/terms" className="text-slate-400 hover:text-white">Terms</Link></li>
-              </ul>
-            </div>
-
-            {/* Connect */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Connect</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="mailto:support@portable.app" className="text-slate-400 hover:text-white">Support</a></li>
-                <li><a href="mailto:hello@portable.app" className="text-slate-400 hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-slate-500">© 2025 Stub Financial Ltd. All rights reserved.</div>
-            <div className="flex items-center gap-6 text-sm text-slate-400">
-              <Link href="/privacy" className="hover:text-white">Privacy</Link>
-              <Link href="/terms" className="hover:text-white">Terms</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
+function MockRow({
+	icon,
+	name,
+	tag,
+	amount,
+	green,
+}: {
+	icon?: React.ReactNode;
+	name: string;
+	tag: string;
+	amount: string;
+	green?: boolean;
+}) {
+	return (
+		<div className="px-5 py-3 flex items-center justify-between gap-3">
+			<div className="flex items-center gap-3 min-w-0">
+				{icon ?? <span className="h-4 w-4 rounded-full bg-slate-700 shrink-0" />}
+				<span className="text-slate-300 font-mono text-xs truncate">{name}</span>
+			</div>
+			<div className="flex items-center gap-3 shrink-0">
+				<span className="text-[11px] px-2 py-0.5 rounded-full bg-white/5 text-slate-400 border border-white/10">
+					{tag}
+				</span>
+				<span
+					className={`tabular-nums text-sm font-semibold ${
+						green ? 'text-[#00D632]' : 'text-slate-200'
+					}`}
+				>
+					{amount}
+				</span>
+			</div>
+		</div>
+	);
 }
