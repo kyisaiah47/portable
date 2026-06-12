@@ -24,7 +24,7 @@ export default function AuthModal({
 
 	return (
 		<Dialog open onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-md p-8 gap-6">
+			<DialogContent className="dark sm:max-w-md p-8 gap-6 bg-slate-900 text-foreground border-white/10">
 				<DialogHeader className="space-y-1.5">
 					<div className="flex items-center gap-2 mb-4">
 						<ShiftMark className="h-6 w-auto" />
