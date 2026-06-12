@@ -1,8 +1,9 @@
 "use client"
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react"
 
-import { Button } from "@/components/ui/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -20,34 +21,35 @@ export function NavMain({
     icon?: Icon
   }[]
 }) {
+  const pathname = usePathname()
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
+          <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Quick Create"
-              className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+              tooltip="Upload statement"
+              onClick={() => window.dispatchEvent(new CustomEvent("stub:upload"))}
+              className="min-w-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white duration-200 ease-linear hover:opacity-90 hover:text-white active:opacity-90 active:text-white"
             >
               <IconCirclePlusFilled />
-              <span>Quick Create</span>
+              <span>Upload statement</span>
             </SidebarMenuButton>
-            <Button
-              size="icon"
-              className="size-8 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
-            >
-              <IconMail />
-              <span className="sr-only">Inbox</span>
-            </Button>
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
+              <SidebarMenuButton
+                tooltip={item.title}
+                isActive={pathname === item.url}
+                asChild
+              >
+                <Link href={item.url}>
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

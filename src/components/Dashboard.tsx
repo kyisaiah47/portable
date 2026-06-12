@@ -418,6 +418,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   // Loading state
   const isLoading = incomeLoading || transactionsLoading;
 
+  // Sidebar/header "Upload statement" buttons open the wizard from anywhere.
+  useEffect(() => {
+    const open = () => setShowWizard(true);
+    window.addEventListener('stub:upload', open);
+    return () => window.removeEventListener('stub:upload', open);
+  }, []);
+
   // First-run wizard: opens once data has resolved and there's nothing yet.
   // Dismissal persists in localStorage so tab/route changes don't resurface it.
   const [showWizard, setShowWizard] = useState(false);
