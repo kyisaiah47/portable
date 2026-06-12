@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import CSVUpload from '@/components/CSVUpload';
-import { ArrowRight, Check, Upload, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Check, Upload, Zap } from 'lucide-react';
 import { seedDemoData } from '@/lib/demo-data';
 import { supabase } from '@/lib/supabase';
+import Logo from '@/components/Logo';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -22,10 +23,10 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
-          <p className="text-white font-semibold">Loading...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-gray-200 border-t-indigo-600 rounded-full animate-spin"></div>
+          <p className="text-sm text-gray-500">Loading…</p>
         </div>
       </div>
     );
@@ -58,106 +59,90 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 font-inter">
-      {/* Progress Bar */}
-      <div className="w-full h-2 bg-slate-900">
+    <div className="min-h-screen bg-gray-50">
+      {/* Progress bar */}
+      <div className="w-full h-0.5 bg-gray-200">
         <div
-          className="h-full bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-500"
+          className="h-full bg-indigo-600 transition-all duration-500"
           style={{ width: `${(step / 2) * 100}%` }}
         ></div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-16">
+      <div className="max-w-3xl mx-auto px-6 py-16">
         {/* Step 1: Welcome & Method Selection */}
         {step === 1 && (
-          <div className="space-y-8">
-            <div className="text-center mb-12">
-              <div className="flex items-center justify-center mb-6">
-                <div className="flex -space-x-2">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
-                </div>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-space-grotesk">
-                Welcome to Stub, {user.firstName}! 🎉
+          <div className="space-y-10">
+            <div className="text-center">
+              <Logo className="mx-auto mb-8" />
+              <h1 className="text-3xl font-semibold tracking-tight text-gray-900 mb-3">
+                Welcome, {user.firstName}.
               </h1>
-              <p className="text-xl text-slate-300">
-                Let's get your income tracked so we can show you insights that actually matter
+              <p className="text-gray-500">
+                Bring in some income data and we&apos;ll take it from there.
               </p>
             </div>
 
             {/* Method Selection */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-4">
               {/* CSV Option */}
               <button
                 onClick={() => handleMethodSelect('csv')}
-                className="group bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-2xl p-8 border border-purple-500/20 hover:border-purple-500/50 transition-all text-left"
+                className="group bg-white rounded-lg border border-gray-200 p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
               >
-                <div className="w-16 h-16 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Upload className="w-8 h-8 text-purple-400" />
+                <div className="w-9 h-9 rounded-md bg-indigo-50 flex items-center justify-center mb-4">
+                  <Upload className="w-4.5 h-4.5 w-[18px] h-[18px] text-indigo-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2 font-space-grotesk">Upload Bank Statement</h3>
-                <p className="text-slate-300 mb-4">
-                  Upload a CSV export from your bank. Good for one-time setup or testing.
+                <h3 className="text-base font-semibold text-gray-900 mb-1">
+                  Upload a bank statement
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  A CSV export from your bank. Best for seeing your real numbers.
                 </p>
-                <div className="flex items-center gap-2 text-purple-400 font-semibold">
-                  <span>Manual upload</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>No bank login needed</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Works with any bank</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Quick setup</span>
-                  </div>
-                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {['No bank login needed', 'Works with any bank', 'Quick setup'].map((item) => (
+                    <li key={item} className="flex items-center gap-2 text-sm text-gray-500">
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600">
+                  Upload CSV
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </span>
               </button>
 
               {/* Demo Data Option */}
               <button
                 onClick={() => handleMethodSelect('demo')}
-                className="group bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl rounded-2xl p-8 border border-green-500/20 hover:border-green-500/50 transition-all text-left"
+                className="group bg-white rounded-lg border border-gray-200 p-6 text-left hover:border-gray-300 hover:shadow-sm transition-all"
               >
-                <div className="w-16 h-16 bg-green-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Zap className="w-8 h-8 text-green-400" />
+                <div className="w-9 h-9 rounded-md bg-gray-100 flex items-center justify-center mb-4">
+                  <Zap className="w-[18px] h-[18px] text-gray-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2 font-space-grotesk">Try Demo Data</h3>
-                <p className="text-slate-300 mb-4">
-                  Explore Stub with sample gig worker data. Perfect for testing before connecting real accounts.
+                <h3 className="text-base font-semibold text-gray-900 mb-1">Try demo data</h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  Explore Stub with realistic sample gig income before bringing your own.
                 </p>
-                <div className="flex items-center gap-2 text-green-400 font-semibold">
-                  <span>Just testing</span>
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Instant setup</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Realistic data</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Replace anytime</span>
-                  </div>
-                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {['Instant setup', 'Realistic data', 'Replace anytime'].map((item) => (
+                    <li key={item} className="flex items-center gap-2 text-sm text-gray-500">
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-700">
+                  Use sample data
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </span>
               </button>
             </div>
 
             <div className="text-center">
               <button
                 onClick={() => router.push('/dashboard')}
-                className="text-slate-400 hover:text-white text-sm"
+                className="text-sm text-gray-400 hover:text-gray-600"
               >
                 Skip for now →
               </button>
@@ -168,12 +153,12 @@ export default function OnboardingPage() {
         {/* Step 2: Execute Selected Method */}
         {step === 2 && (
           <div className="space-y-8">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-2 font-space-grotesk">
-                Upload Bank Statement
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold tracking-tight text-gray-900 mb-2">
+                Upload a bank statement
               </h2>
-              <p className="text-slate-300">
-                Upload a CSV file of your recent transactions
+              <p className="text-sm text-gray-500">
+                A CSV of your recent transactions — we&apos;ll classify everything automatically.
               </p>
             </div>
 
@@ -184,7 +169,7 @@ export default function OnboardingPage() {
             <div className="text-center">
               <button
                 onClick={() => setStep(1)}
-                className="text-slate-400 hover:text-white text-sm"
+                className="text-sm text-gray-400 hover:text-gray-600"
               >
                 ← Go back
               </button>

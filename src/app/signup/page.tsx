@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import LoginForm from '@/components/LoginForm';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 function SignupContent() {
   const router = useRouter();
@@ -24,51 +25,42 @@ function SignupContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 font-inter">
-      <div className="max-w-md w-full">
-        <div className="bg-slate-900/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/10">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-6">
-              <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600"></div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-pink-600"></div>
-              </div>
-            </div>
-            <h2 className="text-2xl font-semibold text-white mb-2 font-space-grotesk">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+      <Link href="/" aria-label="Back to home" className="mb-8">
+        <Logo />
+      </Link>
+      <div className="w-full max-w-sm">
+        <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
+          <div className="mb-6">
+            <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-1">
               Create your account
-            </h2>
-            <p className="text-slate-400">
-              Start building your safety net
-            </p>
+            </h1>
+            <p className="text-sm text-gray-500">Free to start. No card required.</p>
             {referralCode && (
-              <div className="mt-4 bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-                <p className="text-green-400 text-sm font-semibold">
-                  You're signing up with a referral code!
+              <div className="mt-4 rounded-md border border-emerald-200 bg-emerald-50 p-3">
+                <p className="text-sm font-medium text-emerald-800">
+                  You&apos;re signing up with a referral code
                 </p>
-                <p className="text-green-300 text-xs mt-1">
-                  You'll get $10 after completing your profile
+                <p className="text-xs text-emerald-700 mt-0.5">
+                  You&apos;ll get $10 after completing your profile.
                 </p>
               </div>
             )}
           </div>
 
           <LoginForm isLogin={false} onSuccess={handleSuccess} referralCode={referralCode} />
+        </div>
 
-          <div className="mt-6 text-center space-y-4">
-            <p className="text-slate-400 text-sm">
-              Already have an account?{' '}
-              <Link href="/login" className="text-white hover:text-slate-300 font-semibold">
-                Log in
-              </Link>
-            </p>
-            <Link
-              href="/"
-              className="text-slate-400 hover:text-white text-sm font-medium block"
-            >
-              ← Back to home
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-sm text-gray-500">
+            Already have an account?{' '}
+            <Link href="/login" className="font-medium text-gray-900 hover:underline">
+              Log in
             </Link>
-          </div>
+          </p>
+          <Link href="/" className="block text-sm text-gray-400 hover:text-gray-600">
+            ← Back to home
+          </Link>
         </div>
       </div>
     </div>
@@ -77,11 +69,13 @@ function SignupContent() {
 
 export default function SignupPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-sm text-gray-500">Loading…</div>
+        </div>
+      }
+    >
       <SignupContent />
     </Suspense>
   );
