@@ -412,11 +412,18 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const isLoading = incomeLoading || transactionsLoading;
 
   // First-run wizard: opens once data has resolved and there's nothing yet.
+  // Dismissal persists in localStorage so tab/route changes don't resurface it.
   const [showWizard, setShowWizard] = useState(false);
-  const [wizardDismissed, setWizardDismissed] = useState(false);
   useEffect(() => {
-    if (!isLoading && !parsedIncome && !wizardDismissed) setShowWizard(true);
-  }, [isLoading, parsedIncome, wizardDismissed]);
+    const seen =
+      typeof window !== 'undefined' &&
+      localStorage.getItem('stub-wizard-seen') === '1';
+    if (!isLoading && !parsedIncome && !seen) setShowWizard(true);
+  }, [isLoading, parsedIncome]);
+  const dismissWizard = () => {
+    localStorage.setItem('stub-wizard-seen', '1');
+    setShowWizard(false);
+  };
 
   const handleLogout = async () => {
     try {
@@ -2626,11 +2633,11 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
       {showWizard && (
         <WelcomeWizard
           userId={user.id}
-          onClose={() => {
-            setShowWizard(false);
-            setWizardDismissed(true);
+          onClose={dismissWizard}
+          onUploadComplete={() => {
+            localStorage.setItem('stub-wizard-seen', '1');
+            window.location.reload();
           }}
-          onUploadComplete={() => window.location.reload()}
         />
       )}
     </AppShell>
