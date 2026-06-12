@@ -106,7 +106,7 @@ function AskDeduction() {
 						<div className="flex flex-wrap items-center gap-2 mb-2">
 							{verdictBadge(result.verdict)}
 							{result.deductionRate > 0 && result.deductionRate < 100 && (
-								<span className="text-xs text-slate-400">{result.deductionRate}% of the cost</span>
+								<span className="text-xs text-slate-300">{result.deductionRate}% of the cost</span>
 							)}
 							{result.category && (
 								<span className="text-xs text-slate-500">· {result.category}</span>
@@ -149,42 +149,42 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 			<AskDeduction />
 
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Deductions found</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
 							{money(c.total)}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						≈ {money(c.total * 0.3)} less tax at a 30% rate
 					</CardContent>
 				</Card>
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Write-offs caught</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
 							{c.deductible.length}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{c.aiFoundCount} needed AI judgment — rules alone would have missed them
 					</CardContent>
 				</Card>
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Biggest category</CardDescription>
 						<CardTitle className="text-3xl font-bold font-space-grotesk text-white capitalize">
 							{c.topCategory?.[0] ?? '—'}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{c.topCategory ? `${money(c.topCategory[1])} deductible` : 'Upload a statement first'}
 					</CardContent>
 				</Card>
 			</div>
 
-			<Card className="bg-slate-900 border-white/10">
+			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 				<CardHeader>
 					<CardTitle className="text-white">The ledger</CardTitle>
 					<CardDescription>
@@ -226,7 +226,7 @@ export default function ExpensesView({ parsedIncome }: { parsedIncome: any }) {
 												)}
 											</div>
 										</TableCell>
-										<TableCell className="text-xs text-slate-400 leading-relaxed">
+										<TableCell className="text-xs text-slate-300 leading-relaxed">
 											{cls.rationale || '—'}
 										</TableCell>
 										<TableCell className="text-right tabular-nums font-medium text-white whitespace-nowrap">

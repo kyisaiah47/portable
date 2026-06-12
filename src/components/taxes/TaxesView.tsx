@@ -71,19 +71,19 @@ export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
 		<div className="space-y-6">
 			{/* Hero cards */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Set aside each quarter</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
 							{money(c.taxCalc.quarterlyPayment)}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{(c.taxCalc.effectiveTaxRate * 100).toFixed(1)}% effective rate on
 						projected income
 					</CardContent>
 				</Card>
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Next deadline</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -98,7 +98,7 @@ export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
 							</CardAction>
 						)}
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{c.next
 							? c.next.dueDate.toLocaleDateString('en-US', {
 									month: 'long',
@@ -108,14 +108,14 @@ export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
 							: 'No upcoming deadline this year'}
 					</CardContent>
 				</Card>
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Deductions lowering your bill</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
 							{money(c.expenseResults.totalDeductions)}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						≈ {money(c.expenseResults.potentialTaxSavings ?? c.expenseResults.totalDeductions * 0.3)}{' '}
 						in tax savings
 					</CardContent>
@@ -132,7 +132,7 @@ export default function TaxesView({ parsedIncome }: { parsedIncome: any }) {
 			/>
 
 			{/* Payment schedule */}
-			<Card className="bg-slate-900 border-white/10">
+			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 				<CardHeader>
 					<CardTitle className="text-white">{now.getFullYear()} payment schedule</CardTitle>
 					<CardDescription>

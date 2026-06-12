@@ -131,19 +131,19 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 
 			{/* Stat cards — dashboard-01 style */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Safe to spend</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
 							{money(c.safeToSpend)}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						After 30% taxes + 10% buffer on {money(c.totalIncome)} earned
 					</CardContent>
 				</Card>
 
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Stub found you</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -155,7 +155,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							</Badge>
 						</CardAction>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{c.deductibleCount} deductible expenses caught —{' '}
 						<Link href="/dashboard/expenses" className="text-indigo-400 hover:text-indigo-300">
 							see the reasons →
@@ -163,7 +163,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 					</CardContent>
 				</Card>
 
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Next IRS deadline</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -176,14 +176,14 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 							</Badge>
 						</CardAction>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{c.nextDeadline
 							? `${c.nextDeadline.dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · set aside ${money(c.taxCalc.quarterlyPayment)}`
 							: 'No upcoming deadline'}
 					</CardContent>
 				</Card>
 
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>This week</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
@@ -209,7 +209,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 								</Badge>
 							</CardAction>
 						)}
-						<CardContent className="px-0 pt-1 text-sm text-slate-400">
+						<CardContent className="px-0 pt-1 text-sm text-slate-300">
 							vs. the week before
 						</CardContent>
 					</CardHeader>
@@ -217,7 +217,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 			</div>
 
 			{/* Income trend — interactive area chart */}
-			<Card className="bg-slate-900 border-white/10">
+			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 				<CardHeader>
 					<CardTitle className="text-white">Income</CardTitle>
 					<CardDescription>Daily earnings across all platforms</CardDescription>
@@ -286,7 +286,7 @@ export default function HomeOverview({ parsedIncome }: { parsedIncome: any }) {
 			</Card>
 
 			{/* Recent activity with AI tags */}
-			<Card className="bg-slate-900 border-white/10">
+			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 				<CardHeader>
 					<CardTitle className="text-white">Recent activity</CardTitle>
 					<CardDescription>What the AI saw in your latest statement</CardDescription>

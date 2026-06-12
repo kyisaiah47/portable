@@ -123,19 +123,19 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 		<div className="space-y-6">
 			{/* Stat cards */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Total income</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
 							{money(c.totalIncome)}
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{parsedIncome.parsed.income?.length ?? 0} payments across {c.platforms.length}{' '}
 						platforms
 					</CardContent>
 				</Card>
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Top platform</CardDescription>
 						<CardTitle className="text-3xl font-bold font-space-grotesk text-white">
@@ -149,20 +149,20 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 							</CardAction>
 						)}
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{c.top && c.top.share > 60
 							? 'Heavy concentration — one deactivation hurts. Worth diversifying.'
 							: 'Healthy mix — no single platform owns your income.'}
 					</CardContent>
 				</Card>
-				<Card className="bg-slate-900 border-white/10">
+				<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 					<CardHeader>
 						<CardDescription>Stability score</CardDescription>
 						<CardTitle className="text-3xl font-bold tabular-nums font-space-grotesk text-white">
 							{c.stability.score ?? '—'}/100
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="text-sm text-slate-400">
+					<CardContent className="text-sm text-slate-300">
 						{money(c.stability.weeklyAverage ?? 0)}/week average ·{' '}
 						{c.stability.variability}% variability — the number landlords understand
 					</CardContent>
@@ -212,7 +212,7 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 									</Badge>
 								</div>
 								<p className="text-sm font-semibold text-white">{m.platform}</p>
-								<p className="text-xs text-slate-400 mt-1">
+								<p className="text-xs text-slate-300 mt-1">
 									{money(m.recent)} last 4 weeks vs {money(m.prior)} the 4 before
 								</p>
 							</CardContent>
@@ -222,7 +222,7 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 			)}
 
 			{/* Weekly stacked chart */}
-			<Card className="bg-slate-900 border-white/10">
+			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 				<CardHeader>
 					<CardTitle className="text-white">Weekly earnings by platform</CardTitle>
 					<CardDescription>Last 12 weeks of your statement</CardDescription>
@@ -254,7 +254,7 @@ export default function IncomeView({ parsedIncome }: { parsedIncome: any }) {
 			</Card>
 
 			{/* Platform breakdown */}
-			<Card className="bg-slate-900 border-white/10">
+			<Card className="relative overflow-hidden border-indigo-400/20 bg-gradient-to-br from-indigo-600/15 via-slate-900 to-slate-900">
 				<CardHeader>
 					<CardTitle className="text-white">Platform mix</CardTitle>
 					<CardDescription>Where the money actually comes from</CardDescription>
