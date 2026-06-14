@@ -1,6 +1,6 @@
 <div align="center">
 
-# Stub
+# 🧾 Stub
 
 **The books your gig work never came with — upload a bank statement, get your income, write-offs, and quarterly taxes sorted.**
 
